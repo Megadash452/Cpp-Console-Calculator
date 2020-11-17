@@ -4,7 +4,7 @@
 using namespace std;
 
 #if _DEBUG
-#define announce_inExpression(type, exp, x) std::cout << type << " (" << exp[x] << ") in exp[" << x << ']' << std::endl
+#define announce_inExpression(type, exp, x) std::cout<<type<<" ("<<exp[x]<<") in exp["<<x<<']'<<std::endl
 #else
 #define announce_inExpression(type, exp, x)
 #endif
@@ -71,6 +71,10 @@ public:
             if (exp[i] != ' ' && (exp[i] != '-' || exp[i] != '+'))
             {
                 charList.push_back('+');
+                break;
+            }
+            else if (exp[i] == '-' || exp[1] == '+')
+            {
                 break;
             }
             else if (char_in_string(exp[i], numbers))
