@@ -134,7 +134,6 @@ int main()
 
     Expression e(x);
     e.print();
-    cout << "youre mo, but also, h" << endl;
 
     int end_of_main_function; cin >> end_of_main_function;
 }
