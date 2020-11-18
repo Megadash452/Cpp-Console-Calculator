@@ -46,24 +46,53 @@ public:
     Expression(std::string exp)
     {
         this->expression = Expression::parseString(exp);
-        this->updateTerms();
+        //this->simplify();
+        //this->updateTerms();
     }
 
     void print()
     {
-        std::cout << expression << std::endl;
+        std::cout << expression << "; terms: (";
+        for (string str : this->terms)
+        {
+            std::cout << str << ", ";
+        }
+        std::cout << ")\n";
     }
     static void print(const Expression& exp)
     {
-        std::cout << exp.expression << std::endl;
+        std::cout << exp.expression << "; terms: (";
+        for (string str : exp.terms)
+        {
+            std::cout << str << ", ";
+        }
+        std::cout << ")\n";
     }
 
     void updateTerms()
     {
-        /*for (int i = 0; i < this->expression.length(); i++)
+        int offset = 0;
+        for (int i = 0; i < this->expression.length(); i++)
         {
+            if ((expression[i] != '+' || expression[i] != '-') &&
+                char_in_string(expression[i], numbers) ||
+                char_in_string(expression[i], operators) ||
+                char_in_string(expression[i], alphabet) ||
+                char_in_string(expression[i], constants) ||
+                char_in_string(expression[i], alphabetUpper))
+            {
 
-        }*/
+            }
+        }
+    }
+
+    void simplify()
+    {
+
+    }
+    static string simplify(const string& exp)
+    {
+
     }
 
     static string parseString(const std::string& exp)
@@ -113,22 +142,24 @@ public:
     // --- Operators ---
     Expression operator +(const Expression& exp) const
     {
-        return this->expression + Expression::parseString(exp.expression);
+        return /*simplify*/(this->expression + Expression::parseString(exp.expression));
     }
     Expression operator +(const string& exp) const
     {
-        return this->expression + Expression::parseString(exp);
+        return /*simplify*/(this->expression + Expression::parseString(exp));
     }
 
     void operator +=(const Expression& exp)
     {
         this->expression = this->expression + Expression::parseString(exp.expression);
-        this->updateTerms();
+        //this->simplify();
+        //this->updateTerms();
     }
     void operator +=(const string& exp)
     {
         this->expression += Expression::parseString(exp);
-        this->updateTerms();
+        //this->simplify();
+        //this->updateTerms();
     }
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
@@ -157,10 +188,16 @@ int main()
     Expression e(x);
     //Expression e2("4x-5");
     //e += "4x-5";
-    //e.print();
+    e.print();
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
+    
+    string test = "this is a test";
+    cout << test << endl;
+
+    test = "this test was successful";
+    cout << test << endl;
 
     int end_of_main_function; cin >> end_of_main_function;
 }
