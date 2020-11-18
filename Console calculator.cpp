@@ -51,7 +51,11 @@ public:
 
     void print()
     {
-        cout << expression << endl;
+        std::cout << expression << std::endl;
+    }
+    static void print(Expression exp)
+    {
+        std::cout << exp.expression << std::endl;
     }
 
     void updateTerms()
@@ -96,7 +100,7 @@ public:
                 announce_inExpression("number", exp, i);
                 charList.push_back(exp[i]);
             }
-            else if (char_in_string(exp[i], alphabet))
+            else if (char_in_string(exp[i], alphabet) || char_in_string(exp[i], alphabetUpper))
             {
                 announce_inExpression("variable", exp, i);
                 charList.push_back(exp[i]);
@@ -109,12 +113,25 @@ public:
     }
 
     // --- Operators ---
-    Expression operator +(Expression exp)
+    Expression add(Expression exp) // TODO: Switch to an operator func
     {
+        return this->expression + Expression::parseString(exp.expression);
+    }
+    Expression add(string exp) // TODO: Switch to an operator func
+    {
+        return this->expression + Expression::parseString(exp);
+    }
 
+    void addNset(Expression exp) // TODO: Switch to an operator func
+    {
+        this->expression += Expression::parseString(exp.expression);
+    }
+    void addNset(string exp) // TODO: Switch to an operator func
+    {
+        this->expression += Expression::parseString(exp);
     }
 };
-char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
+char Expression::operators[11] = {'+','-',(char)241,'*','/','^','!','%','|','(',')'};
 char Expression::numbers[10] = {'0','1','2','3','4','5','6','7','8','9'};
 char Expression::constants[] = {227,237,242,243};
 char Expression::alphabet[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove e and i to put on symbols/constants
@@ -138,7 +155,12 @@ int main()
     getline(cin, x);
 
     Expression e(x);
+    Expression e2("4x-5");
+    e.addNset("4x-5");
     e.print();
+    e2.print();
+
+    Expression::print(e.add("2x+5"));
 
     int end_of_main_function; cin >> end_of_main_function;
 }
