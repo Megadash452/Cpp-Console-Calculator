@@ -68,16 +68,17 @@ public:
 
         for (int i = 0; true; i++)
         {
-            if (exp[i] != ' ' && (exp[i] != '-' || exp[i] != '+'))
+            if (exp[i] == '(' ||
+                char_in_string(exp[i], symbols) ||
+                char_in_string(exp[i], numbers) ||
+                char_in_string(exp[i], alphabet) ||
+                char_in_string(exp[i], constants) ||
+                char_in_string(exp[i], alphabetUpper))
             {
                 charList.push_back('+');
                 break;
             }
-            else if (exp[i] == '-' || exp[1] == '+')
-            {
-                break;
-            }
-            else if (char_in_string(exp[i], numbers))
+            else
             {
                 break;
             }
@@ -115,8 +116,8 @@ public:
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
 char Expression::numbers[10] = {'0','1','2','3','4','5','6','7','8','9'};
-char Expression::alphabet[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove e and i to put on symbols/constants
 char Expression::constants[] = {227,237,242,243};
+char Expression::alphabet[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove e and i to put on symbols/constants
 char Expression::alphabetUpper[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 char Expression::symbols[] = {228,233,244,245,248}; //244 & 245 are integral symbol
 
