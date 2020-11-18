@@ -47,7 +47,7 @@ public:
     {
         this->expression = Expression::parseString(exp);
         //this->simplify();
-        //this->updateTerms();
+        this->updateTerms();
     }
 
     void print()
@@ -71,17 +71,26 @@ public:
 
     void updateTerms()
     {
+        std::cout << "updating terms\n\n";
         int offset = 0;
+        string tempTerm;
         for (int i = 0; i < this->expression.length(); i++)
         {
-            if ((expression[i] != '+' || expression[i] != '-') &&
-                char_in_string(expression[i], numbers) ||
+            if ((char_in_string(expression[i], numbers) ||
                 char_in_string(expression[i], operators) ||
                 char_in_string(expression[i], alphabet) ||
                 char_in_string(expression[i], constants) ||
-                char_in_string(expression[i], alphabetUpper))
+                char_in_string(expression[i], alphabetUpper)) &&
+                (expression[i] != '+' || expression[i] != '-'))
             {
-
+                offset++;
+                tempTerm.push_back(expression[i]);
+            }
+            else if (expression[i] == '+' || expression[i] == '-')
+            {
+                terms.push_back(tempTerm);
+                tempTerm.clear();
+                tempTerm.push_back(expression[i]);
             }
         }
     }
@@ -153,13 +162,13 @@ public:
     {
         this->expression = this->expression + Expression::parseString(exp.expression);
         //this->simplify();
-        //this->updateTerms();
+        this->updateTerms();
     }
     void operator +=(const string& exp)
     {
         this->expression += Expression::parseString(exp);
         //this->simplify();
-        //this->updateTerms();
+        this->updateTerms();
     }
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
