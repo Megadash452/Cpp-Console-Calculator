@@ -38,7 +38,7 @@ private:
     static char numbers[10];
     static char constants[]; // TODO: Include size of array (incomplete items)
 
-    static char alphabet[26];
+    static char alphabet[25];
     static char alphabetUpper[26];
     static char symbols[]; // TODO: Include size of array (incomplete items)
 
@@ -82,10 +82,7 @@ public:
                 charList.push_back('+');
                 break;
             }
-            else
-            {
-                break;
-            }
+            else break;
         }
 
         for (unsigned int i = 0; i < unsigned(exp.length()); i++)
@@ -123,12 +120,12 @@ public:
         return this->expression + Expression::parseString(exp);
     }
 
-    void operator +=(const Expression& exp) // TODO: Switch to an operator func
+    void operator +=(const Expression& exp)
     {
         this->expression = this->expression + Expression::parseString(exp.expression);
         this->updateTerms();
     }
-    void operator +=(const string& exp) // TODO: Switch to an operator func
+    void operator +=(const string& exp)
     {
         this->expression += Expression::parseString(exp);
         this->updateTerms();
@@ -136,8 +133,8 @@ public:
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
 char Expression::numbers[10] = {'0','1','2','3','4','5','6','7','8','9'};
-char Expression::constants[] = {227,237,242,243};
-char Expression::alphabet[26] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove e and i to put on symbols/constants
+char Expression::constants[] = {'e',227,237,242,243};
+char Expression::alphabet[25] = {'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove i to put in symbols/constants
 char Expression::alphabetUpper[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 char Expression::symbols[] = {228,233,244,245,248}; //244 & 245 are integral symbol
 
