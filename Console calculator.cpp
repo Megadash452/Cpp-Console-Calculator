@@ -52,47 +52,32 @@ public:
 
     void print()
     {
-        std::cout << expression << "; terms: (";
-        for (string str : this->terms)
-        {
-            std::cout << str << ", ";
-        }
-        std::cout << ")\n";
+        std::cout << expression << std::endl;
     }
     static void print(const Expression& exp)
     {
-        std::cout << exp.expression << "; terms: (";
-        for (string str : exp.terms)
-        {
-            std::cout << str << ", ";
-        }
-        std::cout << ")\n";
+        std::cout << exp.expression << std::endl;
     }
 
     void updateTerms()
     {
-        std::cout << "updating terms\n\n";
-        int offset = 0;
         string tempTerm;
         for (int i = 0; i < this->expression.length(); i++)
         {
-            if ((char_in_string(expression[i], numbers) ||
-                char_in_string(expression[i], operators) ||
-                char_in_string(expression[i], alphabet) ||
-                char_in_string(expression[i], constants) ||
-                char_in_string(expression[i], alphabetUpper)) &&
-                (expression[i] != '+' || expression[i] != '-'))
+            if (expression[i] == '+' || expression[i] == '-')
             {
-                offset++;
-                tempTerm.push_back(expression[i]);
-            }
-            else if (expression[i] == '+' || expression[i] == '-')
-            {
-                terms.push_back(tempTerm);
+                std::cout << "new term found\n";
+                if (i !=0) terms.push_back(tempTerm);
                 tempTerm.clear();
                 tempTerm.push_back(expression[i]);
             }
+            else
+            {
+                tempTerm.push_back(expression[i]);
+                std::cout << "pushed back to tempTerm\n";
+            }
         }
+        terms.push_back(tempTerm);
     }
 
     void simplify()
@@ -101,7 +86,28 @@ public:
     }
     static string simplify(const string& exp)
     {
+        vector<string> tempTerms;
+        string tempTerm;
+        for (int i = 0; i < exp.length(); i++)
+        {
+            if (exp[i] == '+' || exp[i] == '-')
+            {
+                std::cout << "new term found\n";
+                if (i != 0) tempTerms.push_back(tempTerm);
+                tempTerm.clear();
+                tempTerm.push_back(exp[i]);
+            }
+            else
+            {
+                tempTerm.push_back(exp[i]);
+                std::cout << "pushed back to tempTerm\n";
+            }
+        }
+        tempTerms.push_back(tempTerm);
 
+        // TODO: combine terms
+
+        tempTerms.clear();
     }
 
     static string parseString(const std::string& exp)
