@@ -43,6 +43,15 @@ private:
     static char symbols[]; // TODO: Include size of array (incomplete items)
 
 public:
+    enum symbols {
+        sigma = 228,
+        theta = 233,
+        integralUpper = 244,
+        integralLower = 245,
+        degree = 248,
+        degrees = 248
+    };
+
     Expression(std::string exp)
     {
         this->expression = Expression::parseString(exp);
@@ -92,20 +101,16 @@ public:
         {
             if (exp[i] == '+' || exp[i] == '-')
             {
-                std::cout << "new term found\n";
                 if (i != 0) tempTerms.push_back(tempTerm);
                 tempTerm.clear();
                 tempTerm.push_back(exp[i]);
             }
             else
-            {
                 tempTerm.push_back(exp[i]);
-                std::cout << "pushed back to tempTerm\n";
-            }
         }
         tempTerms.push_back(tempTerm);
 
-        // TODO: combine terms
+        // TODO: combine terms in tempTerms
 
         tempTerms.clear();
     }
@@ -138,7 +143,7 @@ public:
             }
             else if (char_in_string(exp[i], numbers) || char_in_string(exp[i], constants))
             {
-                announce_inExpression("number", exp, i);
+                announce_inExpression("nnnumber", exp, i);
                 charList.push_back(exp[i]);
             }
             else if (char_in_string(exp[i], alphabet) || char_in_string(exp[i], alphabetUpper))
@@ -207,12 +212,6 @@ int main()
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
-    
-    string test = "this is a test";
-    cout << test << endl;
-
-    test = "this test was successful";
-    cout << test << endl;
 
     int end_of_main_function; cin >> end_of_main_function;
 }
