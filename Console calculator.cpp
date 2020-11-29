@@ -36,11 +36,11 @@ private:
 
     static char operators[11];
     static char numbers[10];
-    static char constants[]; // TODO: Include size of array (incomplete items)
+    static char constants[5];
 
     static char alphabet[25];
     static char alphabetUpper[26];
-    static char symbols[]; // TODO: Include size of array (incomplete items)
+    static char symbols[5];
 
 public:
     enum symbols {
@@ -75,16 +75,12 @@ public:
         {
             if (expression[i] == '+' || expression[i] == '-')
             {
-                std::cout << "new term found\n";
-                if (i !=0) terms.push_back(tempTerm);
+                if (i != 0) terms.push_back(tempTerm);
                 tempTerm.clear();
                 tempTerm.push_back(expression[i]);
             }
             else
-            {
                 tempTerm.push_back(expression[i]);
-                std::cout << "pushed back to tempTerm\n";
-            }
         }
         terms.push_back(tempTerm);
     }
@@ -97,11 +93,15 @@ public:
     {
         vector<string> tempTerms;
         string tempTerm;
+        if (exp[0] != '+' && exp[0] != '-')
+            tempTerm.push_back('+');
+
         for (int i = 0; i < exp.length(); i++)
         {
             if (exp[i] == '+' || exp[i] == '-')
             {
-                if (i != 0) tempTerms.push_back(tempTerm);
+                if (i != 0)
+                    tempTerms.push_back(tempTerm);
                 tempTerm.clear();
                 tempTerm.push_back(exp[i]);
             }
@@ -110,9 +110,13 @@ public:
         }
         tempTerms.push_back(tempTerm);
 
-        // TODO: combine terms in tempTerms
+        // TODO: identify variable indexes
+        // TODO: add/subtract like terms
 
         tempTerms.clear();
+
+        string returnStr;
+        return returnStr;
     }
 
     static string parseString(const std::string& exp)
@@ -184,10 +188,10 @@ public:
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
 char Expression::numbers[10] = {'0','1','2','3','4','5','6','7','8','9'};
-char Expression::constants[] = {'e',227,237,242,243};
+char Expression::constants[5] = {'e',227,237,242,243};
 char Expression::alphabet[25] = {'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove i to put in symbols/constants
 char Expression::alphabetUpper[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
-char Expression::symbols[] = {228,233,244,245,248}; //244 & 245 are integral symbol
+char Expression::symbols[5] = {228,233,244,245,248}; //244 & 245 are integral symbol
 
 class Function
 {
@@ -212,6 +216,7 @@ int main()
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
+    std::cout << Expression::simplify("2x+2x");
 
     int end_of_main_function; cin >> end_of_main_function;
 }
