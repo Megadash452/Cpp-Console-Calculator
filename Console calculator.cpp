@@ -9,6 +9,14 @@ using namespace std;
 #define announce_inExpression(type, exp, x)
 #endif
 
+int integer(char c)
+{
+    return ((int)c) - 48;
+}
+int integer(string str)
+{
+    return stoi(str);
+}
 
 bool char_in_string(char character, string str)
 {
@@ -91,6 +99,7 @@ public:
     }
     static string simplify(const string& exp)
     {
+        // Simple arithmetic, for now.
         vector<string> tempTerms;
         string tempTerm;
         if (exp[0] != '+' && exp[0] != '-')
@@ -111,12 +120,15 @@ public:
         tempTerms.push_back(tempTerm);
 
         // TODO: identify variable indexes
-        // TODO: add/subtract like terms
+
+        int number = 0;
+        for (int i = 0; i < tempTerms.size(); i++)
+            number += stoi(tempTerms[i]);
+            // TODO: cover multiplication & division
 
         tempTerms.clear();
 
-        string returnStr;
-        return returnStr;
+        return std::to_string(number);
     }
 
     static string parseString(const std::string& exp)
@@ -216,7 +228,7 @@ int main()
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
-    std::cout << Expression::simplify("2x+2x");
+    std::cout << Expression::simplify("2+3*4+5");
 
     int end_of_main_function; cin >> end_of_main_function;
 }
