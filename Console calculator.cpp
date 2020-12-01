@@ -1,27 +1,17 @@
 #include <iostream>
 #include <string>
 #include <vector>
-using namespace std;
+using string = std::string;
+
+//#define print(x) std::cout << x << std::endl
 
 #if _DEBUG
+#define announce(x) std::cout<<x<<std::endl
 #define announce_inExpression(type, exp, x) std::cout<<type<<" ("<<exp[x]<<") in exp["<<x<<']'<<std::endl
 #else
 #define announce_inExpression(type, exp, x)
 #endif
 
-int integer(char c)
-{
-    return ((int)c) - 48;
-}
-int integer(string str)
-{
-    std::cout << "starting str conversion" << std::endl;
-    for (string::reverse_iterator charP = str.rbegin(); charP != str.rend(); charP++)
-    {
-        std::cout << *charP << "---" << std::endl;
-    }
-    return stoi(str);
-}
 
 bool char_in_string(char character, string str)
 {
@@ -33,9 +23,9 @@ bool char_in_string(char character, string str)
     return false;
 }
 
-void vPrint(std::vector<std::string>& vect)
+void vPrint(std::vector<string>& vect)
 {
-    for (std::vector<std::string>::const_iterator str = vect.begin(); str != vect.end(); str++)
+    for (std::vector<string>::const_iterator str = vect.begin(); str != vect.end(); str++)
     {
         std::cout << *str << ", ";
     }
@@ -56,15 +46,16 @@ private:
     std::vector<string> terms;
     std::string expression;
 
+public:
     static char operators[11];
     static char numbers[10];
     static char constants[5];
 
-    static char alphabet[25];
+    static char alphabet[26];
     static char alphabetUpper[26];
     static char symbols[5];
 
-public:
+
     enum symbols {
         sigma = 228,
         theta = 233,
@@ -114,7 +105,7 @@ public:
     static string simplify(const string& exp)
     {
         // Simple arithmetic, for now.
-        vector<string> tempTerms;
+        std::vector<string> tempTerms;
         string tempTerm;
         if (exp[0] != '+' && exp[0] != '-')
             tempTerm.push_back('+');
@@ -137,8 +128,8 @@ public:
 
         // TODO: identify variable indexes
 
-        int number = 0;
-        for (vector<string>::const_iterator strP = tempTerms.begin(); strP != tempTerms.end(); strP++)
+        int number = 0; // Addition and Subtraction work perfectly with stoi()
+        for (std::vector<string>::const_iterator strP = tempTerms.begin(); strP != tempTerms.end(); strP++)
         {
             string term = *strP;
             int multiply = 1;
@@ -170,7 +161,7 @@ public:
 
     static string parseString(const std::string& exp)
     {
-        vector<char> charList;
+        std::vector<char> charList;
 
         for (int i = 0; true; i++)
         {
@@ -238,7 +229,7 @@ public:
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
 char Expression::numbers[10] = {'0','1','2','3','4','5','6','7','8','9'};
 char Expression::constants[5] = {'e',227,237,242,243};
-char Expression::alphabet[25] = {'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'}; // TODO: Remove i to put in symbols/constants
+char Expression::alphabet[26] = {'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', 159}; //159 is function f (script-indented) // TODO: Remove i to put in symbols/constants
 char Expression::alphabetUpper[26] = {'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'};
 char Expression::symbols[5] = {228,233,244,245,248}; //244 & 245 are integral symbol
 
@@ -252,11 +243,31 @@ public:
     }
 };
 
+int integer(char c)
+{
+    return ((int)c) - 48;
+}
+int integer(string str, int base = 10)
+{
+    int num = 0;
+    int i = 0;
+
+    for (string::reverse_iterator charP = str.rbegin(); charP != str.rend(); charP++)
+    {
+        if (char_in_string(*charP, Expression::numbers))
+        {
+            num += integer(*charP) * pow(10, i);
+            i++;
+        }
+    }
+    return num;
+}
+
 int main()
 {
     string x;
-    cout << endl << "enter an expression" << endl;
-    getline(cin, x);
+    std::cout << std::endl << "enter an expression" << std::endl;
+    getline(std::cin, x);
 
     Expression e(x);
     //Expression e2("4x-5");
@@ -265,8 +276,7 @@ int main()
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
-    std::cout << Expression::simplify("2+3*4+5") << std::endl;
-    std::cout << integer("2345+5") << std::endl;
+    std::cout << Expression::simplify("2+3-4+5") << std::endl;
 
-    int end_of_main_function; cin >> end_of_main_function;
+    int end_of_main_function; std::cin >> end_of_main_function;
 }
