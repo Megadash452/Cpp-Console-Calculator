@@ -15,6 +15,11 @@ int integer(char c)
 }
 int integer(string str)
 {
+    std::cout << "starting str conversion" << std::endl;
+    for (string::reverse_iterator charP = str.rbegin(); charP != str.rend(); charP++)
+    {
+        std::cout << *charP << "---" << std::endl;
+    }
     return stoi(str);
 }
 
@@ -26,6 +31,15 @@ bool char_in_string(char character, string str)
             return true;
     }
     return false;
+}
+
+void vPrint(std::vector<std::string>& vect)
+{
+    for (std::vector<std::string>::const_iterator str = vect.begin(); str != vect.end(); str++)
+    {
+        std::cout << *str << ", ";
+    }
+    std::cout << std::endl;
 }
 
 class Term
@@ -119,12 +133,35 @@ public:
         }
         tempTerms.push_back(tempTerm);
 
+        vPrint(tempTerms);
+
         // TODO: identify variable indexes
 
         int number = 0;
-        for (int i = 0; i < tempTerms.size(); i++)
-            number += stoi(tempTerms[i]);
+        for (vector<string>::const_iterator strP = tempTerms.begin(); strP != tempTerms.end(); strP++)
+        {
+            string term = *strP;
+            int multiply = 1;
+
+            if (char_in_string('*', term))
+            {
+                std::cout << "Multiplication in term: " << term << std::endl;
+                for (string::const_iterator charP = term.begin(); charP != term.end(); charP++)
+                {
+                    char character = *charP;
+                    //if (char_in_string(character, Expression::numbers) && char_in_string(*(charP + 1), ))
+                }
+            }
+            else if (char_in_string('/', term))
+            {
+                std::cout << "Division in term: " << term << std::endl;
+            }
+            else
+                number += stoi(term);
             // TODO: cover multiplication & division
+        }
+            
+            
 
         tempTerms.clear();
 
@@ -228,7 +265,8 @@ int main()
     //e2.print();
 
     Expression::print(e + "4x+7"); // TODO: Fix duplication issue
-    std::cout << Expression::simplify("2+3*4+5");
+    std::cout << Expression::simplify("2+3*4+5") << std::endl;
+    std::cout << integer("2345+5") << std::endl;
 
     int end_of_main_function; cin >> end_of_main_function;
 }
