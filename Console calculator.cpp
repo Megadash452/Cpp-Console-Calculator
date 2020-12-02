@@ -111,6 +111,48 @@ private:
         this->terms.push_back(tempTerm);
     }
 
+    static string parseString(const string& exp)
+    {
+        string parsed;
+
+        for (string::const_iterator
+            charP = exp.begin();
+            true;
+            charP++)
+        {
+            if (*charP == '(' ||
+                char_in_string(*charP, symbols) ||
+                char_in_string(*charP, numbers) ||
+                char_in_string(*charP, alphabet) ||
+                char_in_string(*charP, constants) ||
+                char_in_string(*charP, alphabetUpper))
+                parsed.push_back('+');
+            break;
+        }
+
+        for (string::const_iterator
+            charP = exp.begin();
+            charP != exp.end();
+            charP++)
+        {
+            if (*charP == '(' &&
+                (char_in_string(*(charP - 1), numbers) ||
+                    char_in_string(*(charP - 1), constants) ||
+                    char_in_string(*(charP - 1), alphabet) ||
+                    char_in_string(*(charP - 1), alphabetUpper)))
+                parsed.push_back('*');
+
+            if (char_in_string(*charP, operators) ||
+                char_in_string(*charP, numbers) ||
+                char_in_string(*charP, constants) ||
+                char_in_string(*charP, alphabet) ||
+                char_in_string(*charP, alphabetUpper))
+                parsed.push_back(*charP);
+        }
+        // TODO: Add more if/else statements to incorporate more characters
+        return parsed;
+    }
+
 public:
     static char operators[11];
     static char numbers[10];
@@ -244,35 +286,6 @@ public:
         return std::to_string(number);
     }
 
-    static string parseString(const string& exp)
-    {
-        string parsed;
-
-        for (int i = 0; true; i++)
-        {
-            if (exp[i] == '(' ||
-                char_in_string(exp[i], symbols) ||
-                char_in_string(exp[i], numbers) ||
-                char_in_string(exp[i], alphabet) ||
-                char_in_string(exp[i], constants) ||
-                char_in_string(exp[i], alphabetUpper))
-                    parsed.push_back('+');
-            break;
-        }
-
-        for (int i = 0; i < exp.length(); i++)
-            if (char_in_string(exp[i], operators) ||
-                char_in_string(exp[i], numbers) ||
-                char_in_string(exp[i], constants) ||
-                char_in_string(exp[i], alphabet) ||
-                char_in_string(exp[i], alphabetUpper))
-                    parsed.push_back(exp[i]);
-            
-            // TODO: Add more if/else statements to incorporate more characters
-        
-        return parsed;
-    }
-
     // --- Operators --- // NOTE: When an _Expression_ return-type operator is called, the constructor is also called.
     Expression operator +(const Expression& exp) const
     {
@@ -336,16 +349,16 @@ int main()
     string x;
     std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
-    x = "4+(2(4-5)) + 4";
+    x = "2(4)+x(4)+X(4)";
 
     Expression e(x);
-    //Expression e2("4x-5");
-    //e += e2;
+    Expression e2("4x-5");
+    e += e2;
     e.print();
-    //e2.print();
+    e2.print();
 
-    //Expression::print(e + "4x+7");
-    //std::cout << Expression::simplify("2+3-4+5") << std::endl;
+    Expression::print(e + "4x+7");
+    std::cout << Expression::simplify("2+3-4+5") << std::endl;
 
     int end_of_main_function; std::cin >> end_of_main_function;
 }
