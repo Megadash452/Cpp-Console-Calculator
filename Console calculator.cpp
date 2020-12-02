@@ -5,17 +5,17 @@ using string = std::string;
 
 //#define print(x) std::cout << x << std::endl
 
-#if _DEBUG
+/*#if _DEBUG
 #define announce(x) std::cout<<x<<std::endl
 #define announce_inExpression(type, exp, x) std::cout<<type<<" ("<<exp[x]<<") in exp["<<x<<']'<<std::endl
 #else
 #define announce_inExpression(type, exp, x)
-#endif
+#endif*/
 
 
 bool char_in_string(char character, string str)
 {
-    for (unsigned int i = 0; i < unsigned(str.length()); i++)
+    for (int i = 0; i < str.length(); i++)
     {
         if (character == str[i])
             return true;
@@ -25,9 +25,13 @@ bool char_in_string(char character, string str)
 
 void vPrint(std::vector<string>& vect)
 {
-    for (std::vector<string>::const_iterator str = vect.begin(); str != vect.end(); str++)
+    std::cout << "std::vector: ";
+    for (std::vector<string>::const_iterator
+        strP = vect.begin();
+        strP != vect.end();
+        strP++)
     {
-        std::cout << *str << ", ";
+        std::cout << *strP << ", ";
     }
     std::cout << std::endl;
 }
@@ -45,6 +49,67 @@ class Expression
 private:
     std::vector<string> terms;
     std::string expression;
+
+    void updateTerms(const string& str)
+    {
+        this->terms.clear();
+        string tempTerm;
+        for (string::const_iterator
+            charP = str.begin();
+            charP != str.end();
+            charP++)
+        {
+            if (*charP == '(')
+            {
+                for (; true; charP++)
+                {
+                    tempTerm.push_back(*charP);
+                    if (*charP == ')')
+                        break;
+                }
+            }
+            else if (*charP == '+' || *charP == '-')
+            {
+                if (charP != str.begin()) this->terms.push_back(tempTerm);
+                tempTerm.clear();
+                tempTerm.push_back(*charP);
+            }
+            else
+                tempTerm.push_back(*charP);
+        }
+        this->terms.push_back(tempTerm);
+    }
+
+    void updateTerms()
+    {
+        this->terms.clear();
+        string tempTerm;
+        for (string::const_iterator
+            charP = this->expression.begin();
+            charP != this->expression.end();
+            charP++)
+        {
+            if (*charP == '(')
+            {
+                for (; true; charP++)
+                {
+                    tempTerm.push_back(*charP);
+                    if (*charP == ')')
+                        break;
+                }
+            }
+            else if (*charP == '+' || *charP == '-')
+            {
+                if (charP != this->expression.begin())
+                    this->terms.push_back(tempTerm);
+                tempTerm.clear();
+                tempTerm.push_back(*charP);
+            }
+            else
+                tempTerm.push_back(*charP);
+        }
+        this->terms.push_back(tempTerm);
+    }
 
 public:
     static char operators[11];
@@ -65,7 +130,7 @@ public:
         degrees = 248
     };
 
-    Expression(std::string exp)
+    Expression(string exp)
     {
         this->expression = Expression::parseString(exp);
         //this->simplify();
@@ -74,62 +139,81 @@ public:
 
     void print()
     {
-        std::cout << expression << std::endl;
+        for (std::vector<string>::const_iterator
+            strP = this->terms.begin();
+            strP != this->terms.end();
+            strP++)
+                std::cout << *strP << " ";
+        std::cout << std::endl;
     }
     static void print(const Expression& exp)
     {
-        std::cout << exp.expression << std::endl;
-    }
-
-    void updateTerms()
-    {
-        string tempTerm;
-        for (int i = 0; i < this->expression.length(); i++)
-        {
-            if (expression[i] == '+' || expression[i] == '-')
-            {
-                if (i != 0) terms.push_back(tempTerm);
-                tempTerm.clear();
-                tempTerm.push_back(expression[i]);
-            }
-            else
-                tempTerm.push_back(expression[i]);
-        }
-        terms.push_back(tempTerm);
+        for (std::vector<string>::const_iterator
+            strP = exp.terms.begin();
+            strP != exp.terms.end();
+            strP++)
+                std::cout << *strP << " ";
+        std::cout << std::endl;
     }
 
     void simplify()
     {
+        int number = 0;
+        for (std::vector<string>::const_iterator
+            strP = this->terms.begin();
+            strP != this->terms.end();
+            strP++)
+        {
+            string term = *strP;
 
+        }
     }
     static string simplify(const string& exp)
     {
-        // Simple arithmetic, for now.
+        // Simple arithmetic, for now. 
+        // Do not include in this->simplify()
         std::vector<string> tempTerms;
         string tempTerm;
         if (exp[0] != '+' && exp[0] != '-')
             tempTerm.push_back('+');
 
-        for (int i = 0; i < exp.length(); i++)
+        // TODO: make anything inside a parenthesis another separate Expression Object
+        for (string::const_iterator
+            charP = exp.begin();
+            charP != exp.end();
+            charP++)
         {
-            if (exp[i] == '+' || exp[i] == '-')
+            char character = *charP;
+            if (*charP == '(')
             {
-                if (i != 0)
+                for (; true; charP++)
+                {
+                    tempTerm.push_back(*charP);
+                    if (*charP == ')')
+                        break;
+                }
+            }
+            else if (*charP == '+' || *charP == '-')
+            {
+                if (charP != exp.begin())
                     tempTerms.push_back(tempTerm);
                 tempTerm.clear();
-                tempTerm.push_back(exp[i]);
+                tempTerm.push_back(*charP);
             }
             else
-                tempTerm.push_back(exp[i]);
+                tempTerm.push_back(*charP);
         }
         tempTerms.push_back(tempTerm);
 
-        vPrint(tempTerms);
+        //vPrint(tempTerms);
 
         // TODO: identify variable indexes
 
         int number = 0; // Addition and Subtraction work perfectly with stoi()
-        for (std::vector<string>::const_iterator strP = tempTerms.begin(); strP != tempTerms.end(); strP++)
+        for (std::vector<string>::const_iterator
+            strP = tempTerms.begin();
+            strP != tempTerms.end();
+            strP++)
         {
             string term = *strP;
             int multiply = 1;
@@ -137,7 +221,11 @@ public:
             if (char_in_string('*', term))
             {
                 std::cout << "Multiplication in term: " << term << std::endl;
-                for (string::const_iterator charP = term.begin(); charP != term.end(); charP++)
+
+                for (string::const_iterator
+                    charP = term.begin();
+                    charP != term.end();
+                    charP++)
                 {
                     char character = *charP;
                     //if (char_in_string(character, Expression::numbers) && char_in_string(*(charP + 1), ))
@@ -151,17 +239,14 @@ public:
                 number += stoi(term);
             // TODO: cover multiplication & division
         }
-            
-            
-
         tempTerms.clear();
 
         return std::to_string(number);
     }
 
-    static string parseString(const std::string& exp)
+    static string parseString(const string& exp)
     {
-        std::vector<char> charList;
+        string parsed;
 
         for (int i = 0; true; i++)
         {
@@ -171,59 +256,42 @@ public:
                 char_in_string(exp[i], alphabet) ||
                 char_in_string(exp[i], constants) ||
                 char_in_string(exp[i], alphabetUpper))
-            {
-                charList.push_back('+');
-                break;
-            }
-            else break;
+                    parsed.push_back('+');
+            break;
         }
 
-        for (unsigned int i = 0; i < unsigned(exp.length()); i++)
-        {
-            if (char_in_string(exp[i], operators))
-            {
-                announce_inExpression("operator", exp, i);
-                charList.push_back(exp[i]);
-            }
-            else if (char_in_string(exp[i], numbers) || char_in_string(exp[i], constants))
-            {
-                announce_inExpression("nnnumber", exp, i);
-                charList.push_back(exp[i]);
-            }
-            else if (char_in_string(exp[i], alphabet) || char_in_string(exp[i], alphabetUpper))
-            {
-                announce_inExpression("variable", exp, i);
-                charList.push_back(exp[i]);
-            }
+        for (int i = 0; i < exp.length(); i++)
+            if (char_in_string(exp[i], operators) ||
+                char_in_string(exp[i], numbers) ||
+                char_in_string(exp[i], constants) ||
+                char_in_string(exp[i], alphabet) ||
+                char_in_string(exp[i], alphabetUpper))
+                    parsed.push_back(exp[i]);
+            
             // TODO: Add more if/else statements to incorporate more characters
-        }
-        string returnStr(charList.begin(), charList.end());
-        charList.clear();
-        std::cout << '\n'; // TODO: Remove
-        return returnStr;
+        
+        return parsed;
     }
 
-    // --- Operators ---
+    // --- Operators --- // NOTE: When an _Expression_ return-type operator is called, the constructor is also called.
     Expression operator +(const Expression& exp) const
     {
-        return /*simplify*/(this->expression + Expression::parseString(exp.expression));
+        return /*Expression::simplify*/(this->expression + Expression::parseString(exp.expression));
     }
     Expression operator +(const string& exp) const
     {
-        return /*simplify*/(this->expression + Expression::parseString(exp));
+        return /*Expression::simplify*/(this->expression + Expression::parseString(exp));
     }
 
     void operator +=(const Expression& exp)
     {
-        this->expression = this->expression + Expression::parseString(exp.expression);
+        this->expression += Expression::parseString(exp.expression);
         //this->simplify();
-        this->updateTerms();
     }
     void operator +=(const string& exp)
     {
         this->expression += Expression::parseString(exp);
         //this->simplify();
-        this->updateTerms();
     }
 };
 char Expression::operators[11] = {'+','-',241,'*','/','^','!','%','|','(',')'};
@@ -267,16 +335,17 @@ int main()
 {
     string x;
     std::cout << std::endl << "enter an expression" << std::endl;
-    getline(std::cin, x);
+    //getline(std::cin, x);
+    x = "4+(2(4-5)) + 4";
 
     Expression e(x);
     //Expression e2("4x-5");
-    //e += "4x-5";
+    //e += e2;
     e.print();
     //e2.print();
 
-    Expression::print(e + "4x+7"); // TODO: Fix duplication issue
-    std::cout << Expression::simplify("2+3-4+5") << std::endl;
+    //Expression::print(e + "4x+7");
+    //std::cout << Expression::simplify("2+3-4+5") << std::endl;
 
     int end_of_main_function; std::cin >> end_of_main_function;
 }
