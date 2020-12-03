@@ -12,16 +12,47 @@ using string = std::string;
 #define announce_inExpression(type, exp, x)
 #endif*/
 
-
 bool char_in_string(char character, string str)
 {
-    for (int i = 0; i < str.length(); i++)
+    for (string::const_iterator
+        charP = str.begin();
+        charP != str.end();
+        charP++)
     {
-        if (character == str[i])
+        if (character == *charP)
             return true;
     }
     return false;
 }
+
+string::const_iterator find_closing(string::const_iterator it, string str)
+{
+    if (*it == '(')
+    {
+        int parenthesisCount = 0;
+        for (string::const_iterator i = it; i != str.end(); i++)
+        {
+            if (*i == '(' && i != it) // TODO: FIX
+                parenthesisCount++;
+            if (*i == ')')
+            {
+                if (parenthesisCount)
+                    parenthesisCount--;
+                else
+                    return i + 1;
+            }
+        }
+    }
+}
+
+// -- DO NOT USE! ---
+/*string::iterator find_next(string::const_iterator from, string& str)
+{
+    char target = *from;
+    for (string::const_iterator i = from; str.length(); i++)
+        if (*i == target)
+            return i;
+}*/
 
 void vPrint(std::vector<string>& vect)
 {
@@ -175,7 +206,7 @@ public:
     Expression(string exp)
     {
         this->expression = Expression::parseString(exp);
-        //this->simplify();
+        this->simplify();
         this->updateTerms();
     }
 
@@ -225,7 +256,6 @@ public:
             charP != exp.end();
             charP++)
         {
-            char character = *charP;
             if (*charP == '(')
             {
                 for (; true; charP++)
@@ -257,28 +287,45 @@ public:
             strP != tempTerms.end();
             strP++)
         {
-            string term = *strP;
             int multiply = 1;
 
-            if (char_in_string('*', term))
+            if (char_in_string('(', *strP))
             {
-                std::cout << "Multiplication in term: " << term << std::endl;
+                for (string::const_iterator
+                    charP = (*strP).begin();
+                    charP != (*strP).end();
+                    charP++)
+                {
+                    if (*charP == '(')
+                    {
+                        /* try {
+                            string str(charP, find_closing(charP, *strP));
+                            std::cout << str;
+                        }
+                        //string nestedTerm(charP + 1, find_closing(charP, *strP);
+                        Expression::simplify(nestedTerm); */
+                    }
+                }   
+            }
+            else if (char_in_string('*', *strP))
+            {
+                std::cout << "Multiplication in term: " << *strP << std::endl;
 
                 for (string::const_iterator
-                    charP = term.begin();
-                    charP != term.end();
+                    charP = (*strP).begin();
+                    charP != (*strP).end();
                     charP++)
                 {
                     char character = *charP;
                     //if (char_in_string(character, Expression::numbers) && char_in_string(*(charP + 1), ))
                 }
             }
-            else if (char_in_string('/', term))
+            else if (char_in_string('/', *strP))
             {
-                std::cout << "Division in term: " << term << std::endl;
+                std::cout << "Division in term: " << *strP << std::endl;
             }
             else
-                number += stoi(term);
+                number += stoi(*strP);
             // TODO: cover multiplication & division
         }
         tempTerms.clear();
@@ -333,7 +380,10 @@ int integer(string str, int base = 10)
     int num = 0;
     int i = 0;
 
-    for (string::reverse_iterator charP = str.rbegin(); charP != str.rend(); charP++)
+    for (string::reverse_iterator
+        charP = str.rbegin();
+        charP != str.rend();
+        charP++)
     {
         if (char_in_string(*charP, Expression::numbers))
         {
@@ -346,19 +396,30 @@ int integer(string str, int base = 10)
 
 int main()
 {
-    string x;
+    /* string x;
     std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
-    x = "2(4)+x(4)+X(4)";
+    x = "2+4+5";
 
     Expression e(x);
-    Expression e2("4x-5");
+    Expression e2("4-5");
     e += e2;
     e.print();
     e2.print();
 
-    Expression::print(e + "4x+7");
-    std::cout << Expression::simplify("2+3-4+5") << std::endl;
+    //Expression::print(e + "4x+7");
+    std::cout << Expression::simplify("2+3-4+5") << std::endl; */
+
+    string somethingIdk = "el muchacho (de( los ojos (tristes)) vive solo.";
+    for (string::const_iterator
+        charP = somethingIdk.begin();
+        charP != somethingIdk.end();
+        charP++)
+        if (*charP == '(')
+        {
+                string str(charP, find_closing(charP, somethingIdk));
+                std::cout << str;
+        }
 
     int end_of_main_function; std::cin >> end_of_main_function;
 }
