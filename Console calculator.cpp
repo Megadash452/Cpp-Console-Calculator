@@ -26,7 +26,6 @@ bool char_in_string(char character, string str)
     return false;
 }
 
-string urMom = "outside (inner (deep) inner).";
 string::const_iterator find_closing(string::const_iterator it, string& str)
 {
     if (*it == '(')
