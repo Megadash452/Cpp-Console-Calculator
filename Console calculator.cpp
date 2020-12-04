@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 using string = std::string;
 
 //#define print(x) std::cout << x << std::endl
@@ -25,34 +26,46 @@ bool char_in_string(char character, string str)
     return false;
 }
 
-string::const_iterator find_closing(string::const_iterator it, string str)
+string urMom = "outside (inner (deep) inner).";
+string::const_iterator find_closing(string::const_iterator it, string& str)
 {
     if (*it == '(')
     {
         int parenthesisCount = 0;
         for (string::const_iterator i = it; i != str.end(); i++)
         {
-            if (*i == '(' && i != it) // TODO: FIX
+            if (*i == '(' && i != it)
                 parenthesisCount++;
             if (*i == ')')
             {
                 if (parenthesisCount)
                     parenthesisCount--;
                 else
-                    return i + 1;
+                    return i;
             }
         }
     }
 }
-
-// -- DO NOT USE! ---
-/*string::iterator find_next(string::const_iterator from, string& str)
+string::iterator find_closing(string::iterator it, string& str)
 {
-    char target = *from;
-    for (string::const_iterator i = from; str.length(); i++)
-        if (*i == target)
-            return i;
-}*/
+    if (*it == '(')
+    {
+        int parenthesisCount = 0;
+        for (string::iterator i = it; i != str.end(); i++)
+        {
+            if (*i == '(' && i != it)
+                parenthesisCount++;
+            if (*i == ')')
+            {
+                if (parenthesisCount)
+                    parenthesisCount--;
+                else
+                    return i;
+            }
+        }
+    }
+    return it;
+}
 
 void vPrint(std::vector<string>& vect)
 {
@@ -193,7 +206,6 @@ public:
     static char alphabetUpper[26];
     static char symbols[5];
 
-
     enum symbols {
         sigma = 228,
         theta = 233,
@@ -203,9 +215,20 @@ public:
         degrees = 248
     };
 
+
     Expression(string exp)
     {
         this->expression = Expression::parseString(exp);
+        this->simplify();
+        this->updateTerms();
+    }
+    Expression(std::vector<string>& vect)
+    {
+        for (std::vector<string>::const_iterator
+            strP = vect.begin();
+            strP != vect.end();
+            strP++)
+                this->expression += Expression::parseString(*strP);
         this->simplify();
         this->updateTerms();
     }
@@ -333,6 +356,7 @@ public:
         return std::to_string(number);
     }
 
+
     // --- Operators --- // NOTE: When an _Expression_ return-type operator is called, the constructor is also called.
     Expression operator +(const Expression& exp) const
     {
@@ -396,7 +420,7 @@ int integer(string str, int base = 10)
 
 int main()
 {
-    /* string x;
+    /*string x;
     std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
     x = "2+4+5";
@@ -408,17 +432,19 @@ int main()
     e2.print();
 
     //Expression::print(e + "4x+7");
-    std::cout << Expression::simplify("2+3-4+5") << std::endl; */
+    std::cout << Expression::simplify("2+3-4+5") << std::endl;*/
 
-    string somethingIdk = "el muchacho (de( los ojos (tristes)) vive solo.";
+    string somethingIdk = "outside (inner (deep) inner).";
     for (string::const_iterator
         charP = somethingIdk.begin();
         charP != somethingIdk.end();
         charP++)
         if (*charP == '(')
         {
-                string str(charP, find_closing(charP, somethingIdk));
-                std::cout << str;
+            //string str(&somethingIdk[12], &somethingIdk[35]);
+            string str(charP+1, find_closing(charP, somethingIdk));
+            std::cout << str;
+            break;
         }
 
     int end_of_main_function; std::cin >> end_of_main_function;
