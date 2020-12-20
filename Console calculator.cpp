@@ -136,28 +136,4 @@ int main()
 
     int end_of_main_function; std::cin >> end_of_main_function;*/
 
-    std::vector
-    <
-        std::variant
-        <
-            std::map
-            <
-                string,
-                std::variant<string, char*, int>
-            >,
-            std::vector
-            <
-                std::map
-                <
-                    string,
-                    std::variant<string, char*, int>
-                >
-            >
-        >
-    > 
-    termsMaybe = {
-        {
-            "a": 27
-        }
-    };
 }
