@@ -5,7 +5,7 @@ char Expression::numbers[10] = { '0','1','2','3','4','5','6','7','8','9' };
 char Expression::constants[5] = { 'e',227,237,242,243 };
 char Expression::alphabet[26] = { 'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z', 159 }; //159 is function f (script-indented) // TODO: Remove i to put in symbols/constants
 char Expression::alphabetUpper[26] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' };
-char Expression::symbols[5] = { 228,233,244,245,248 }; //244 & 245 are integral symbol
+char Expression::symbols[5] = { 228,233,244,245,248 }; //244 & 245 are integral symbol 
 
 Expression::Expression(string exp)
 {
@@ -91,7 +91,6 @@ string Expression::simplify(const string& exp) // TODO:
     }
     tempTerms.push_back(tempTerm);
 
-    // TODO: identify variable indexes
 
     int number = 0;
     for (std::vector<string>::iterator
@@ -164,7 +163,7 @@ void Expression::operator +=(const string& exp)
 }
 
 void Expression::updateTerms(const string& str)
-{
+{ // update to suit Terms object
     this->terms.clear();
     string tempTerm;
     for (string::const_iterator
@@ -192,7 +191,7 @@ void Expression::updateTerms(const string& str)
     }
     this->terms.push_back(tempTerm);
 }
-void Expression::updateTerms()
+void Expression::updateTerms() // update to suit the Terms object
 {
     this->terms.clear();
     string tempTerm;
@@ -229,38 +228,24 @@ string Expression::parseString(const string& exp)
 
     for (string::const_iterator
         charP = exp.begin();
-        true;
-        charP++)
-    {
-        if (*charP == '(' ||
-            char_in_string(*charP, symbols) ||
-            char_in_string(*charP, numbers) ||
-            char_in_string(*charP, alphabet) ||
-            char_in_string(*charP, constants) ||
-            char_in_string(*charP, alphabetUpper))
-            parsed.push_back('+');
-        break;
-    }
-
-    for (string::const_iterator
-        charP = exp.begin();
         charP != exp.end();
         charP++)
     {
-        if (*charP == '(' &&
-            (char_in_string(*(charP - 1), numbers) ||
-                char_in_string(*(charP - 1), constants) ||
-                char_in_string(*(charP - 1), alphabet) ||
-                char_in_string(*(charP - 1), alphabetUpper)))
-            parsed.push_back('*');
-
-        if (char_in_string(*charP, operators) ||
-            char_in_string(*charP, numbers) ||
-            char_in_string(*charP, constants) ||
-            char_in_string(*charP, alphabet) ||
-            char_in_string(*charP, alphabetUpper))
-            parsed.push_back(*charP);
+        if (char_in_string(*charP, Expression::symbols) ||
+            char_in_string(*charP, Expression::numbers) ||
+            char_in_string(*charP, Expression::alphabet) ||
+            char_in_string(*charP, Expression::constants) ||
+            char_in_string(*charP, Expression::operators) ||
+            char_in_string(*charP, Expression::alphabetUpper))
+                parsed.push_back(*charP);
     }
-    // TODO: Add more if/else statements to incorporate more characters
-    return parsed;
+
+    if (parsed[1] == '|' ||
+        parsed[1] == '(' ||
+        char_in_string(parsed[1], Expression::symbols) ||
+        char_in_string(parsed[1], Expression::numbers) ||
+        char_in_string(parsed[1], Expression::alphabet) ||
+        char_in_string(parsed[1], Expression::constants) ||
+        char_in_string(parsed[1], Expression::alphabetUpper))
+            parsed = '+' + parsed;
 }

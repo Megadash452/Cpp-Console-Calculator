@@ -117,12 +117,32 @@ int integer(string str, int base = 10)
     return num;
 }
 
+string parse(string Str)
+{
+    string parsed;
+
+    for (string::const_iterator
+        charP = Str.begin();
+        true;
+        charP++)
+    {
+        if (*charP == '(' ||
+            char_in_string(*charP, Expression::symbols) ||
+            char_in_string(*charP, Expression::numbers) ||
+            char_in_string(*charP, Expression::alphabet) ||
+            char_in_string(*charP, Expression::constants) ||
+            char_in_string(*charP, Expression::alphabetUpper))
+                parsed.push_back('+');
+        break;
+    }
+}
+
 int main()
-{/*
+{
     string x;
     std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
-    x = "2s45";
+    /*x = "2s45";
 
     Expression e(x);
     //Expression e2("4-5");
@@ -136,4 +156,5 @@ int main()
 
     int end_of_main_function; std::cin >> end_of_main_function;*/
 
+    std::cout << parse("2 x + 5");
 }

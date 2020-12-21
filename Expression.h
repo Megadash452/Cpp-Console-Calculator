@@ -10,7 +10,7 @@ bool char_in_string(char character, string str);
 class Expression
 {
 public:
-    std::vector<string> terms;
+    std::vector<string> terms; // TODO: Use Term Class instead
     std::string expression;
 
     static char operators[11];
