@@ -240,12 +240,12 @@ string Expression::parseString(const string& exp)
                 parsed.push_back(*charP);
     }
 
-    if (parsed[1] == '|' ||
-        parsed[1] == '(' ||
-        char_in_string(parsed[1], Expression::symbols) ||
-        char_in_string(parsed[1], Expression::numbers) ||
-        char_in_string(parsed[1], Expression::alphabet) ||
-        char_in_string(parsed[1], Expression::constants) ||
-        char_in_string(parsed[1], Expression::alphabetUpper))
+    if (parsed[0] == '|' ||
+        parsed[0] == '(' ||
+        char_in_string(parsed[0], Expression::symbols) ||
+        char_in_string(parsed[0], Expression::numbers) ||
+        char_in_string(parsed[0], Expression::alphabet) ||
+        char_in_string(parsed[0], Expression::constants) ||
+        char_in_string(parsed[0], Expression::alphabetUpper))
             parsed = '+' + parsed;
 }

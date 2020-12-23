@@ -5,14 +5,17 @@
 #include <variant>
 using string = std::string;
 
+#include "Term.h"
+#define __allTerms__ = Term, AlgebraicTerm, ExponentialTerm, NestedTerm
+
 bool char_in_string(char character, string str);
 
 class Expression
 {
 public:
-    std::vector<string> terms; // TODO: Use Term Class instead
+    std::vector<std::variant<Term, AlgebraicTerm, ExponentialTerm, NestedTerm>> terms;
     std::string expression;
-
+    // TODO: Use Term Class instead
     static char operators[11];
     static char numbers[10];
     static char constants[5];
