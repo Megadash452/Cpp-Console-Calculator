@@ -6,14 +6,14 @@
 using string = std::string;
 
 #include "Term.h"
-#define __allTerms__ = Term, AlgebraicTerm, ExponentialTerm, NestedTerm
+#define _allTerms_ Term, AlgebraicTerm, ExponentialTerm, NestedTerm
 
 bool char_in_string(char character, string str);
 
 class Expression
 {
 public:
-    std::vector<std::variant<Term, AlgebraicTerm, ExponentialTerm, NestedTerm>> terms;
+    std::vector<std::variant<_allTerms_>> terms;
     std::string expression;
     // TODO: Use Term Class instead
     static char operators[11];

@@ -26,21 +26,21 @@ Expression::Expression(std::vector<string>& vect)
 
 void Expression::print()
 {
-    for (std::vector<string>::const_iterator
+    /*for (std::vector<string>::const_iterator
         strP = this->terms.begin();
         strP != this->terms.end();
         strP++)
         std::cout << *strP << " ";
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 }
 void Expression::print(const Expression& exp)
 {
-    for (std::vector<string>::const_iterator
+    /*for (std::vector<string>::const_iterator
         strP = exp.terms.begin();
         strP != exp.terms.end();
         strP++)
         std::cout << *strP << " ";
-    std::cout << std::endl;
+    std::cout << std::endl;*/
 }
 
 void Expression::simplify()
@@ -164,62 +164,11 @@ void Expression::operator +=(const string& exp)
 
 void Expression::updateTerms(const string& str)
 { // update to suit Terms object
-    this->terms.clear();
-    string tempTerm;
-    for (string::const_iterator
-        charP = str.begin();
-        charP != str.end();
-        charP++)
-    {
-        if (*charP == '(')
-        {
-            for (; true; charP++)
-            {
-                tempTerm.push_back(*charP);
-                if (*charP == ')')
-                    break;
-            }
-        }
-        else if (*charP == '+' || *charP == '-')
-        {
-            if (charP != str.begin()) this->terms.push_back(tempTerm);
-            tempTerm.clear();
-            tempTerm.push_back(*charP);
-        }
-        else
-            tempTerm.push_back(*charP);
-    }
-    this->terms.push_back(tempTerm);
+    this->expression = str;
 }
 void Expression::updateTerms() // update to suit the Terms object
 {
-    this->terms.clear();
-    string tempTerm;
-    for (string::const_iterator
-        charP = this->expression.begin();
-        charP != this->expression.end();
-        charP++)
-    {
-        if (*charP == '(')
-        {
-            for (; true; charP++)
-            {
-                tempTerm.push_back(*charP);
-                if (*charP == ')')
-                    break;
-            }
-        }
-        else if (*charP == '+' || *charP == '-')
-        {
-            if (charP != this->expression.begin())
-                this->terms.push_back(tempTerm);
-            tempTerm.clear();
-            tempTerm.push_back(*charP);
-        }
-        else
-            tempTerm.push_back(*charP);
-    }
-    this->terms.push_back(tempTerm);
+    
 }
 
 string Expression::parseString(const string& exp)
