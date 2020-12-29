@@ -148,6 +148,7 @@
     <ClCompile Include="Term.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Console calculator.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Term.h" />
   </ItemGroup>

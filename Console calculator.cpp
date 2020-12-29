@@ -1,11 +1,4 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <array>
-#include <variant>
-#include <map>
-using string = std::string;
-
+#include "Console calculator.h"
 #include "Expression.h"
 
 //#define print(x) std::cout << x << std::endl
@@ -94,45 +87,24 @@ public:
     }
 };
 
-int integer(char c)
-{
-    return ((int)c) - 48;
-}
-int integer(string str, int base = 10)
-{
-    int num = 0;
-    int place = 0;
-
-    for (string::reverse_iterator
-        charP = str.rbegin();
-        charP != str.rend();
-        charP++)
-    {
-        if (char_in_string(*charP, Expression::numbers) && base == 10)
-        {
-            num += integer(*charP) * pow(base, place);
-            place++;
-        }
-    }
-    return num;
-}
 
 int main()
 {
-    //string x;
-    //std::cout << std::endl << "enter an expression" << std::endl;
+    string x;
+    std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
-    /*x = "2s45";
+    x = "45   + 5";
 
     Expression e(x);
+    std::cout << (int)e.terms[0].sign << ' ' << e.terms[0].termStr << ' ' << e.terms[0].value << std::endl;
     //Expression e2("4-5");
     //e += e2;
     //std::cout << e.expression << std::endl;
     //e2.print();
 
     //Expression::print(e + "4x+7");
-    std::cout << Expression::simplify("2+5*2") << std::endl;
-    //std::cout << integer(y) << std::endl;
+    //std::cout << Expression::simplify("2+5*2") << std::endl;
+    //std::cout << integer(y) << std::endl;*/
 
-    int end_of_main_function; std::cin >> end_of_main_function;*/
+    int end_of_main_function; std::cin >> end_of_main_function;
 }
