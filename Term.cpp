@@ -1,113 +1,69 @@
 #include "Term.h"
+
 #include "Expression.h"
+#include "Lib.h"
 
 Term::Term(const string& str)
 {
 	this->sign = str[0];
 
+	bool mult;
 	for (string::const_iterator
-		 charP = str.begin() + 1;
-		 charP != str.end();
-		 charP++)
-			this->termStr.push_back(*charP);
+		charP = str.begin() + 1;
+		charP != str.end();
+		charP++)
+	{
+		this->termStr.push_back(*charP);
+		if (*charP == '*' || *charP == '/')
+			mult = true;
+	}
 
 	string tempStr(str.begin(), str.end());
 
-	this->value = stoi(tempStr);
-}
-
-int Term::integer(char c) {
-	return ((int)c) - 48;
-}
-int Term::integer(string str, int base)
-{
-	int num = 0;
-	int place = 0;
-
-	for (string::reverse_iterator
-		charP = str.rbegin();
-		charP != str.rend();
-		charP++)
-	{
-		if (char_in_numbers(*charP) && base == 10)
-		{
-			num += integer(*charP) * pow(base, place);
-			place++;
-		}
-	}
-	return num;
-}
-
-
-Term Term::add(const string& str)
-{
-	return *this;
-}
-Term Term::subtract(const string& str)
-{
-	return *this;
-}
-Term Term::multiply(const string& str)
-{
-	return *this;
-}
-Term Term::divide(const string& str)
-{
-	return *this;
-}
-
-
-Term Term::add(const Term& term)
-{
-	return *this;
-}
-Term Term::subtract(const Term& term)
-{
-	return *this;
-}
-Term Term::multiply(const Term& term)
-{
-	return *this;
-}
-Term Term::divide(const Term& term)
-{
-	return *this;
+	if (!mult)
+		this->value = stoi(tempStr);
+	else
+		this->value = 0;
 }
 
 
 Term Term::operator +(const Term& term) const
 {
-	return *this;
+	return std::to_string(this->value + term.value);
 }
 Term Term::operator +(const string& str) const
 {
-	return *this;
+	Term term(str);
+	return std::to_string(this->value + term.value);
 }
 Term Term::operator -(const Term& term) const
 {
-	return *this;
+	return std::to_string(this->value - term.value);
 }
 Term Term::operator -(const string& str) const
 {
-	return *this;
+	Term term(str);
+	return std::to_string(this->value - term.value);
 }
 
 
-Term Term::operator*(const Term& term) const
+Term Term::operator *(const Term& term) const
 {
-	return *this;
+	return std::to_string(this->value * term.value);
 }
-Term Term::operator*(const string& str) const
+Term Term::operator *(const string& str) const
 {
-	return *this;
+	Term term(str);
+	return std::to_string(this->value * term.value);
 }
-Term Term::operator/(const Term& term) const
+Term Term::operator /(const Term& term) const
 {
-	return *this;
+	return std::to_string(this->value / term.value);
 }
 Term Term::operator /(const string& str) const
 {
-	return *this;
+	Term term(str);
+	return std::to_string(this->value / term.value);
 }
 
 

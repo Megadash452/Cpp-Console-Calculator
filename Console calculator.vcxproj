@@ -145,11 +145,12 @@
   <ItemGroup>
     <ClCompile Include="Console calculator.cpp" />
     <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="Lib.cpp" />
     <ClCompile Include="Term.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Console calculator.h" />
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="Lib.h" />
     <ClInclude Include="Term.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

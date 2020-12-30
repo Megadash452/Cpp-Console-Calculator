@@ -24,6 +24,9 @@
     <ClCompile Include="Term.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Lib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Expression.h">
@@ -32,7 +35,7 @@
     <ClInclude Include="Term.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Console calculator.h">
+    <ClInclude Include="Lib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

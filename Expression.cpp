@@ -1,5 +1,7 @@
 #include "Expression.h"
 
+#include "Lib.h"
+
 char Expression::operators[11] = { '+','-',(char)241,'*','/','^','!','%','|','(',')' };
 char Expression::numbers[10] = { '0','1','2','3','4','5','6','7','8','9' };
 char Expression::constants[5] = { 'e',(char)227,(char)237,(char)242,(char)243 };
@@ -46,18 +48,34 @@ void Expression::print(const Expression& exp)
 void Expression::simplify()
 {
     int addition = 0;
+    for (std::vector<int>::iterator
+        indP = this->mult_div_indexes.begin();
+        indP != this->mult_div_indexes.end();
+        indP++)
+    {
+        std::vector<int> where_mult_div;
+        for (string::iterator
+            charP = this->terms[*indP].termStr.begin();
+            charP != this->terms[*indP].termStr.end();
+            charP++)
+        {
+              
+        }
+        where_mult_div.clear();
+    }
+    //addition = (this->terms[0] + this->terms[1] + this->terms[2]).value;
     //std::vector<Term> arithmeticTerms;
-    for (std::vector<Term>::const_iterator
+    /*for (std::vector<Term>::iterator
         termP = this->terms.begin();
         termP != this->terms.end();
         termP++)
     {
         addition += termP->value;
-    }
+    }*/
     if (addition >= 0)
         this->expression = '+' + std::to_string(addition);
-    if (addition < 0)
-        this->expression = '-' + std::to_string(addition);
+    else
+        this->expression = std::to_string(addition);
     this->updateTerms();
 }
 string Expression::simplify(const string& exp) // TODO: 
@@ -177,6 +195,7 @@ void Expression::updateTerms()
 {
     this->terms.clear();
     string tempStr;
+    int index = 0;
     for (string::iterator
          charP = this->expression.begin();
          charP != this->expression.end();
@@ -189,6 +208,12 @@ void Expression::updateTerms()
             this->terms.push_back(tempTerm);
             tempStr.clear();
             tempStr.push_back(*charP);
+            index++;
+        }
+        else if (*charP == '*' || *charP == '/')
+        {
+            this->mult_div_indexes.push_back(index);
+            tempStr += *charP;
         }
         else
             tempStr += *charP;

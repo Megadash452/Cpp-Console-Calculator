@@ -14,11 +14,8 @@ public:
 
 	Term(const string& str);
 
-	static int integer(char c);
-	static int integer(string str, int base = 10);
-
 	
-	virtual Term add(const string& str);
+	/*virtual Term add(const string& str);
 	virtual Term subtract(const string& str);
 	virtual Term multiply(const string& str);
 	virtual Term divide(const string& str);
@@ -26,7 +23,7 @@ public:
 	virtual Term add(const Term& term);
 	virtual Term subtract(const Term& term);
 	virtual Term multiply(const Term& term);
-	virtual Term divide(const Term& term);
+	virtual Term divide(const Term& term);*/
 
 	virtual Term operator +(const Term& term) const;
 	virtual Term operator +(const string& str) const;
