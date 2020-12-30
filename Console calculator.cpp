@@ -23,6 +23,22 @@ bool char_in_string(char character, string str)
     return false;
 }
 
+string lower_case(string str)
+{
+    string returnStr;
+    for (string::iterator
+        charP = str.begin();
+        charP != str.end();
+        charP++)
+    {
+        if (*charP >= 65 && *charP <= 90)
+            returnStr.push_back(*charP + 32);
+        else
+            returnStr.push_back(*charP);
+    }
+    return returnStr;
+}
+
 string::const_iterator find_closing(string::const_iterator it, string& str)
 {
     if (*it == '(')
@@ -90,14 +106,29 @@ public:
 
 int main()
 {
-    string x;
-    std::cout << std::endl << "enter an expression" << std::endl;
-    //getline(std::cin, x);
-    x = "45 -5 +2";
+    string action;
+    while (true)
+    {
+        std::cout << "What do you want to do?\nOptions:\n  this\n>";
+        getline(std::cin, action);
+        action = lower_case(action);
 
-    Expression e(x);
-    std::cout << (int)e.terms[0].sign << ' ' << e.terms[0].termStr << ' ' << e.terms[0].value << std::endl;
-    e.print();
+        if (action == "stop" || action == "quit")
+        {
+            std::cout << "goodbye!";
+            exit(0);
+        }
+        else
+        {
+            try {
+                Expression e(action);
+                e.print();
+            }
+            catch (int e) {
+                std::cout << '"' << action << "' cannot be evaluated";
+            }
+        }
+    }
     //Expression e2("4-5");
     //e += e2;
     //std::cout << e.expression << std::endl;
@@ -107,5 +138,5 @@ int main()
     //std::cout << Expression::simplify("2+5*2") << std::endl;
     //std::cout << integer(y) << std::endl;*/
 
-    int end_of_main_function; std::cin >> end_of_main_function;
+    std::cout << "\n-END-";
 }

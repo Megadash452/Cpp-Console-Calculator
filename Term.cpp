@@ -16,9 +16,7 @@ Term::Term(const string& str)
 	this->value = stoi(tempStr);
 }
 
-
-int Term::integer(char c)
-{
+int Term::integer(char c) {
 	return ((int)c) - 48;
 }
 int Term::integer(string str, int base)

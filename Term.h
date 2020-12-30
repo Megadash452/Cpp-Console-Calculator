@@ -13,10 +13,9 @@ public:
 	int value;
 
 	Term(const string& str);
-	Term(const Term& term);
 
-	int integer(char c);
-	int integer(string str, int base = 10);
+	static int integer(char c);
+	static int integer(string str, int base = 10);
 
 	
 	virtual Term add(const string& str);
@@ -50,20 +49,17 @@ public:
 	virtual void operator /=(const string& str);
 };
 
-struct AlgebraicTerm : Term // Use this for an Arithmetic Term, but set the exponent (n) = 0;
+struct AlgebraicTerm : public Term // Use this for an Arithmetic Term, but set the exponent (n) = 0;
 {
-	string termStr;
-	char sign;
+
 };
 
-struct ExponentialTerm : Term
+struct ExponentialTerm : public Term
 {
-	string termStr;
-	char sign;
+
 };
 
-struct NestedTerm : Term
+struct NestedTerm : public Term
 {
-	string termStr;
-	char sign;
+	
 };

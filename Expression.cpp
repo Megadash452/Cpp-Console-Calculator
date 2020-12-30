@@ -11,7 +11,7 @@ Expression::Expression(string exp)
 {
     this->expression = Expression::parseString(exp);
     this->updateTerms();
-    //this->simplify();
+    this->simplify();
 }
 Expression::Expression(std::vector<string>& vect)
 {
@@ -20,8 +20,8 @@ Expression::Expression(std::vector<string>& vect)
         strP != vect.end();
         strP++)
         this->expression += Expression::parseString(*strP);
-    //this->simplify();
     this->updateTerms();
+    this->simplify();
 }
 
 void Expression::print()
@@ -30,7 +30,7 @@ void Expression::print()
         termP = this->terms.begin();
         termP != this->terms.end();
         termP++)
-        std::cout << termP->sign << termP->termStr << " int(" << termP->value << ") ";
+        std::cout << termP->sign << termP->termStr << " ";
     std::cout << std::endl;
 }
 void Expression::print(const Expression& exp)
@@ -43,18 +43,23 @@ void Expression::print(const Expression& exp)
     std::cout << std::endl;
 }
 
-/*void Expression::simplify()
+void Expression::simplify()
 {
-    int number = 0;
-    for (std::vector<string>::const_iterator
-        strP = this->terms.begin();
-        strP != this->terms.end();
-        strP++)
+    int addition = 0;
+    //std::vector<Term> arithmeticTerms;
+    for (std::vector<Term>::const_iterator
+        termP = this->terms.begin();
+        termP != this->terms.end();
+        termP++)
     {
-        string term = *strP;
-
+        addition += termP->value;
     }
-}*/
+    if (addition >= 0)
+        this->expression = '+' + std::to_string(addition);
+    if (addition < 0)
+        this->expression = '-' + std::to_string(addition);
+    this->updateTerms();
+}
 string Expression::simplify(const string& exp) // TODO: 
 {
     // Simple arithmetic, for now. 
@@ -170,6 +175,7 @@ void Expression::updateTerms(const string& str)
 }
 void Expression::updateTerms()
 {
+    this->terms.clear();
     string tempStr;
     for (string::iterator
          charP = this->expression.begin();
@@ -199,8 +205,10 @@ string Expression::parseString(const string& exp)
         charP = exp.begin();
         charP != exp.end();
         charP++)
+    {
         if (has_valid_expression_chars(*charP))
             parsed.push_back(*charP);
+    }
 
     if (parsed[0] == '|' ||
         parsed[0] == '(' ||

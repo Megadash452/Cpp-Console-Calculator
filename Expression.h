@@ -7,6 +7,7 @@ using string = std::string;
 
 #include "Term.h"
 #define _allTerms_ Term, AlgebraicTerm, ExponentialTerm, NestedTerm
+#define terms_variant std::variant<Term, AlgebraicTerm, ExponentialTerm, NestedTerm>
 // Comparisons
 #define char_in_operators(c) (c=='+'||c=='-'||c==(char)241||c=='*'||c=='/'||c=='^'||c=='!'||c=='%'||c=='|'||c=='('||c==')')
 #define char_in_numbers(c) (c=='0'||c=='1'||c=='2'||c=='3'||c=='4'||c=='5'||c=='6'||c=='7'||c=='8'||c=='9')
@@ -43,7 +44,7 @@ public:
     Expression(std::vector<string>& vect);
     void print();
     static void print(const Expression& exp);
-    //void simplify();
+    void simplify();
     static string simplify(const string& exp);
 
     Expression operator +(const Expression& exp) const;
