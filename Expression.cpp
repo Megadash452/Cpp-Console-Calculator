@@ -168,7 +168,7 @@ void Expression::updateTerms(const string& str)
     this->expression = Expression::parseString(str);
     this->updateTerms();
 }
-void Expression::updateTerms() // update to suit the Terms object
+void Expression::updateTerms()
 {
     string tempStr;
     for (string::iterator
@@ -183,12 +183,6 @@ void Expression::updateTerms() // update to suit the Terms object
             this->terms.push_back(tempTerm);
             tempStr.clear();
             tempStr.push_back(*charP);
-
-            std::cout << "\n--- Appending to terms ---\n";
-            std::cout << "sign:   '" << tempTerm.sign << "'\n";
-            std::cout << "str:    \"" << tempTerm.termStr << "\"\n";
-            std::cout << "value:   " << tempTerm.value << "\n";
-            std::cout << "---  ---\n" << std::endl;
         }
         else
             tempStr += *charP;
@@ -196,30 +190,17 @@ void Expression::updateTerms() // update to suit the Terms object
     Term tempTerm(tempStr);
     this->terms.push_back(tempTerm);
     tempStr.clear();
-
-    std::cout << "\n--- Appending to terms ---\n";
-    std::cout << "sign:   '" << tempTerm.sign << "'\n";
-    std::cout << "str:    \"" << tempTerm.termStr << "\"\n";
-    std::cout << "value:   " << tempTerm.value << "\n";
-    std::cout << "---  ---\n" << std::endl;
-    
-    std::cout << static_cast<int>(this->terms[1].sign) << ' ' << this->terms[1].termStr << ' ' << this->terms[1].value << std::endl;
-
-    /*std::cout << &this->terms[0] << '\n' << &this->terms[1] << std::endl;
-    if (&this->terms[0] == &this->terms[1])
-    {
-        std::cout << "--- Wanring!!! ---\n";
-        std::cout << "this->terms[0] and this->terms[1] share the same pointer!\n";
-        std::cout << "--- ---\n";
-    }*/
 }
 
 string Expression::parseString(const string& exp)
 {
     string parsed;
-    for (string::const_iterator charP = exp.begin(); charP != exp.end(); charP++)
+    for (string::const_iterator
+        charP = exp.begin();
+        charP != exp.end();
+        charP++)
         if (has_valid_expression_chars(*charP))
-                parsed.push_back(*charP);
+            parsed.push_back(*charP);
 
     if (parsed[0] == '|' ||
         parsed[0] == '(' ||

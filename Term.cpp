@@ -3,7 +3,6 @@
 
 Term::Term(const string& str)
 {
-	std::cout << str << ": sign(" << str[0] << "); ";
 	this->sign = str[0];
 
 	for (string::const_iterator
@@ -13,14 +12,8 @@ Term::Term(const string& str)
 			this->termStr.push_back(*charP);
 
 	string tempStr(str.begin(), str.end());
-	std::cout << "Term value string (" << this << "): " << tempStr << std::endl;
 
 	this->value = stoi(tempStr);
-	std::cout << this->sign << ' ' << this->termStr << ' ' << this->value << "\n";
-}
-Term::Term(const Term& param)
-{
-	this->termStr = param.termStr;
 }
 
 
