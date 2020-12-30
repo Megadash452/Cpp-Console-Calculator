@@ -41,8 +41,8 @@ public:
     
     Expression(string exp);
     Expression(std::vector<string>& vect);
-    //void print();
-    //static void print(const Expression& exp);
+    void print();
+    static void print(const Expression& exp);
     //void simplify();
     static string simplify(const string& exp);
 

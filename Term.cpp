@@ -12,15 +12,17 @@ Term::Term(const string& str)
 		 charP++)
 			this->termStr.push_back(*charP);
 
-	string tempStr(str.begin()+1, str.end());
+	string tempStr(str.begin(), str.end());
 	std::cout << "Term value string (" << this << "): " << tempStr << std::endl;
+
 	this->value = stoi(tempStr);
-	std::cout << this->sign << ' ' << this->termStr << ' ' << this->value << "\n\n";
+	std::cout << this->sign << ' ' << this->termStr << ' ' << this->value << "\n";
 }
 Term::Term(const Term& param)
 {
 	this->termStr = param.termStr;
 }
+
 
 int Term::integer(char c)
 {

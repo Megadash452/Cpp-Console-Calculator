@@ -24,26 +24,26 @@ Expression::Expression(std::vector<string>& vect)
     this->updateTerms();
 }
 
-/*void Expression::print()
+void Expression::print()
 {
-    for (std::vector<string>::const_iterator
-        strP = this->terms.begin();
-        strP != this->terms.end();
-        strP++)
-        std::cout << *strP << " ";
+    for (std::vector<Term>::const_iterator
+        termP = this->terms.begin();
+        termP != this->terms.end();
+        termP++)
+        std::cout << termP->sign << termP->termStr << " int(" << termP->value << ") ";
     std::cout << std::endl;
 }
 void Expression::print(const Expression& exp)
 {
-    for (std::vector<string>::const_iterator
-        strP = exp.terms.begin();
-        strP != exp.terms.end();
-        strP++)
-        std::cout << *strP << " ";
+    for (std::vector<Term>::const_iterator
+        termP = exp.terms.begin();
+        termP != exp.terms.end();
+        termP++)
+        std::cout << termP->sign << termP->termStr << " int(" << termP->value << ") ";
     std::cout << std::endl;
 }
 
-void Expression::simplify()
+/*void Expression::simplify()
 {
     int number = 0;
     for (std::vector<string>::const_iterator
@@ -183,6 +183,12 @@ void Expression::updateTerms() // update to suit the Terms object
             this->terms.push_back(tempTerm);
             tempStr.clear();
             tempStr.push_back(*charP);
+
+            std::cout << "\n--- Appending to terms ---\n";
+            std::cout << "sign:   '" << tempTerm.sign << "'\n";
+            std::cout << "str:    \"" << tempTerm.termStr << "\"\n";
+            std::cout << "value:   " << tempTerm.value << "\n";
+            std::cout << "---  ---\n" << std::endl;
         }
         else
             tempStr += *charP;
@@ -190,7 +196,22 @@ void Expression::updateTerms() // update to suit the Terms object
     Term tempTerm(tempStr);
     this->terms.push_back(tempTerm);
     tempStr.clear();
+
+    std::cout << "\n--- Appending to terms ---\n";
+    std::cout << "sign:   '" << tempTerm.sign << "'\n";
+    std::cout << "str:    \"" << tempTerm.termStr << "\"\n";
+    std::cout << "value:   " << tempTerm.value << "\n";
+    std::cout << "---  ---\n" << std::endl;
+    
     std::cout << static_cast<int>(this->terms[1].sign) << ' ' << this->terms[1].termStr << ' ' << this->terms[1].value << std::endl;
+
+    /*std::cout << &this->terms[0] << '\n' << &this->terms[1] << std::endl;
+    if (&this->terms[0] == &this->terms[1])
+    {
+        std::cout << "--- Wanring!!! ---\n";
+        std::cout << "this->terms[0] and this->terms[1] share the same pointer!\n";
+        std::cout << "--- ---\n";
+    }*/
 }
 
 string Expression::parseString(const string& exp)

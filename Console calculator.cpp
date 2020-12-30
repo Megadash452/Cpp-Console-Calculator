@@ -93,10 +93,11 @@ int main()
     string x;
     std::cout << std::endl << "enter an expression" << std::endl;
     //getline(std::cin, x);
-    x = "45   + 5";
+    x = "45 -5 +2";
 
     Expression e(x);
     std::cout << (int)e.terms[0].sign << ' ' << e.terms[0].termStr << ' ' << e.terms[0].value << std::endl;
+    e.print();
     //Expression e2("4-5");
     //e += e2;
     //std::cout << e.expression << std::endl;
