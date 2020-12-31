@@ -17,8 +17,6 @@ public:
     std::vector<Term> terms; // st
     string expression;
 
-    std::vector<int> mult_div_indexes;
-
     static char operators[11];
     static char numbers[10];
     static char constants[5];
@@ -47,6 +45,8 @@ public:
     void operator +=(const string& exp);
 
 private:
+    std::vector<int> mult_div_indexes;
+
     void updateTerms(const string& str);
     void updateTerms();
     static string parseString(const string& exp);

@@ -47,15 +47,50 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
-    int addition = 0;
     for (std::vector<int>::iterator
         indP = this->mult_div_indexes.begin();
         indP != this->mult_div_indexes.end();
         indP++)
     {
-        //split(this->terms[*indP].termStr, "*/", );
+        int multiplication = 1;
+        std::vector<string> tempVect;
+        lib::split(this->terms[*indP].termStr, "*/", tempVect, true);
+
+        for (std::vector<string>::iterator
+            sign = tempVect.begin() + 1;
+            sign != tempVect.end();
+            sign += 2)
+        {
+            if (*sign == "*" && sign == tempVect.begin() + 1)
+            {
+                multiplication = stoi(*(sign - 1)) * stoi(*(sign + 1));
+            }
+            else if (* sign == "*")
+            {
+                multiplication *= stoi(*(sign + 1));
+            }
+
+            else if (*sign == "/" && sign == tempVect.begin() + 1)
+            {
+                multiplication = stoi(*(sign - 1)) / stoi(*(sign + 1));
+            }
+            else if (*sign == "/")
+            {
+                multiplication / stoi(*(sign + 1));
+            }
+        }
+
+        if (multiplication >= 0) {
+            Term tempTerm('+' + std::to_string(multiplication));
+            this->terms[*indP] = tempTerm;
+        }
+        else {
+            Term tempTerm(std::to_string(multiplication));
+            this->terms[*indP] = tempTerm;
+        }
     }
 
+    int addition = 0;
     std::vector<Term> arithmeticTerms;
     for (std::vector<Term>::iterator
         termP = this->terms.begin();
@@ -188,6 +223,7 @@ void Expression::updateTerms()
     this->terms.clear();
     string tempStr;
     int index = 0;
+    bool mult_on_this_term = false;
     for (string::iterator
          charP = this->expression.begin();
          charP != this->expression.end();
@@ -201,10 +237,12 @@ void Expression::updateTerms()
             tempStr.clear();
             tempStr.push_back(*charP);
             index++;
+            mult_on_this_term = false;
         }
-        else if (*charP == '*' || *charP == '/')
+        else if ((*charP == '*' || *charP == '/') && !(mult_on_this_term))
         {
             this->mult_div_indexes.push_back(index);
+            mult_on_this_term = true;
             tempStr += *charP;
         }
         else

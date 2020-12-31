@@ -1,6 +1,6 @@
 #include "Lib.h"
 
-bool char_in_string(char character, string str)
+bool lib::char_in_string(char character, string str)
 {
     for (string::const_iterator
         charP = str.begin();
@@ -19,7 +19,7 @@ bool element_in_vector(Element el, std::vector<Element>& vect)
 
 }
 
-string lower_case(string str)
+string lib::lower_case(string str)
 {
     string returnStr;
     for (string::iterator
@@ -35,10 +35,10 @@ string lower_case(string str)
     return returnStr;
 }
 
-int integer(char c) {
+int lib::integer(char c) {
     return ((int)c) - 48;
 }
-int integer(string str, int base)
+int lib::integer(string str, int base)
 {
     int num = 0;
     int place = 0;
@@ -57,7 +57,7 @@ int integer(string str, int base)
     return num;
 }
 
-string to_string(int num)
+string lib::to_string(int num)
 {
     string returnStr;
 
@@ -65,7 +65,7 @@ string to_string(int num)
 }
 
 
-string::const_iterator find_closing(string::const_iterator it, string& str)
+string::const_iterator lib::find_closing(string::const_iterator it, string& str)
 {
     if (*it == '(')
     {
@@ -84,7 +84,7 @@ string::const_iterator find_closing(string::const_iterator it, string& str)
         }
     }
 }
-string::iterator find_closing(string::iterator it, string& str)
+string::iterator lib::find_closing(string::iterator it, string& str)
 {
     if (*it == '(')
     {
@@ -105,33 +105,16 @@ string::iterator find_closing(string::iterator it, string& str)
     return it;
 }
 
-void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
+void lib::split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
 {
-    std::vector<char> delims;
     string::iterator left_over = str.begin();
 
-    for (string::iterator
-        charP = delimeters.begin();
-        charP != delimeters.end();
-        charP++)
-            delims.push_back(*charP);
     while (left_over != str.end())
         for (string::iterator
-            charP = str.begin();
-            charP != left_over;
+            charP = left_over;
+            charP != str.end();
             charP++)
-        {
-            if (char_in_string(*charP, delimeters) && left_over == str.begin())
-            {
-                if (keep_delimeters)
-                {
-                    const char delimeter[] = { *charP, (char)0 };
-                    save_to.push_back(delimeter);
-                }
-                left_over = charP + 1;
-                break;
-            }
-            else if (char_in_string(*charP, delimeters) || charP == str.end() - 1)
+            if (lib::char_in_string(*charP, delimeters) || charP == str.end() - 1)
             {
                 if (charP == str.end() - 1) {
                     string tempStr(left_over, charP + 1);
@@ -141,28 +124,30 @@ void split(string str, string delimeters, std::vector<string>& save_to, bool kee
                     string tempStr(left_over, charP);
                     save_to.push_back(tempStr);
                 }
+
+                if (keep_delimeters && charP != str.end() - 1) {
+                    const char delimeter[] = { *charP, (char)0 };
+                    save_to.push_back(delimeter);
+                }
                 left_over = charP + 1;
                 break;
             }
-        }
 }
 
-string get_command(string str, char split)
+string lib::get_command(string str, char split)
 {
     string returnStr;
     for (string::iterator
         charP = str.begin();
         charP != str.end();
         charP++)
-    {
         if (*charP == split)
             break;
         else
             returnStr.push_back(*charP);
-    }
     return returnStr;
 }
-std::vector<string> get_arguments(string str, int num_of_args, char split)//TODO: throw error when missing arguments
+std::vector<string> lib::get_arguments(string str, int num_of_args, char split)//TODO: throw error when missing arguments
 {
     std::vector<string> returnVect;
     string::iterator left_over = str.begin();
@@ -197,15 +182,39 @@ std::vector<string> get_arguments(string str, int num_of_args, char split)//TODO
     }
     return returnVect;
 }
-
-void organize(string from, string& command, std::vector<string>& arguments)
+void lib::organize(string from, string& command, std::vector<string>& arguments)
 {
-    command = get_command(from);
+    command = lib::get_command(from);
     if (command == "calculate" || command == "calc")
-        arguments = get_arguments(from, 1);
+        arguments = lib::get_arguments(from, 1);
     if (command == "add" || command == "sum" ||
         command == "subtract" || command == "subt" ||
         command == "multiply" || command == "mult" ||
         command == "divide" || command == "div")
-        arguments = get_arguments(from, 2);
+        arguments = lib::get_arguments(from, 2);
+}
+
+void lib::end_command_turn(const string& comm, const std::vector<string>& args)
+{
+    std::cout << '-';
+    for (string::const_iterator
+        charP = comm.begin();
+        charP != comm.end();
+        charP++)
+        std::cout << '-';
+
+    for (std::vector<string>::const_iterator
+        argP = args.begin();
+        argP != args.end();
+        argP++)
+    {
+        for (string::const_iterator
+            strP = (*argP).begin();
+            strP != (*argP).end();
+            strP++)
+            std::cout << '-';
+        std::cout << "-";
+    }
+    std::cout << "\n\n";
+        
 }

@@ -16,38 +16,41 @@ using string = std::string;
 #define char_in_symbols(c) (c==(char)228||c==(char)233||c==(char)244||c==(char)245||c==(char)248)
 #define has_valid_expression_chars(c) (char_in_operators(c)||char_in_numbers(c)||char_in_constants(c)||char_in_alphabet(c)||char_in_alphabetUpper(c)||char_in_symbols(c))
 
-bool char_in_string(char character, string str);
+namespace lib {
+    bool char_in_string(char character, string str);
 
-string lower_case(string str);
+    string lower_case(string str);
 
-int integer(char c);
-int integer(string str, int base = 10);
+    int integer(char c);
+    int integer(string str, int base = 10);
 
-string to_string(int num);
+    string to_string(int num);
 
-string::const_iterator find_closing(string::const_iterator it, string& str);
-string::iterator find_closing(string::iterator it, string& str);
+    string::const_iterator find_closing(string::const_iterator it, string& str);
+    string::iterator find_closing(string::iterator it, string& str);
 
-void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
+    void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 
-template<typename T>
-void vectorPrint(const std::vector<T>& vect)
-{
-    std::cout << "std::vector: ";
-    for (typename std::vector<T>::const_iterator
-        elP = vect.begin();
-        elP != vect.end();
-        elP++)
+    template<typename T>
+    void vectorPrint(const std::vector<T>& vect)
     {
-        std::cout << *elP;
-        if (elP != vect.end() - 1)
-            std::cout << ", ";
+        std::cout << "std::vector: ";
+        for (typename std::vector<T>::const_iterator
+            elP = vect.begin();
+            elP != vect.end();
+            elP++)
+        {
+            std::cout << *elP;
+            if (elP != vect.end() - 1)
+                std::cout << ", ";
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
+
+
+    string get_command(string str, char split = ' ');
+    std::vector<string> get_arguments(string str, int num_of_args, char split = ' ');
+    void organize(string from, string& command, std::vector<string>& arguments);
+
+    void end_command_turn(const string& comm, const std::vector<string>& args);
 }
-
-
-string get_command(string str, char split = ' ');
-std::vector<string> get_arguments(string str, int num_of_args, char split=' ');
-
-void organize(string from, string& command, std::vector<string>& arguments);
