@@ -105,7 +105,7 @@ string::iterator find_closing(string::iterator it, string& str)
     return it;
 }
 
-void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false)
+void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
 {
     std::vector<char> delims;
 
@@ -118,16 +118,10 @@ void split(string str, string delimeters, std::vector<string>& save_to, bool kee
     // splitting
 }
 
-void vPrint(std::vector<string>& vect)
+void vectorPrint(const std::vector<T>& vect)
 {
     std::cout << "std::vector: ";
-    for (std::vector<string>::const_iterator
-        strP = vect.begin();
-        strP != vect.end();
-        strP++)
-    {
-        std::cout << *strP << ", ";
-    }
+    for (const auto& elP : vect) std::cout << elP << ", ";
     std::cout << std::endl;
 }
 

@@ -33,6 +33,12 @@ int main()
         std::cout << "What do you want to do?\nOptions:\n  this\n>";
         getline(std::cin, user_input);
 
+        //split(user_input, "/*", arguments);
+
+        arguments.push_back("hahah");
+        arguments.push_back("hih");
+        vectorPrint<string>(arguments);
+
         /*user_input = lower_case(user_input);
         organize(user_input, command, arguments);
 

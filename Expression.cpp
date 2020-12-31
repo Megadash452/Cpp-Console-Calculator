@@ -53,7 +53,7 @@ void Expression::simplify()
         indP != this->mult_div_indexes.end();
         indP++)
     {
-        split(this->terms[*indP].termStr, "*/", );
+        //split(this->terms[*indP].termStr, "*/", );
     }
 
     std::vector<Term> arithmeticTerms;

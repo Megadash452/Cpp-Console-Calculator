@@ -30,7 +30,8 @@ string::iterator find_closing(string::iterator it, string& str);
 
 void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 
-void vPrint(std::vector<string>& vect);
+template<typename T>
+void vectorPrint(const std::vector<T>& vect);
 
 
 string get_command(string str, char split = ' ');
