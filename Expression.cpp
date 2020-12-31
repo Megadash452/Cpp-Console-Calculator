@@ -53,33 +53,17 @@ void Expression::simplify()
         indP != this->mult_div_indexes.end();
         indP++)
     {
-        std::vector<string::iterator> where_mult_div;
-        for (string::iterator
-            charP = this->terms[*indP].termStr.begin();
-            charP != this->terms[*indP].termStr.end();
-            charP++)
-            if(*charP == '*' || *charP == '/')
-                where_mult_div.push_back(charP);
-
-        for (std::vector<string::iterator>::iterator
-            itP = where_mult_div.begin();
-            itP != where_mult_div.end();
-            itP++)
-        {
-            std::cout << *this->terms[*indP].termStr.begin() << ' ' << **(itP);
-            //string tempStr0(this->terms[*indP].termStr.begin(), *(itP-1));
-            //string tempStr1;
-        }
+        split(this->terms[*indP].termStr, "*/", );
     }
-    //addition = (this->terms[0] + this->terms[1] + this->terms[2]).value;
-    //std::vector<Term> arithmeticTerms;
-    /*for (std::vector<Term>::iterator
+
+    std::vector<Term> arithmeticTerms;
+    for (std::vector<Term>::iterator
         termP = this->terms.begin();
         termP != this->terms.end();
         termP++)
     {
         addition += termP->value;
-    }*/
+    }
     if (addition >= 0)
         this->expression = '+' + std::to_string(addition);
     else

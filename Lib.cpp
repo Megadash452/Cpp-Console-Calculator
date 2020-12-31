@@ -13,6 +13,12 @@ bool char_in_string(char character, string str)
     return false;
 }
 
+template<typename Element>
+bool element_in_vector(Element el, std::vector<Element>& vect)
+{
+
+}
+
 string lower_case(string str)
 {
     string returnStr;
@@ -99,6 +105,19 @@ string::iterator find_closing(string::iterator it, string& str)
     return it;
 }
 
+void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false)
+{
+    std::vector<char> delims;
+
+    for (string::iterator
+        charP = delimeters.begin();
+        charP != delimeters.end();
+        charP++)
+            delims.push_back(*charP);
+
+    // splitting
+}
+
 void vPrint(std::vector<string>& vect)
 {
     std::cout << "std::vector: ";
@@ -111,6 +130,7 @@ void vPrint(std::vector<string>& vect)
     }
     std::cout << std::endl;
 }
+
 
 string get_command(string str, char split)
 {
@@ -155,7 +175,6 @@ std::vector<string> get_arguments(string str, int num_of_args, char split)//TODO
                     string tempStr(left_over, charP);
                     returnVect.push_back(tempStr);
                 }
-                
                 left_over = charP + 1;
                 break;
             }
@@ -164,9 +183,14 @@ std::vector<string> get_arguments(string str, int num_of_args, char split)//TODO
     return returnVect;
 }
 
-void organize(string& command, std::vector<string>& arguments, string from)
+void organize(string from, string& command, std::vector<string>& arguments)
 {
     command = get_command(from);
     if (command == "calculate" || command == "calc")
         arguments = get_arguments(from, 1);
+    if (command == "add" || command == "sum" ||
+        command == "subtract" || command == "subt" ||
+        command == "multiply" || command == "mult" ||
+        command == "divide" || command == "div")
+        arguments = get_arguments(from, 2);
 }

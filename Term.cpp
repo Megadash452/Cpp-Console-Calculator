@@ -7,7 +7,7 @@ Term::Term(const string& str)
 {
 	this->sign = str[0];
 
-	bool mult;
+	bool mult = false;
 	for (string::const_iterator
 		charP = str.begin() + 1;
 		charP != str.end();
