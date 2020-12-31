@@ -24,29 +24,31 @@ public:
 
 int main()
 {
-    string action;
+    string user_input;
+    string command;
+    std::vector<string> arguments;
     while (true)
     {
         std::cout << "What do you want to do?\nOptions:\n  this\n>";
-        getline(std::cin, action);
-        action = lower_case(action);
+        getline(std::cin, user_input);
 
-        if (action == "stop" || action == "quit")
+        user_input = lower_case(user_input);
+        organize(command, arguments, from=user_input); //ask about from= in discord
+
+        if (command == "stop" || command == "quit" || command == "exit")
         {
             std::cout << "goodbye!";
             exit(0);
         }
-        else
+        else if (command == "calculate" || command == "calc")
         {
-            try {
-                Expression e(action);
-                e.print();
-            }
-            catch (int e) {
-                std::cout << '"' << action << "' cannot be evaluated";
-            }
+            Expression e(arguments[0]);
+            e.print();
         }
+        else
+            std::cout << "'"<< command << "' - invalid command\n\n";
     }
+
     //Expression e2("4-5");
     //e += e2;
     //std::cout << e.expression << std::endl;
@@ -57,4 +59,5 @@ int main()
     //std::cout << integer(y) << std::endl;*/
 
     std::cout << "\n-END-";
+    getline(std::cin, user_input);
 }

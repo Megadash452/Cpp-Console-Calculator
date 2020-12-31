@@ -111,3 +111,62 @@ void vPrint(std::vector<string>& vect)
     }
     std::cout << std::endl;
 }
+
+string get_command(string str, char split)
+{
+    string returnStr;
+    for (string::iterator
+        charP = str.begin();
+        charP != str.end();
+        charP++)
+    {
+        if (*charP == split)
+            break;
+        else
+            returnStr.push_back(*charP);
+    }
+    return returnStr;
+}
+std::vector<string> get_arguments(string str, int num_of_args, char split)//TODO: throw error when missing arguments
+{
+    std::vector<string> returnVect;
+    string::iterator left_over = str.begin();
+    string push_backStr;
+
+    for (int i = 0; i < num_of_args + 1; i++)
+    {
+        for (string::iterator
+            charP = left_over;
+            charP != str.end();
+            charP++)
+        {
+            if (*charP == split && left_over == str.begin())
+            {
+                left_over = charP + 1;
+                break;
+            }
+            else if (*charP == split || charP == str.end()-1)
+            {
+                if (charP == str.end() - 1) {
+                    string tempStr(left_over, charP + 1);
+                    returnVect.push_back(tempStr);
+                }
+                else {
+                    string tempStr(left_over, charP);
+                    returnVect.push_back(tempStr);
+                }
+                
+                left_over = charP + 1;
+                break;
+            }
+        }
+    }
+    return returnVect;
+}
+
+void organize(string& command, std::vector<string>& arguments, string from)
+{
+    command = get_command(from);
+    if (command == "calculate" || command == "calc")
+        arguments = get_arguments(from, 1);
+}

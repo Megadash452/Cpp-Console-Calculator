@@ -29,3 +29,8 @@ string::const_iterator find_closing(string::const_iterator it, string& str);
 string::iterator find_closing(string::iterator it, string& str);
 
 void vPrint(std::vector<string>& vect);
+
+string get_command(string str, char split = ' ');
+std::vector<string> get_arguments(string str, int num_of_args, char split=' ');
+
+void organize(string& command, std::vector<string>& arguments, string from);
