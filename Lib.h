@@ -31,7 +31,20 @@ string::iterator find_closing(string::iterator it, string& str);
 void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 
 template<typename T>
-void vectorPrint(const std::vector<T>& vect);
+void vectorPrint(const std::vector<T>& vect)
+{
+    std::cout << "std::vector: ";
+    for (typename std::vector<T>::const_iterator
+        elP = vect.begin();
+        elP != vect.end();
+        elP++)
+    {
+        std::cout << *elP;
+        if (elP != vect.end() - 1)
+            std::cout << ", ";
+    }
+    std::cout << std::endl;
+}
 
 
 string get_command(string str, char split = ' ');

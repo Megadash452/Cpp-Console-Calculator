@@ -108,23 +108,44 @@ string::iterator find_closing(string::iterator it, string& str)
 void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
 {
     std::vector<char> delims;
+    string::iterator left_over = str.begin();
 
     for (string::iterator
         charP = delimeters.begin();
         charP != delimeters.end();
         charP++)
             delims.push_back(*charP);
-
-    // splitting
+    while (left_over != str.end())
+        for (string::iterator
+            charP = str.begin();
+            charP != left_over;
+            charP++)
+        {
+            if (char_in_string(*charP, delimeters) && left_over == str.begin())
+            {
+                if (keep_delimeters)
+                {
+                    const char delimeter[] = { *charP, (char)0 };
+                    save_to.push_back(delimeter);
+                }
+                left_over = charP + 1;
+                break;
+            }
+            else if (char_in_string(*charP, delimeters) || charP == str.end() - 1)
+            {
+                if (charP == str.end() - 1) {
+                    string tempStr(left_over, charP + 1);
+                    save_to.push_back(tempStr);
+                }
+                else {
+                    string tempStr(left_over, charP);
+                    save_to.push_back(tempStr);
+                }
+                left_over = charP + 1;
+                break;
+            }
+        }
 }
-
-void vectorPrint(const std::vector<T>& vect)
-{
-    std::cout << "std::vector: ";
-    for (const auto& elP : vect) std::cout << elP << ", ";
-    std::cout << std::endl;
-}
-
 
 string get_command(string str, char split)
 {
