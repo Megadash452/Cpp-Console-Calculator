@@ -5,9 +5,78 @@ Console::Console()
 	SetConsoleTextAttribute(this->handle, 7);
 }
 
-void Console::log(string msg)
+void Console::log(string msg, int color)
 {
-	std::cout << "|  " << msg << std::endl;
+	this->set_color(color);
+
+	bool on_str = false;
+	bool on_char = false;
+	bool on_int = false;
+
+	bool reset = false;
+
+	std::cout << "|  ";
+	for (string::iterator
+		 charP = msg.begin();
+		 charP != msg.end();
+		 charP++)
+	{
+		if (*charP == '"' && !on_str)
+		{
+			this->set_color(2);
+			on_str = true;
+		}
+		else if (*charP == '"' && on_str)
+		{
+			reset = true;
+			on_str = false;
+		}
+
+		else if (*charP == '\'' && !on_char && !on_str)
+		{
+			this->set_color(3);
+			on_char = true;
+		}
+		else if (*charP == '\'' && on_char && !on_str)
+		{
+			reset = true;
+			on_char = false;
+		}
+
+		else if (char_in_numbers(*charP) && !on_int)
+		{
+
+		}
+		std::cout << *charP;
+		if (reset)
+		{
+			this->set_previous_color();
+			reset = false;
+		}
+	}
+	std::cout << std::endl;
+	
+}
+
+void Console::log_str(string str)
+{
+	this->set_color(2);
+	std::cout << "\"" << str << "\"";
+	this->set_color(0);
+}
+
+void Console::log_char(char c)
+{
+	this->set_color(3);
+	std::cout << "'" << c << "'";
+	this->set_color(0);
+}
+
+void Console::log_int(int i)
+{
+	this->set_color(9);
+	std::cout << i;
+	this->set_color(0);
 }
 
 /*void Console::log(std::vector<const char*> vect)
@@ -41,9 +110,7 @@ void Console::log(std::vector<string> vect)
 		strP != vect.end();
 		strP++)
 	{
-		this->set_color(2);
-		std::cout << "\"" << *strP << "\"";
-		this->set_color(0);
+		this->log_str(*strP);
 		std::cout << ", ";
 	}
 	this->set_color(15);
@@ -62,9 +129,7 @@ void Console::log(std::vector<char> vect)
 		charP != vect.end();
 		charP++)
 	{
-		this->set_color(3);
-		std::cout << "'" << *charP << "'";
-		this->set_color(0);
+		this->log_char(*charP);
 		std::cout << ", ";
 	}
 	this->set_color(15);
@@ -83,9 +148,7 @@ void Console::log(std::vector<int> vect)
 		intP != vect.end();
 		intP++)
 	{
-		this->set_color(9);
-		std::cout << *intP;
-		this->set_color(0);
+		this->log_int(*intP);
 		std::cout << ", ";
 	}
 	this->set_color(15);

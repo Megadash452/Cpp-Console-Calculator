@@ -13,7 +13,11 @@ struct Console
 
 	Console();
 
-	void log(string msg);
+	void log(string msg, int color = 0);
+
+	void log_str(string str);
+	void log_char(char c);
+	void log_int(int i);
 
 	//void log(std::vector<const char*> vect);
 	void log(std::vector<string> vect);

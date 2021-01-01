@@ -35,13 +35,7 @@ int main()
         //std::cout << argc << " arguments passed from outside; omitted\n";
     }
 
-    //for (int i = 0; i < 255; i++)
-    //{
-        //SetConsoleTextAttribute(console.handle, i);
-        console.log(Expression::operators);
-        console.log(Expression::numbers);
-        console.log(std::vector<int>{1, 2, 3});
-    //}
+    console.log("el string \"hahaha\" esta bien pogger");
 
     while (false)
     {
