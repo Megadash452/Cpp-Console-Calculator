@@ -31,6 +31,7 @@ int main()
     while (true)
     {
         std::cout << "|  What do you want to do? (type \"help\" if you don't know what you can do)" << std::endl <<
+                     "|  Note: when using calculator, please try to not get decimal numbers : )"    << std::endl <<
                      "|  --> ";
         getline(std::cin, user_input);
 
@@ -41,7 +42,7 @@ int main()
         // TODO: Inefficient; use map with function pointers
         if (command == "help" || command == "h")
         {
-            std::cout << "|\n|  Commands:"                                         << std::endl <<
+            std::cout << "|\n|  Commands:"                                     << std::endl <<
                          "|    stop, quit, exit (args: Null):"                 << std::endl <<
                          "|      -- Exit out of the program."                  << std::endl <<
                          "|"                                                   << std::endl <<

@@ -45,14 +45,16 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
+    // --Multiplying/Dividing
     for (std::vector<int>::iterator
         indP = this->mult_div_indexes.begin();
         indP != this->mult_div_indexes.end();
         indP++)
     {
-        int multiplication = 1;
+        double multiplication = 1;
         std::vector<string> tempVect;
         lib::split(this->terms[*indP].termStr, "*/", tempVect, true);
+        tempVect[0] = this->terms[*indP].sign + tempVect[0];
 
         for (std::vector<string>::iterator
             sign = tempVect.begin() + 1;
@@ -60,14 +62,14 @@ void Expression::simplify()
             sign += 2)
         {
             if (*sign == "*" && sign == tempVect.begin() + 1)
-                multiplication = stoi(*(sign - 1)) * stoi(*(sign + 1));
+                multiplication = stod(*(sign - 1)) * stod(*(sign + 1));
             else if (* sign == "*")
-                multiplication *= stoi(*(sign + 1));
+                multiplication *= stod(*(sign + 1));
 
             else if (*sign == "/" && sign == tempVect.begin() + 1)
-                multiplication = stoi(*(sign - 1)) / stoi(*(sign + 1));
+                multiplication = stod(*(sign - 1)) / stod(*(sign + 1));
             else if (*sign == "/")
-                multiplication / stoi(*(sign + 1));
+                multiplication / stod(*(sign + 1));
         }
 
         if (multiplication >= 0) {
@@ -81,6 +83,7 @@ void Expression::simplify()
     }
     this->mult_div_indexes.clear();
 
+    // --Adding/Subtracting
     int addition = 0;
     std::vector<Term> arithmeticTerms;
     for (std::vector<Term>::iterator
@@ -91,7 +94,7 @@ void Expression::simplify()
         addition += termP->value;
     }
     if (addition >= 0)
-        this->expression = '+' + std::to_string(addition);
+        this->expression = /*'+' + */std::to_string(addition);
     else
         this->expression = std::to_string(addition);
     this->updateTerms();
@@ -141,8 +144,7 @@ void Expression::updateTerms()
          charP != this->expression.end();
          charP++)
     {
-        if (charP != this->expression.begin() &&
-           (*charP == '+' || *charP == '-'))
+        if (charP != this->expression.begin() && (*charP == '+' || *charP == '-') && !(*(charP - 1) == '*' || *(charP - 1) == '/'))
         {
             Term tempTerm(tempStr);
             this->terms.push_back(tempTerm);

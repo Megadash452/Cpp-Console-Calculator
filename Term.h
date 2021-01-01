@@ -10,7 +10,7 @@ struct Term //Only numbers
 public:
 	string termStr;
 	char sign;
-	int value;
+	double value;
 
 	Term(const string& str);
 

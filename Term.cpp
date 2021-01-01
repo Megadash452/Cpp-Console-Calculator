@@ -21,7 +21,7 @@ Term::Term(const string& str)
 	string tempStr(str.begin(), str.end());
 
 	if (!mult)
-		this->value = stoi(tempStr);
+		this->value = stod(tempStr);
 	else
 		this->value = 0;
 }
