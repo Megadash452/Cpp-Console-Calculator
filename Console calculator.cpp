@@ -22,7 +22,7 @@ public:
 };
 
 
-int main(int argc, char* argv[])
+int main()
 {
     Console console;
 
@@ -30,13 +30,20 @@ int main(int argc, char* argv[])
     string command;
     std::vector<string> arguments;
 
-    if (argc - 1)
+    //if (argc - 1)
     {
-        std::cout << argc << " arguments passed from outside; omitted\n";
+        //std::cout << argc << " arguments passed from outside; omitted\n";
     }
 
+    //for (int i = 0; i < 255; i++)
+    //{
+        //SetConsoleTextAttribute(console.handle, i);
+        console.log(Expression::operators);
+        console.log(Expression::numbers);
+        console.log(std::vector<int>{1, 2, 3});
+    //}
 
-    while (true)
+    while (false)
     {
         std::cout << "|  What do you want to do? (type \"help\" if you don't know what you can do)" << std::endl <<
                      "|  --> ";
@@ -48,7 +55,7 @@ int main(int argc, char* argv[])
         lib::organize(user_input, command, arguments);
         command = lib::lower_case(command);
 
-        console.log({1, 2});
+        //console.log({1, 2});
 
 
         // TODO: Inefficient; use map with function pointers
