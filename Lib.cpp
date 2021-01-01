@@ -13,11 +13,11 @@ bool lib::char_in_string(char character, string str)
     return false;
 }
 
-template<typename Element>
-bool element_in_vector(Element el, std::vector<Element>& vect)
+/*template<typename Element>
+bool lib::element_in_vector(Element el, std::vector<Element>& vect)
 {
 
-}
+}*/
 
 string lib::lower_case(string str)
 {

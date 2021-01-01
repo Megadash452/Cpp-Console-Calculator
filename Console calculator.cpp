@@ -22,21 +22,33 @@ public:
 };
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    Console console;
+
     string user_input;
     string command;
     std::vector<string> arguments;
 
+    if (argc - 1)
+    {
+        std::cout << argc << " arguments passed from outside; omitted\n";
+    }
+
+
     while (true)
     {
         std::cout << "|  What do you want to do? (type \"help\" if you don't know what you can do)" << std::endl <<
-                     "|  Note: when using calculator, please try to not get decimal numbers : )"    << std::endl <<
                      "|  --> ";
+
+        console.set_color(8);
         getline(std::cin, user_input);
+        console.reset_color();
 
         lib::organize(user_input, command, arguments);
         command = lib::lower_case(command);
+
+        console.log({1, 2});
 
 
         // TODO: Inefficient; use map with function pointers
@@ -47,6 +59,7 @@ int main()
                          "|      -- Exit out of the program."                  << std::endl <<
                          "|"                                                   << std::endl <<
                          "|    calculate, calc (args: Expression<string>):"    << std::endl <<
+                         "|    -Note: No support for decimals, yet.-"          << std::endl <<
                          "|      -- Use the calculator."                       << std::endl <<
                          "|\n";
         }
