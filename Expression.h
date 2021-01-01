@@ -5,11 +5,10 @@
 #include <variant>
 using string = std::string;
 
+#include "Lib.h"
 #include "Term.h"
 #define _allTerms_ Term, AlgebraicTerm, ExponentialTerm, NestedTerm
 #define terms_variant std::variant<Term, AlgebraicTerm, ExponentialTerm, NestedTerm>
-
-bool char_in_string(char character, string str);
 
 class Expression // ONly works for arithmetic Terms, for now.
 {
@@ -34,10 +33,11 @@ public:
     
     Expression(string exp);
     Expression(std::vector<string>& vect);
+
     void print();
     static void print(const Expression& exp);
     void simplify();
-    static string simplify(const string& exp);
+    static string simplify(string exp);
 
     Expression operator +(const Expression& exp) const;
     Expression operator +(const string& exp) const;

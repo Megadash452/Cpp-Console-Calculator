@@ -1,7 +1,5 @@
 #include "Expression.h"
 
-#include "Lib.h"
-
 char Expression::operators[11] = { '+','-',(char)241,'*','/','^','!','%','|','(',')' };
 char Expression::numbers[10] = { '0','1','2','3','4','5','6','7','8','9' };
 char Expression::constants[5] = { 'e',(char)227,(char)237,(char)242,(char)243 };
@@ -62,22 +60,14 @@ void Expression::simplify()
             sign += 2)
         {
             if (*sign == "*" && sign == tempVect.begin() + 1)
-            {
                 multiplication = stoi(*(sign - 1)) * stoi(*(sign + 1));
-            }
             else if (* sign == "*")
-            {
                 multiplication *= stoi(*(sign + 1));
-            }
 
             else if (*sign == "/" && sign == tempVect.begin() + 1)
-            {
                 multiplication = stoi(*(sign - 1)) / stoi(*(sign + 1));
-            }
             else if (*sign == "/")
-            {
                 multiplication / stoi(*(sign + 1));
-            }
         }
 
         if (multiplication >= 0) {
@@ -89,6 +79,7 @@ void Expression::simplify()
             this->terms[*indP] = tempTerm;
         }
     }
+    this->mult_div_indexes.clear();
 
     int addition = 0;
     std::vector<Term> arithmeticTerms;
@@ -105,90 +96,11 @@ void Expression::simplify()
         this->expression = std::to_string(addition);
     this->updateTerms();
 }
-string Expression::simplify(const string& exp) // TODO: 
+string Expression::simplify(string exp) // TODO: 
 {
-    // Simple arithmetic, for now. 
-    // Do not include in this->simplify()
-    std::vector<string> tempTerms;
-    string tempTerm;
-    if (exp[0] != '+' && exp[0] != '-')
-        tempTerm.push_back('+');
+    Expression tempEx(exp);
 
-    // TODO: make anything inside a parenthesis another separate Expression Object
-    for (string::const_iterator
-        charP = exp.begin();
-        charP != exp.end();
-        charP++)
-    {
-        if (*charP == '(')
-        {
-            for (; true; charP++)
-            {
-                tempTerm.push_back(*charP);
-                if (*charP == ')')
-                    break;
-            }
-        }
-        else if (*charP == '+' || *charP == '-')
-        {
-            if (charP != exp.begin())
-                tempTerms.push_back(tempTerm);
-            tempTerm.clear();
-            tempTerm.push_back(*charP);
-        }
-        else
-            tempTerm.push_back(*charP);
-    }
-    tempTerms.push_back(tempTerm);
-
-    
-    int number = 0;
-    /*for (std::vector<string>::iterator
-        strP = tempTerms.begin();
-        strP != tempTerms.end();
-        strP++)
-    {
-        int multiply = 1;
-
-        if (char_in_string('(', *strP))
-        {
-            for (string::iterator
-                charP = (*strP).begin();
-                charP != (*strP).end();
-                charP++)
-            {
-                if (*charP == '(')
-                {
-                    string nestedTerm(charP + 1, find_closing(charP, *strP));
-                    std::cout << Expression::simplify(nestedTerm) << std::endl;
-                    number += stoi(Expression::simplify(nestedTerm));
-                }
-            }
-        }
-        else if (char_in_string('*', *strP))
-        {
-            std::cout << "Multiplication in term: " << *strP << std::endl;
-
-            for (string::const_iterator
-                charP = (*strP).begin();
-                charP != (*strP).end();
-                charP++)
-            {
-                char character = *charP;
-                //if (char_in_string(character, Expression::numbers) && char_in_string(*(charP + 1), ))
-            }
-        }
-        else if (char_in_string('/', *strP))
-        {
-            std::cout << "Division in term: " << *strP << std::endl;
-        }
-        else
-            number += stoi(*strP); // Addition and Subtraction work perfectly with stoi()
-        // TODO: cover multiplication & division
-    }
-    tempTerms.clear();*/
-
-    return std::to_string(number);
+    return tempEx.expression;
 }
 
 

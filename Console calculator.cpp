@@ -30,49 +30,56 @@ int main()
 
     while (true)
     {
-        std::cout << "What do you want to do?\nOptions:\n  this\n>";
+        std::cout << "|  What do you want to do? (type \"help\" if you don't know what you can do)" << std::endl <<
+                     "|  --> ";
         getline(std::cin, user_input);
 
         lib::organize(user_input, command, arguments);
         command = lib::lower_case(command);
 
+
         // TODO: Inefficient; use map with function pointers
-        if (command == "stop" || command == "quit" || command == "exit") {
-            std::cout << "goodbye!";
+        if (command == "help" || command == "h")
+        {
+            std::cout << "|\n|  Commands:"                                         << std::endl <<
+                         "|    stop, quit, exit (args: Null):"                 << std::endl <<
+                         "|      -- Exit out of the program."                  << std::endl <<
+                         "|"                                                   << std::endl <<
+                         "|    calculate, calc (args: Expression<string>):"    << std::endl <<
+                         "|      -- Use the calculator."                       << std::endl <<
+                         "|\n";
+        }
+        else if (command == "stop" || command == "quit" || command == "exit") {
+            std::cout << "|  goodbye!";
             exit(0);
         }
         else if (command == "add" || command == "sum")
         {
-            lib::end_command_turn(command, arguments);
+
         }
         else if (command == "subtract" || command == "subt")
         {
-            lib::end_command_turn(command, arguments);
+
         }
         else if (command == "multiply" || command == "mult")
         {
-            lib::end_command_turn(command, arguments);
+
         }
         else if (command == "divide" || command == "div")
         {
-            lib::end_command_turn(command, arguments);
+            
         }
         else if (command == "calculate" || command == "calc")
         {
             Expression e(arguments[0]);
+            std::cout << "|  result: ";
             e.print();
-            lib::end_command_turn(command, arguments);
         }
         else
         {
-            std::cout << "\"" << command << "\" - invalid command\n-";
-            for (string::iterator
-                strP = command.begin();
-                strP != command.end();
-                strP++)
-                std::cout << "-";
-            std::cout << "-------------------\n\n";
+            std::cout << "|  --Error-- \"" << command << "\" is not a valid command\n";
         }
+        std::cout << "__________________________________________________________________________\n\n\n";
     }
 
 

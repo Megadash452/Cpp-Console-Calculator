@@ -154,7 +154,6 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
     string push_backStr;
 
     for (int i = 0; i < num_of_args + 1; i++)
-    {
         for (string::iterator
             charP = left_over;
             charP != str.end();
@@ -179,7 +178,21 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
                 break;
             }
         }
-    }
+    
+    int actual_num_of_args = 0;
+    for (string::iterator
+        charP = str.begin();
+        charP != str.end();
+        charP++)
+        if (*charP == split)
+            actual_num_of_args++;
+
+    if (actual_num_of_args > num_of_args)
+        std::cout << "|  --WARNING!--  Too many arguments. Please provide " << num_of_args << " arguments\n"
+                     "|                Unnecessary arguments were ignored\n";
+    else if (actual_num_of_args < num_of_args)
+        std::cout << "|  --WARNING!--  Too few arguments. Please provide " << num_of_args << " arguments\n";
+
     return returnVect;
 }
 void lib::organize(string from, string& command, std::vector<string>& arguments)
@@ -187,21 +200,21 @@ void lib::organize(string from, string& command, std::vector<string>& arguments)
     command = lib::get_command(from);
     if (command == "calculate" || command == "calc")
         arguments = lib::get_arguments(from, 1);
-    if (command == "add" || command == "sum" ||
+    else if (command == "add" || command == "sum" ||
         command == "subtract" || command == "subt" ||
         command == "multiply" || command == "mult" ||
         command == "divide" || command == "div")
         arguments = lib::get_arguments(from, 2);
 }
 
-void lib::end_command_turn(const string& comm, const std::vector<string>& args)
+/*void lib::end_command_turn(const string& comm, const std::vector<string>& args)
 {
-    std::cout << '-';
+    std::cout << "___";
     for (string::const_iterator
         charP = comm.begin();
         charP != comm.end();
         charP++)
-        std::cout << '-';
+        std::cout << '_';
 
     for (std::vector<string>::const_iterator
         argP = args.begin();
@@ -212,9 +225,9 @@ void lib::end_command_turn(const string& comm, const std::vector<string>& args)
             strP = (*argP).begin();
             strP != (*argP).end();
             strP++)
-            std::cout << '-';
-        std::cout << "-";
+            std::cout << '_';
+        std::cout << '_';
     }
     std::cout << "\n\n";
         
-}
+}*/

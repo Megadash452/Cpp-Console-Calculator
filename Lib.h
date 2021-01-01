@@ -1,11 +1,12 @@
 #pragma once
-#include <iostream>
 #include <string>
 #include <vector>
 #include <array>
 #include <variant>
 #include <map>
 using string = std::string;
+
+#include "Console.h"
 
 // Comparisons
 #define char_in_operators(c) (c=='+'||c=='-'||c==(char)241||c=='*'||c=='/'||c=='^'||c=='!'||c=='%'||c=='|'||c=='('||c==')')
@@ -52,5 +53,5 @@ namespace lib {
     std::vector<string> get_arguments(string str, int num_of_args, char split = ' ');
     void organize(string from, string& command, std::vector<string>& arguments);
 
-    void end_command_turn(const string& comm, const std::vector<string>& args);
+    //void end_command_turn(const string& comm, const std::vector<string>& args);
 }

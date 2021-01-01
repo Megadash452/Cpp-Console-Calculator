@@ -144,11 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Console calculator.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="Lib.cpp" />
     <ClCompile Include="Term.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Lib.h" />
     <ClInclude Include="Term.h" />
