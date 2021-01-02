@@ -181,6 +181,7 @@ void Console::reset_color(){set_color(0);}
 void Console::color_by_delim(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
 {
 	string::iterator delimP = charP;
+	string::iterator closeTarget = lib::find_closing(delimP);
 
 	if (lib::closeDelims[*delimP])
 	{
@@ -190,14 +191,13 @@ void Console::color_by_delim(string::iterator& charP, int color, bool keep_delim
 		this->set_color(color);
 		if (keep_delims)
 		{
-			for (; *charP != lib::closeDelims[*delimP] ||
-				charP == delimP;
+			for (; charP != closeTarget;
 				charP++)
 				std::cout << *charP;
 			std::cout << *charP;
 		}
 		else
-			for (; *charP != lib::closeDelims[*delimP];
+			for (; charP != closeTarget;
 				charP++)
 				std::cout << *charP;
 		charP++;

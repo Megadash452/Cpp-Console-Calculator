@@ -18,24 +18,8 @@ using string = std::string;
 #define has_valid_expression_chars(c) (char_in_operators(c)||char_in_numbers(c)||char_in_constants(c)||char_in_alphabet(c)||char_in_alphabetUpper(c)||char_in_symbols(c))
 
 namespace lib {
-    std::map<char, char> closeDelims = {
-        {'\'', '\''},
-        {'"', '"'},
-        {'<', '>'},
-        {'[', ']'},
-        {'(', ')'},
-        {'{', '}'},
-        {' ', ' '}
-    };
-    std::map<char, char> openDelims = {
-        {'\'', '\''},
-        {'"', '"'},
-        {'>', '<'},
-        {']', '['},
-        {')', '('},
-        {'}', '{'},
-        {' ', ' '}
-    };
+    extern std::map<char, char> closeDelims;
+    extern std::map<char, char> openDelims;
 
     bool char_in_string(char character, string str);
 
@@ -49,8 +33,8 @@ namespace lib {
 
     string to_string(int num);
 
-    string::const_iterator find_closing(string::const_iterator it, string& str);
-    string::iterator find_closing(string::iterator it, string& str);
+    string::const_iterator find_closing(string::const_iterator it);
+    string::iterator find_closing(string::iterator it);
 
     void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 

@@ -39,8 +39,7 @@ int main()
         console.log("What do you want to do? (type \"help\" or \"h\" if you don't know what you can do)");
         std::cout << "|  --> ";
 
-        //console.input(user_input);
-        std::cerr << "nope\n";
+        console.input(user_input);
 
         lib::organize(user_input, command, arguments);
         command = lib::lower_case(command);
@@ -59,7 +58,7 @@ int main()
              console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
              console.log("  c{8}[-Note: No support for decimals, yet.-]");
              console.log("    c{6}[--] Use the calculator.");
-             console.log("\n");
+             console.log("");
         }
         else if (command == "stop" || command == "quit" || command == "exit") {
             std::cout << "|  goodbye!";
@@ -84,7 +83,7 @@ int main()
         else if (command == "calculate" || command == "calc")
         {
             Expression e(arguments[0]);
-            std::cout << "|  result: ";
+            console.log("result: ");
             e.print();
         }
         else

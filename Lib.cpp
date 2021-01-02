@@ -1,5 +1,24 @@
 #include "Lib.h"
 
+extern std::map<char, char> lib::closeDelims({
+        {'\'', '\''},
+        {'"', '"'},
+        {'<', '>'},
+        {'[', ']'},
+        {'(', ')'},
+        {'{', '}'},
+        {' ', ' '}
+    });
+extern std::map<char, char> lib::openDelims({
+    {'\'', '\''},
+    {'"', '"'},
+    {'>', '<'},
+    {']', '['},
+    {')', '('},
+    {'}', '{'},
+    {' ', ' '}
+});
+
 bool lib::char_in_string(char character, string str)
 {
     for (string::const_iterator
@@ -97,45 +116,51 @@ string lib::to_string(int num)
 }
 
 
-string::const_iterator lib::find_closing(string::const_iterator it, string& str)
+string::const_iterator lib::find_closing(string::const_iterator it)
 {
-    /*if (lib::closeDelims[*it])
+    string::const_iterator opening = it;
+    if (lib::closeDelims[*it])
     {
-        int parenthesisCount = 0;
-        for (string::const_iterator i = it; i != str.end(); i++)
+        int extraCount = 0;
+        char target = lib::closeDelims[*it];
+        for (; !(*it == '\0' || *it == '\n');)
         {
-            if (*i == lib::openDelims[lib::closeDelims[*it]] && i != it)
-                parenthesisCount++;
-            if (*i == lib::closeDelims[*it])
+            it++;
+            if (*it == target)
             {
-                if (parenthesisCount)
-                    parenthesisCount--;
+                if (extraCount)
+                    extraCount--;
                 else
-                    return i;
+                    return it;
             }
-        }
-    }*/
-    return it;
-}
-string::iterator lib::find_closing(string::iterator it, string& str)
-{
-    if (*it == '(')
-    {
-        int parenthesisCount = 0;
-        for (string::iterator i = it; i != str.end(); i++)
-        {
-            if (*i == '(' && i != it)
-                parenthesisCount++;
-            if (*i == ')')
-            {
-                if (parenthesisCount)
-                    parenthesisCount--;
-                else
-                    return i;
-            }
+            else if (*it == *opening)
+                extraCount++;
         }
     }
-    return it;
+    return opening;
+}
+string::iterator lib::find_closing(string::iterator it)
+{
+    string::iterator opening = it;
+    if (lib::closeDelims[*it])
+    {
+        int extraCount = 0;
+        char target = lib::closeDelims[*it];
+        for (; !(*it == '\0' || *it == '\n');)
+        {
+            it++;
+            if (*it == target)
+            {
+                if (extraCount)
+                    extraCount--;
+                else
+                    return it;
+            }
+            else if (*it == *opening)
+                extraCount++;
+        }
+    }
+    return opening;
 }
 
 void lib::split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
