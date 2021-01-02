@@ -18,9 +18,31 @@ using string = std::string;
 #define has_valid_expression_chars(c) (char_in_operators(c)||char_in_numbers(c)||char_in_constants(c)||char_in_alphabet(c)||char_in_alphabetUpper(c)||char_in_symbols(c))
 
 namespace lib {
+    std::map<char, char> closeDelims = {
+        {'\'', '\''},
+        {'"', '"'},
+        {'<', '>'},
+        {'[', ']'},
+        {'(', ')'},
+        {'{', '}'},
+        {' ', ' '}
+    };
+    std::map<char, char> openDelims = {
+        {'\'', '\''},
+        {'"', '"'},
+        {'>', '<'},
+        {']', '['},
+        {')', '('},
+        {'}', '{'},
+        {' ', ' '}
+    };
+
     bool char_in_string(char character, string str);
 
     string lower_case(string str);
+    string upper_case(string str);
+    char lower_case(char c);
+    char upper_case(char c);
 
     int integer(char c);
     int integer(string str, int base = 10);

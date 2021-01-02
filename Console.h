@@ -14,24 +14,13 @@ struct Console
 	int text_color = this->default_color;
 	int previous_color = 7;
 
-	std::map<char, char> closeDelims = {
-		{'\'', '\''},
-		{'"', '"'},
-		{'<', '>'},
-		{'[', ']'},
-		{'(', ')'},
-		{'{', '}'},
-		{' ', ' '}
-	};
-	std::map<char, int> delimColor = {
-		{'\'', 3},
-		{'"', 2},
-		{'<', 11}
-	};
+	static string Keywords[30];
 
 	Console();
 
 	void log(string msg, int color = 0, bool new_line = true);
+	void input(string& var);
+	//void input(int& var);
 
 	void log_str(string str);
 	void log_char(char c);
@@ -46,6 +35,8 @@ struct Console
 	void set_previous_color();
 	void reset_color();
 
-	void foo(string::iterator& charP, int color, bool keep_delims = false); // Before using, make sure that the string::iterator is in this->closeDelims map;
+private:
+	void color_by_delim(string::iterator& charP, int color, bool keep_delims = false); // Before using, make sure that the string::iterator is in this->closeDelims map;
+	void iterate_for_keywords(string::iterator& charP);
 };
 

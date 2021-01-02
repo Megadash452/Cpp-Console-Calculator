@@ -28,6 +28,7 @@ int main()
         //std::cout << argc << " arguments passed from outside; omitted\n";
 
     Console console;
+    int sample;
 
     string user_input;
     string command;
@@ -38,9 +39,8 @@ int main()
         console.log("What do you want to do? (type \"help\" or \"h\" if you don't know what you can do)");
         std::cout << "|  --> ";
 
-        console.set_color(8);
-        getline(std::cin, user_input);
-        console.reset_color();
+        //console.input(user_input);
+        std::cerr << "nope\n";
 
         lib::organize(user_input, command, arguments);
         command = lib::lower_case(command);
@@ -52,13 +52,13 @@ int main()
         if (command == "help" || command == "h")
         {
             std::cout << "|\n";
-             console.log("Commands:");
-             console.log("  stop, quit, exit (args: Null):");
-             console.log("    -- Exit out of the program.");
-             console.log("\n");
-             console.log("  calculate, calc (args: Expression<string>):");
-             console.log("  -Note: No support for decimals, yet.-");
-             console.log("    -- Use the calculator.");
+             console.log("c{6}[Commands:]");
+             console.log("  c{13}[stop], c{13}[quit], c{13}[exit] (args: Null):");
+             console.log("    c{6}[--] Exit out of the program.");
+             console.log("");
+             console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
+             console.log("  c{8}[-Note: No support for decimals, yet.-]");
+             console.log("    c{6}[--] Use the calculator.");
              console.log("\n");
         }
         else if (command == "stop" || command == "quit" || command == "exit") {

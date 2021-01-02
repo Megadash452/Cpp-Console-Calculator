@@ -1,5 +1,13 @@
 #include "Console.h"
 
+string Console::Keywords[30] = {"null", "true", "false", "console", "term", "expression", "function", "func"
+                               "bool", "char", "int", "string", "str", "array", "arr", "map",
+
+                               "add", "subtract", "multiply", "divide", "plus", "minus",
+                               "addition", "subtraction", "multiplication", "division",
+                               "derivative", "integral",
+                               "derive", "integrate"};
+
 Console::Console()
 {
 	SetConsoleTextAttribute(this->handle, 7);
@@ -15,14 +23,15 @@ void Console::log(string msg, int color, bool new_line)
 		 charP != msg.end();
 		 charP++)
 	{
+		// TODO: Add keyword syntax highlight
 		if (*charP == '"')
-			foo(charP, 2, true);
+			color_by_delim(charP, 2, true);
 		else if (*charP == '\'' && *(charP + 2) == '\'')
-			foo(charP, 3, true);
+			color_by_delim(charP, 3, true);
 		else if (*charP == '<')
-			foo(charP, 11, true);
+			color_by_delim(charP, 11, true);
 		else if (*charP == ' ' && char_in_numbers(*(charP + 1)))
-			foo(charP, 9, true);
+			color_by_delim(charP, 9, true);
 
 		else if (*charP == 'c' && *(charP + 1) == '{')
 		{
@@ -33,14 +42,22 @@ void Console::log(string msg, int color, bool new_line)
 				if (*(i + 1) == '}')
 					charP = i + 2;
 			}
-			this->foo(charP, stoi(tempStr));
+			this->color_by_delim(charP, stoi(tempStr));
 		}
-
+		if (charP >= msg.end())
+			break;
 		std::cout << *charP;
 	}
 	if (new_line)
 		std::cout << std::endl;
 	
+}
+
+void Console::input(string& var)
+{
+	this->set_color(8);
+	getline(std::cin, var);
+	this->reset_color();
 }
 
 void Console::log_str(string str)
@@ -161,11 +178,11 @@ void Console::set_color(int color)
 void Console::set_previous_color() {set_color(this->previous_color);}
 void Console::reset_color(){set_color(0);}
 
-void Console::foo(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
+void Console::color_by_delim(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
 {
 	string::iterator delimP = charP;
 
-	if (closeDelims[*delimP])
+	if (lib::closeDelims[*delimP])
 	{
 		if (!keep_delims)
 			charP++;
@@ -173,14 +190,14 @@ void Console::foo(string::iterator& charP, int color, bool keep_delims) // Befor
 		this->set_color(color);
 		if (keep_delims)
 		{
-			for (; *charP != this->closeDelims[*delimP] ||
+			for (; *charP != lib::closeDelims[*delimP] ||
 				charP == delimP;
 				charP++)
 				std::cout << *charP;
 			std::cout << *charP;
 		}
 		else
-			for (; *charP != this->closeDelims[*delimP];
+			for (; *charP != lib::closeDelims[*delimP];
 				charP++)
 				std::cout << *charP;
 		charP++;
@@ -197,4 +214,7 @@ void Console::foo(string::iterator& charP, int color, bool keep_delims) // Befor
 		this->set_previous_color();
 		std::cout << *charP;
 	}
+}
+void Console::iterate_for_keywords(string::iterator& charP)
+{
 }

@@ -27,12 +27,44 @@ string lib::lower_case(string str)
         charP != str.end();
         charP++)
     {
-        if (*charP >= 65 && *charP <= 90)
+        if (*charP > 64 && *charP < 91)
             returnStr.push_back(*charP + 32);
         else
             returnStr.push_back(*charP);
     }
     return returnStr;
+}
+
+string lib::upper_case(string str)
+{
+    string returnStr;
+    for (string::iterator
+        charP = str.begin();
+        charP != str.end();
+        charP++)
+    {
+        if (*charP > 96 && *charP < 123)
+            returnStr.push_back(*charP - 32);
+        else
+            returnStr.push_back(*charP);
+    }
+    return returnStr;
+}
+
+char lib::lower_case(char c)
+{
+    if (c > 64 && c < 91)
+        return c + 32;
+    else
+        return c;
+}
+
+char lib::upper_case(char c)
+{
+    if (c > 96 && c < 123)
+        return c - 32;
+    else
+        return c;
 }
 
 int lib::integer(char c) {
@@ -67,14 +99,14 @@ string lib::to_string(int num)
 
 string::const_iterator lib::find_closing(string::const_iterator it, string& str)
 {
-    if (*it == '(')
+    /*if (lib::closeDelims[*it])
     {
         int parenthesisCount = 0;
         for (string::const_iterator i = it; i != str.end(); i++)
         {
-            if (*i == '(' && i != it)
+            if (*i == lib::openDelims[lib::closeDelims[*it]] && i != it)
                 parenthesisCount++;
-            if (*i == ')')
+            if (*i == lib::closeDelims[*it])
             {
                 if (parenthesisCount)
                     parenthesisCount--;
@@ -82,7 +114,8 @@ string::const_iterator lib::find_closing(string::const_iterator it, string& str)
                     return i;
             }
         }
-    }
+    }*/
+    return it;
 }
 string::iterator lib::find_closing(string::iterator it, string& str)
 {
