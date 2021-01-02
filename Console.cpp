@@ -5,15 +5,9 @@ Console::Console()
 	SetConsoleTextAttribute(this->handle, 7);
 }
 
-void Console::log(string msg, int color)
+void Console::log(string msg, int color, bool new_line)
 {
 	this->set_color(color);
-
-	bool on_str = false;
-	bool on_char = false;
-	bool on_int = false;
-
-	bool reset = false;
 
 	std::cout << "|  ";
 	for (string::iterator
@@ -21,40 +15,31 @@ void Console::log(string msg, int color)
 		 charP != msg.end();
 		 charP++)
 	{
-		if (*charP == '"' && !on_str)
+		if (*charP == '"')
+			foo(charP, 2, true);
+		else if (*charP == '\'' && *(charP + 2) == '\'')
+			foo(charP, 3, true);
+		else if (*charP == '<')
+			foo(charP, 11, true);
+		else if (*charP == ' ' && char_in_numbers(*(charP + 1)))
+			foo(charP, 9, true);
+
+		else if (*charP == 'c' && *(charP + 1) == '{')
 		{
-			this->set_color(2);
-			on_str = true;
-		}
-		else if (*charP == '"' && on_str)
-		{
-			reset = true;
-			on_str = false;
+			string tempStr;
+			for (string::iterator i = charP + 2; *i != '}'; i++)
+			{
+				tempStr.push_back(*i);
+				if (*(i + 1) == '}')
+					charP = i + 2;
+			}
+			this->foo(charP, stoi(tempStr));
 		}
 
-		else if (*charP == '\'' && !on_char && !on_str)
-		{
-			this->set_color(3);
-			on_char = true;
-		}
-		else if (*charP == '\'' && on_char && !on_str)
-		{
-			reset = true;
-			on_char = false;
-		}
-
-		else if (char_in_numbers(*charP) && !on_int)
-		{
-
-		}
 		std::cout << *charP;
-		if (reset)
-		{
-			this->set_previous_color();
-			reset = false;
-		}
 	}
-	std::cout << std::endl;
+	if (new_line)
+		std::cout << std::endl;
 	
 }
 
@@ -175,3 +160,41 @@ void Console::set_color(int color)
 }
 void Console::set_previous_color() {set_color(this->previous_color);}
 void Console::reset_color(){set_color(0);}
+
+void Console::foo(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
+{
+	string::iterator delimP = charP;
+
+	if (closeDelims[*delimP])
+	{
+		if (!keep_delims)
+			charP++;
+
+		this->set_color(color);
+		if (keep_delims)
+		{
+			for (; *charP != this->closeDelims[*delimP] ||
+				charP == delimP;
+				charP++)
+				std::cout << *charP;
+			std::cout << *charP;
+		}
+		else
+			for (; *charP != this->closeDelims[*delimP];
+				charP++)
+				std::cout << *charP;
+		charP++;
+		this->set_previous_color();
+	}
+	else
+	{
+		for (; *charP != ' ' ||
+			charP == delimP;
+			charP++)
+			std::cout << *charP;
+		this->set_color(4);
+		std::cout << "<-(error applying color)";
+		this->set_previous_color();
+		std::cout << *charP;
+	}
+}

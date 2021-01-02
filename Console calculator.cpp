@@ -24,23 +24,19 @@ public:
 
 int main()
 {
+    //if (argc - 1)
+        //std::cout << argc << " arguments passed from outside; omitted\n";
+
     Console console;
 
     string user_input;
     string command;
     std::vector<string> arguments;
 
-    //if (argc - 1)
+    while (true)
     {
-        //std::cout << argc << " arguments passed from outside; omitted\n";
-    }
-
-    console.log("el string \"hahaha\" esta bien pogger");
-
-    while (false)
-    {
-        std::cout << "|  What do you want to do? (type \"help\" if you don't know what you can do)" << std::endl <<
-                     "|  --> ";
+        console.log("What do you want to do? (type \"help\" or \"h\" if you don't know what you can do)");
+        std::cout << "|  --> ";
 
         console.set_color(8);
         getline(std::cin, user_input);
@@ -55,14 +51,15 @@ int main()
         // TODO: Inefficient; use map with function pointers
         if (command == "help" || command == "h")
         {
-            std::cout << "|\n|  Commands:"                                     << std::endl <<
-                         "|    stop, quit, exit (args: Null):"                 << std::endl <<
-                         "|      -- Exit out of the program."                  << std::endl <<
-                         "|"                                                   << std::endl <<
-                         "|    calculate, calc (args: Expression<string>):"    << std::endl <<
-                         "|    -Note: No support for decimals, yet.-"          << std::endl <<
-                         "|      -- Use the calculator."                       << std::endl <<
-                         "|\n";
+            std::cout << "|\n";
+             console.log("Commands:");
+             console.log("  stop, quit, exit (args: Null):");
+             console.log("    -- Exit out of the program.");
+             console.log("\n");
+             console.log("  calculate, calc (args: Expression<string>):");
+             console.log("  -Note: No support for decimals, yet.-");
+             console.log("    -- Use the calculator.");
+             console.log("\n");
         }
         else if (command == "stop" || command == "quit" || command == "exit") {
             std::cout << "|  goodbye!";
@@ -92,7 +89,7 @@ int main()
         }
         else
         {
-            std::cout << "|  --Error-- \"" << command << "\" is not a valid command\n";
+            console.log("c{4}[--Error--] \"" + command + "\" is not a valid command.");
         }
         std::cout << "__________________________________________________________________________\n\n\n";
     }

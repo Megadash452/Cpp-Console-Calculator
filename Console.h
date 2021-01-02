@@ -6,14 +6,32 @@
 
 struct Console
 {
+	// Rules:
+	// "c{color}[part]" to apply color to a part of the string; (alternative: pass in the color as second parameter of console.log();
+
 	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
 	int default_color = 7;
 	int text_color = this->default_color;
 	int previous_color = 7;
 
+	std::map<char, char> closeDelims = {
+		{'\'', '\''},
+		{'"', '"'},
+		{'<', '>'},
+		{'[', ']'},
+		{'(', ')'},
+		{'{', '}'},
+		{' ', ' '}
+	};
+	std::map<char, int> delimColor = {
+		{'\'', 3},
+		{'"', 2},
+		{'<', 11}
+	};
+
 	Console();
 
-	void log(string msg, int color = 0);
+	void log(string msg, int color = 0, bool new_line = true);
 
 	void log_str(string str);
 	void log_char(char c);
@@ -27,5 +45,7 @@ struct Console
 	void set_color(int color);
 	void set_previous_color();
 	void reset_color();
+
+	void foo(string::iterator& charP, int color, bool keep_delims = false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 };
 
