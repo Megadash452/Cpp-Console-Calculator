@@ -19,21 +19,11 @@ void Console::log(string msg, int color, bool new_line)
 
 	std::cout << "|  ";
 	for (string::iterator
-		 charP = msg.begin();
-		 charP != msg.end();
-		 charP++)
+		charP = msg.begin();
+		charP != msg.end();
+		charP++)
 	{
-		// TODO: Add keyword syntax highlight
-		if (*charP == '"')
-			color_by_delim(charP, 2, true);
-		else if (*charP == '\'' && *(charP + 2) == '\'')
-			color_by_delim(charP, 3, true);
-		else if (*charP == '<')
-			color_by_delim(charP, 11, true);
-		else if (*charP == ' ' && char_in_numbers(*(charP + 1)))
-			color_by_delim(charP, 9, true);
-
-		else if (*charP == 'c' && *(charP + 1) == '{')
+		if (*charP == 'c' && *(charP + 1) == '{')
 		{
 			string tempStr;
 			for (string::iterator i = charP + 2; *i != '}'; i++)
@@ -46,11 +36,31 @@ void Console::log(string msg, int color, bool new_line)
 		}
 		if (charP >= msg.end())
 			break;
+
+		// TODO: Add keyword syntax highlight
+		try {
+			if (*charP == '"')
+				color_by_delim(charP, 2, true);
+			else if (*charP == '\'' && *(charP + 2) == '\'')
+				color_by_delim(charP, 3, true);
+			else if (*charP == '<')
+				color_by_delim(charP, 11, true);
+			else if (charP + 1 < msg.end())
+				if (*charP == ' ' && char_in_numbers(*(charP + 1)))
+					color_by_delim(charP, 9, true);
+		}
+		catch (int e)
+		{
+
+		}
+
+		
 		std::cout << *charP;
 	}
 	if (new_line)
 		std::cout << std::endl;
-	
+	if (color)
+		this->set_previous_color();
 }
 
 void Console::input(string& var)
@@ -66,14 +76,12 @@ void Console::log_str(string str)
 	std::cout << "\"" << str << "\"";
 	this->set_color(0);
 }
-
 void Console::log_char(char c)
 {
 	this->set_color(3);
 	std::cout << "'" << c << "'";
 	this->set_color(0);
 }
-
 void Console::log_int(int i)
 {
 	this->set_color(9);

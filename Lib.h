@@ -7,6 +7,7 @@
 using string = std::string;
 
 #include "Console.h"
+#include "Expression.h"
 
 // Comparisons
 #define char_in_operators(c) (c=='+'||c=='-'||c==(char)241||c=='*'||c=='/'||c=='^'||c=='!'||c=='%'||c=='|'||c=='('||c==')')

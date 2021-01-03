@@ -1,5 +1,4 @@
 #include "Lib.h"
-#include "Expression.h"
 
 //#define print(x) std::cout << x << std::endl
 
@@ -52,7 +51,7 @@ int main()
         {
             std::cout << "|\n";
              console.log("c{6}[Commands:]");
-             console.log("  c{13}[stop], c{13}[quit], c{13}[exit] (args: Null):");
+             console.log("  c{12}[stop], c{12}[quit], c{12}[exit] (args: Null):");
              console.log("    c{6}[--] Exit out of the program.");
              console.log("");
              console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
@@ -83,7 +82,7 @@ int main()
         else if (command == "calculate" || command == "calc")
         {
             Expression e(arguments[0]);
-            console.log("result: ");
+            console.log("result: ", 0, false);
             e.print();
         }
         else
