@@ -1,6 +1,6 @@
 #include "Expression.h"
 
-char Expression::operators[11] = { '+','-',(char)241,'*','/','^','!','%','|','(',')' };
+char Expression::operators[12] = { '+','-',(char)241,'*','/','^','!','%','|','(',')','.' };
 char Expression::numbers[10] = { '0','1','2','3','4','5','6','7','8','9' };
 char Expression::constants[5] = { 'e',(char)227,(char)237,(char)242,(char)243 };
 char Expression::alphabet[26] = { 'a','b','c','d','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',(char)159 }; //159 is function f (script-indented) // TODO: Remove i to put in symbols/constants
@@ -63,7 +63,7 @@ void Expression::simplify()
         {
             if (*sign == "*" && sign == tempVect.begin() + 1)
                 multiplication = stod(*(sign - 1)) * stod(*(sign + 1));
-            else if (* sign == "*")
+            else if (*sign == "*")
                 multiplication *= stod(*(sign + 1));
 
             else if (*sign == "/" && sign == tempVect.begin() + 1)
@@ -84,7 +84,7 @@ void Expression::simplify()
     this->mult_div_indexes.clear();
 
     // --Adding/Subtracting
-    int addition = 0;
+    double addition = 0;
     std::vector<Term> arithmeticTerms;
     for (std::vector<Term>::iterator
         termP = this->terms.begin();
@@ -93,10 +93,7 @@ void Expression::simplify()
     {
         addition += termP->value;
     }
-    if (addition >= 0)
-        this->expression = /*'+' + */std::to_string(addition);
-    else
-        this->expression = std::to_string(addition);
+    this->expression = std::to_string(addition);
     this->updateTerms();
 }
 string Expression::simplify(string exp) // TODO: 
@@ -146,8 +143,7 @@ void Expression::updateTerms()
     {
         if (charP != this->expression.begin() && (*charP == '+' || *charP == '-') && !(*(charP - 1) == '*' || *(charP - 1) == '/'))
         {
-            Term tempTerm(tempStr);
-            this->terms.push_back(tempTerm);
+            this->terms.push_back(Term(tempStr));
             tempStr.clear();
             tempStr.push_back(*charP);
             index++;
@@ -162,8 +158,7 @@ void Expression::updateTerms()
         else
             tempStr += *charP;
     }
-    Term tempTerm(tempStr);
-    this->terms.push_back(tempTerm);
+    this->terms.push_back(Term(tempStr));
     tempStr.clear();
 }
 
@@ -179,13 +174,10 @@ string Expression::parseString(const string& exp)
             parsed.push_back(*charP);
     }
 
-    if (parsed[0] == '|' ||
-        parsed[0] == '(' ||
-        char_in_symbols(parsed[0]) ||
-        char_in_numbers(parsed[0]) ||
-        char_in_alphabet(parsed[0]) ||
-        char_in_constants(parsed[0]) ||
-        char_in_alphabetUpper(parsed[0]))
+    if (parsed[0] != '+' || parsed[0] != '-' ||
+        parsed[0] != (char)241 ||
+        parsed[0] != '*' || parsed[0] != '/' ||
+        parsed[0] != '^')
             parsed = '+' + parsed;
 
     return parsed;

@@ -15,7 +15,7 @@ public:
     std::vector<Term> terms; // st
     string expression;
 
-    static char operators[11];
+    static char operators[12];
     static char numbers[10];
     static char constants[5];
     static char alphabet[26];

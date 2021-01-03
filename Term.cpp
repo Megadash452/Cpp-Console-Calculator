@@ -18,10 +18,8 @@ Term::Term(const string& str)
 			mult = true;
 	}
 
-	string tempStr(str.begin(), str.end());
-
 	if (!mult)
-		this->value = stod(tempStr);
+		this->value = stod(string(str.begin(), str.end()));
 	else
 		this->value = 0;
 }

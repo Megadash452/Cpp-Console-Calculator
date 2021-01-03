@@ -55,7 +55,6 @@ int main()
              console.log("    c{6}[--] Exit out of the program.");
              console.log("");
              console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
-             console.log("  c{8}[-Note: No support for decimals, yet.-]");
              console.log("    c{6}[--] Use the calculator.");
              console.log("");
         }
