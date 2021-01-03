@@ -8,4 +8,4 @@ This version of the calculator can only be run in the **Windows Terminal** (comm
 
 ## Development
 This calculator was programmed in **C++** using the *Visual Studio IDE* (MSVC).<br>
-The whole thing was meant to be a practice project at first, but then I thoght it would be fun to go throughwith making it an actual project. I would say thaat was a good decision since I learned a lot of C++ from making this calculator. 
+The whole thing was meant to be a practice project at first, but then I thoght it would be fun to go through with making it an actual project. I would say that was a good decision since I learned a lot of C++ from making this calculator. 
