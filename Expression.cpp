@@ -45,6 +45,17 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
+    // --Exponent
+    for (std::vector<int>::iterator
+        indP = this->exp_indexes.begin();
+        indP != this->exp_indexes.end();
+        indP++)
+    {
+        //TODO: finish exponent calculation in Expression
+        double result;
+        std::vector<string> tempVect;
+    }
+
     // --Multiplying/Dividing
     for (std::vector<int>::iterator
         indP = this->mult_div_indexes.begin();
@@ -72,14 +83,10 @@ void Expression::simplify()
                 multiplication /= stod(*(sign + 1));
         }
 
-        if (multiplication >= 0) {
-            Term tempTerm('+' + std::to_string(multiplication));
-            this->terms[*indP] = tempTerm;
-        }
-        else {
-            Term tempTerm(std::to_string(multiplication));
-            this->terms[*indP] = tempTerm;
-        }
+        if (multiplication >= 0)
+            this->terms[*indP] = Term('+' + std::to_string(multiplication));
+        else
+            this->terms[*indP] = Term(std::to_string(multiplication));
     }
     this->mult_div_indexes.clear();
 
@@ -136,23 +143,32 @@ void Expression::updateTerms()
     string tempStr;
     int index = 0;
     bool mult_on_this_term = false;
+    bool exp_on_this_term = false;
+
     for (string::iterator
          charP = this->expression.begin();
          charP != this->expression.end();
          charP++)
     {
-        if (charP != this->expression.begin() && (*charP == '+' || *charP == '-') && !(*(charP - 1) == '*' || *(charP - 1) == '/'))
+        if (charP != this->expression.begin() && (*charP == '+' || *charP == '-')) // might remove last && for optimization
         {
             this->terms.push_back(Term(tempStr));
             tempStr.clear();
             tempStr.push_back(*charP);
             index++;
             mult_on_this_term = false;
+            exp_on_this_term = false;
         }
-        else if ((*charP == '*' || *charP == '/') && !(mult_on_this_term))
+        else if ((*charP == '*' || *charP == '/') && !mult_on_this_term)
         {
             this->mult_div_indexes.push_back(index);
             mult_on_this_term = true;
+            tempStr += *charP;
+        }
+        else if (*charP == '^' && !exp_on_this_term)
+        {
+            this->exp_indexes.push_back(index);
+            exp_on_this_term = true;
             tempStr += *charP;
         }
         else

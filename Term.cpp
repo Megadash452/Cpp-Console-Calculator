@@ -14,7 +14,7 @@ Term::Term(const string& str)
 		charP++)
 	{
 		this->termStr.push_back(*charP);
-		if (*charP == '*' || *charP == '/')
+		if (*charP == '*' || *charP == '/' || *charP == '^')
 			mult = true;
 	}
 

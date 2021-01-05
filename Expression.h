@@ -45,6 +45,7 @@ public:
 
 private:
     std::vector<int> mult_div_indexes;
+    std::vector<int> exp_indexes;
 
     void updateTerms(const string& str);
     void updateTerms();
