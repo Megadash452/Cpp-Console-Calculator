@@ -69,7 +69,7 @@ void Expression::simplify()
             else if (*sign == "/" && sign == tempVect.begin() + 1)
                 multiplication = stod(*(sign - 1)) / stod(*(sign + 1));
             else if (*sign == "/")
-                multiplication / stod(*(sign + 1));
+                multiplication /= stod(*(sign + 1));
         }
 
         if (multiplication >= 0) {
