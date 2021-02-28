@@ -36,7 +36,7 @@ public:
     void print();
     static void print(const Expression& exp);
     void simplify();
-    static string simplify(string exp);
+    static Expression simplify(Expression exp);
 
     Expression operator +(const Expression& exp) const;
     Expression operator +(const string& exp) const;
@@ -49,6 +49,7 @@ private:
 
     void updateTerms(const string& str);
     void updateTerms();
+    void updateExpression();
     static string parseString(const string& exp);
 };
 

@@ -81,6 +81,7 @@ int main()
         else if (command == "calculate" || command == "calc")
         {
             Expression e(arguments[0]);
+            e.simplify();
             console.log("result: ", 0, false);
             e.print();
         }

@@ -253,16 +253,18 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
 
     return returnVect;
 }
-void lib::organize(string from, string& command, std::vector<string>& arguments)
+void lib::organize(string source, string& command, std::vector<string>& arguments)
 {
-    command = lib::get_command(from);
+    command = lib::get_command(source);
     if (command == "calculate" || command == "calc")
-        arguments = lib::get_arguments(from, 1);
+        arguments = lib::get_arguments(source, 1);
     else if (command == "add" || command == "sum" ||
         command == "subtract" || command == "subt" ||
         command == "multiply" || command == "mult" ||
         command == "divide" || command == "div")
-        arguments = lib::get_arguments(from, 2);
+        arguments = lib::get_arguments(source, 2);
+    else
+        arguments = lib::get_arguments(source, 1);
 }
 
 /*void lib::end_command_turn(const string& comm, const std::vector<string>& args)

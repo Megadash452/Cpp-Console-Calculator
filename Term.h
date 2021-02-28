@@ -13,6 +13,8 @@ public:
 
 	Term(const string& str);
 
+	void updateStr();
+
 	
 	/*virtual Term add(const string& str);
 	virtual Term subtract(const string& str);

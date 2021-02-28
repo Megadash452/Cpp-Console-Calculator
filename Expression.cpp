@@ -11,7 +11,6 @@ Expression::Expression(string exp)
 {
     this->expression = Expression::parseString(exp);
     this->updateTerms();
-    this->simplify();
 }
 Expression::Expression(std::vector<string>& vect)
 {
@@ -21,7 +20,6 @@ Expression::Expression(std::vector<string>& vect)
         strP++)
         this->expression += Expression::parseString(*strP);
     this->updateTerms();
-    this->simplify();
 }
 
 void Expression::print()
@@ -90,24 +88,26 @@ void Expression::simplify()
     }
     this->mult_div_indexes.clear();
 
-    // --Adding/Subtracting
-    double addition = 0;
-    std::vector<Term> arithmeticTerms;
-    for (std::vector<Term>::iterator
-        termP = this->terms.begin();
-        termP != this->terms.end();
-        termP++)
-    {
-        addition += termP->value;
-    }
-    this->expression = std::to_string(addition);
-    this->updateTerms();
-}
-string Expression::simplify(string exp) // TODO: 
-{
-    Expression tempEx(exp);
 
-    return tempEx.expression;
+
+
+    // --Adding/Subtracting
+    for (std::vector<Term>::reverse_iterator
+        termP = this->terms.rbegin() + 1;
+        termP != this->terms.rend();)
+    {
+        *termP += *(termP - 1);
+        termP++;
+        this->terms.erase(this->terms.end()-1);
+    }
+    this->updateExpression();
+
+
+}
+Expression Expression::simplify(Expression exp)
+{
+    exp.simplify();
+    return exp;
 }
 
 
@@ -176,6 +176,18 @@ void Expression::updateTerms()
     }
     this->terms.push_back(Term(tempStr));
     tempStr.clear();
+}
+void Expression::updateExpression()
+{
+    this->expression.clear();
+    for (std::vector<Term>::iterator
+        termP = this->terms.begin();
+        termP != this->terms.end();
+        termP++)
+    {
+        this->expression.push_back(termP->sign);
+        this->expression += termP->termStr;
+    }
 }
 
 string Expression::parseString(const string& exp)
