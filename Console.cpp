@@ -70,6 +70,12 @@ void Console::input(string& var)
 	this->reset_color();
 }
 
+
+void Console::error(string error) {
+	this->log("c{4}[--Error--] " + error);
+}
+
+
 void Console::log_str(string str)
 {
 	this->set_color(2);

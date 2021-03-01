@@ -249,7 +249,9 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
         std::cout << "|  --WARNING!--  Too many arguments. Please provide " << num_of_args << " arguments\n"
                      "|                Unnecessary arguments were ignored\n";
     else if (actual_num_of_args < num_of_args)
-        std::cout << "|  --WARNING!--  Too few arguments. Please provide " << num_of_args << " arguments\n";
+    {
+        throw string("Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments"); // TODO:bad: use std::exception instead 
+    }
 
     return returnVect;
 }
@@ -264,7 +266,9 @@ void lib::organize(string source, string& command, std::vector<string>& argument
              command == "divide"   || command == "div"  ||
              command == "store")
                  arguments = lib::get_arguments(source, 2);
-    else if (command == "variables" || command == "vars")
+    else if (command == "stop" || command == "quit" || command == "exit" ||
+             command == "variables" || command == "vars" ||
+             command == "help"      || command == "h")
         arguments = lib::get_arguments(source, 0);
     else
         arguments = lib::get_arguments(source, 1);

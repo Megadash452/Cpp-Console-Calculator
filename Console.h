@@ -23,6 +23,8 @@ struct Console
 	void input(string& var);
 	//void input(int& var);
 
+	void error(std::string error);
+
 	void log_str(string str);
 	void log_char(char c);
 	void log_int(int i);

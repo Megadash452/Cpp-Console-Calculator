@@ -42,7 +42,7 @@ int main()
 
     std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
     console.log("");
-    console.log("What do you want to do? (type \"help\" or \"h\" if you don't know what you can do)");
+    console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
 
     while (true)
     {
@@ -50,22 +50,31 @@ int main()
 
         console.input(user_input);
 
-        lib::organize(user_input, command, arguments);
+        try {
+            lib::organize(user_input, command, arguments);
+        } catch (string error) { // TODO:bad: use std::exception instead
+            console.error(error);
+            continue;
+        }
         command = lib::lower_case(command);
 
-        //console.log({1, 2});
 
-
-        // TODO: Inefficient; use map with function pointers
+        // TODO: may be Inefficient; use map with function pointers
         if (command == "help" || command == "h")
         {
             std::cout << "|\n";
              console.log("c{6}[Commands:]");
-             console.log("  c{12}[stop], c{12}[quit], c{12}[exit] (args: c{8}[Null]):");
+             console.log("  c{12}[stop], c{12}[quit], c{12}[exit] (args: c{8}[None]):");
              console.log("    c{6}[--] Exit out of the program.");
              console.log("");
              console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
              console.log("    c{6}[--] Use the calculator.");
+             console.log("");
+             console.log("  c{11}[store] (args: c{10}[Expression]<string>):");
+             console.log("    c{6}[--] Store a variable to use later. You can always redefine a variable.");
+             console.log("");
+             console.log("  c{13}[variables], c{13}[vars] (args: c{8}[None]):");
+             console.log("    c{6}[--] See all stored variables.");
              console.log("");
         }
         else if (command == "stop" || command == "quit" || command == "exit") {
@@ -90,44 +99,50 @@ int main()
         }
         else if (command == "calculate" || command == "calc")
         {
-            Expression e(arguments[0]);
-            e.simplify();
-            console.log("result: ", 0, false);
-            e.print();
+            try {
+                Expression e(arguments[0]);
+                e.simplify();
+                console.log("result: c{9}[" + e.expression + "]", false);
+            }
+            catch (string error) { // TODO:bad: use std::exception instead
+                console.error("Error calculating expression because: " + error);
+            }
         }
         else if (command == "store")
         {
-            Expression e(arguments[1]);
-            e.simplify();
-            if (char_in_constants(arguments[0][0]))
-                console.log("c{4}[--Error--] first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
-            else if (char_in_numbers(arguments[0][0]) || char_in_operators(arguments[0][0]) || char_in_symbols(arguments[0][0]))
-                console.log("c{4}[--Error--] first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a number or symbol.");
-            else if (char_in_alphabet(arguments[0][0]) || char_in_alphabetUpper(arguments[0][0]))
-            {
-                if (var_defined(arguments[0], variables))
-                    variables[arguments[0]] = e;
-                else
-                    variables.insert(std::pair<string, Expression>(arguments[0], e));
-                console.log("c{11}[" + arguments[0] + "] = c{9}[" + variables[arguments[0]].expression + ']', 0, true);
+            try {
+                Expression e(arguments[1]);
+                e.simplify();
+
+                if (char_in_constants(arguments[0][0]))
+                    console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
+                else if (char_in_numbers(arguments[0][0]) || char_in_operators(arguments[0][0]) || char_in_symbols(arguments[0][0]))
+                    console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a number or symbol.");
+                else if (char_in_alphabet(arguments[0][0]) || char_in_alphabetUpper(arguments[0][0]))
+                {
+                    if (var_defined(arguments[0], variables))
+                        variables[arguments[0]] = e;
+                    else
+                        variables.insert(std::pair<string, Expression>(arguments[0], e));
+                    console.log("c{11}[" + arguments[0] + "] = c{9}[" + variables[arguments[0]].expression + ']');
+                }
+            }
+            catch (string error) { // TODO:bad: use std::exception instead
+                console.error("Could not store variable because: " + error);
             }
         }
         else if (command == "variables" || command == "vars")
         {
             for (const auto& [var, exp] : variables)
             {
-                console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']', 0, true);
+                console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');
             }
         }
         else
         {
-            console.log("c{4}[--Error--] \"" + command + "\" is not a valid command.");
+            console.error("\"" + command + "\" is not a valid command.");
         }
         console.log("");
         // std::cout << "__________________________________________________________________________\n\n\n";
     }
-
-
-    std::cout << "\n-END-";
-    getline(std::cin, user_input);
 }

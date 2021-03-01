@@ -27,7 +27,12 @@ Term::Term(const string& str)
 	}
 
 	if (!mult)
-		this->value = stod(string(str.begin(), str.end()));
+		try {
+			this->value = stod(string(str.begin(), str.end()));
+		}
+		catch (std::invalid_argument) {
+			throw string("Invalid character in Term{" + str + "}");// TODO:bad: use std::exception instead
+		}
 	else
 		this->value = 0;
 }
