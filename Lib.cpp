@@ -258,11 +258,14 @@ void lib::organize(string source, string& command, std::vector<string>& argument
     command = lib::get_command(source);
     if (command == "calculate" || command == "calc")
         arguments = lib::get_arguments(source, 1);
-    else if (command == "add" || command == "sum" ||
-        command == "subtract" || command == "subt" ||
-        command == "multiply" || command == "mult" ||
-        command == "divide" || command == "div")
-        arguments = lib::get_arguments(source, 2);
+    else if (command == "add"      || command == "sum"  ||
+             command == "subtract" || command == "subt" ||
+             command == "multiply" || command == "mult" ||
+             command == "divide"   || command == "div"  ||
+             command == "store")
+                 arguments = lib::get_arguments(source, 2);
+    else if (command == "variables" || command == "vars")
+        arguments = lib::get_arguments(source, 0);
     else
         arguments = lib::get_arguments(source, 1);
 }

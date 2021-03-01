@@ -7,6 +7,10 @@ char Expression::alphabet[26] = { 'a','b','c','d','f','g','h','i','j','k','l','m
 char Expression::alphabetUpper[26] = { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' };
 char Expression::symbols[5] = { (char)228,(char)233,(char)244,(char)245,(char)248 }; //244 & 245 are integral symbol 
 
+Expression::Expression()
+{
+
+}
 Expression::Expression(string exp)
 {
     this->expression = Expression::parseString(exp);
@@ -43,10 +47,22 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
+    PEMDAS(this);
+}
+Expression Expression::simplify(Expression exp)
+{
+    exp.simplify();
+    return exp;
+}
+
+
+// --- Expression Simplification Methods ---
+void Expression::PEMDAS(Expression* exp)
+{
     // --Exponent
     for (std::vector<int>::iterator
-        indP = this->exp_indexes.begin();
-        indP != this->exp_indexes.end();
+        indP = exp->exp_indexes.begin();
+        indP != exp->exp_indexes.end();
         indP++)
     {
         //TODO: finish exponent calculation in Expression
@@ -56,14 +72,14 @@ void Expression::simplify()
 
     // --Multiplying/Dividing
     for (std::vector<int>::iterator
-        indP = this->mult_div_indexes.begin();
-        indP != this->mult_div_indexes.end();
+        indP = exp->mult_div_indexes.begin();
+        indP != exp->mult_div_indexes.end();
         indP++)
     {
         double multiplication = 1;
         std::vector<string> tempVect;
-        lib::split(this->terms[*indP].termStr, "*/", tempVect, true);
-        tempVect[0] = this->terms[*indP].sign + tempVect[0];
+        lib::split(exp->terms[*indP].termStr, "*/", tempVect, true);
+        tempVect[0] = exp->terms[*indP].sign + tempVect[0];
 
         for (std::vector<string>::iterator
             sign = tempVect.begin() + 1;
@@ -82,33 +98,24 @@ void Expression::simplify()
         }
 
         if (multiplication >= 0)
-            this->terms[*indP] = Term('+' + std::to_string(multiplication));
+            exp->terms[*indP] = Term('+' + std::to_string(multiplication));
         else
-            this->terms[*indP] = Term(std::to_string(multiplication));
+            exp->terms[*indP] = Term(std::to_string(multiplication));
     }
-    this->mult_div_indexes.clear();
-
-
-
+    exp->mult_div_indexes.clear();
 
     // --Adding/Subtracting
     for (std::vector<Term>::reverse_iterator
-        termP = this->terms.rbegin() + 1;
-        termP != this->terms.rend();)
+        termP = exp->terms.rbegin() + 1;
+        termP != exp->terms.rend();)
     {
         *termP += *(termP - 1);
         termP++;
-        this->terms.erase(this->terms.end()-1);
+        exp->terms.erase(exp->terms.end() - 1);
     }
-    this->updateExpression();
-
-
+    exp->updateExpression();
 }
-Expression Expression::simplify(Expression exp)
-{
-    exp.simplify();
-    return exp;
-}
+// --- ---
 
 
 // --- Operators --- // NOTE: When an _Expression_ return-type operator is called, the constructor is also called.

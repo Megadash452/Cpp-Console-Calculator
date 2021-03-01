@@ -22,7 +22,7 @@ public:
     static char alphabetUpper[26];
     static char symbols[5];
 
-    static enum symbols : unsigned char {
+    enum symbols : unsigned char {
         sigma = 228,
         theta = 233,
         intehralUpper = 244,
@@ -30,6 +30,7 @@ public:
         degree = 248
     };
     
+    Expression();
     Expression(string exp);
     Expression(std::vector<string>& vect);
 
@@ -37,6 +38,9 @@ public:
     static void print(const Expression& exp);
     void simplify();
     static Expression simplify(Expression exp);
+
+    // Expression simplify methods
+    static void PEMDAS(Expression* exp);
 
     Expression operator +(const Expression& exp) const;
     Expression operator +(const string& exp) const;
