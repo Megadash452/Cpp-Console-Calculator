@@ -3,6 +3,13 @@
 #include "Expression.h"
 #include "Lib.h"
 
+
+Term::Term(double num)
+{
+	this->value = num;
+	this->updateStr();
+}
+
 Term::Term(const string& str)
 {
 	int start = 0;
@@ -96,6 +103,12 @@ Term Term::operator /(const string& str) const
 	Term term(str);
 	return std::to_string(this->value / term.value);
 }
+
+Term Term::operator^(const Term& term) const
+{
+	return std::to_string(std::pow(this->value, term.value));
+}
+
 
 
 void Term::operator +=(const Term& term)

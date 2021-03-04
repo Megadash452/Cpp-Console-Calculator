@@ -47,7 +47,7 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
-    PEMDAS(this);
+    this->PEMDAS();
 }
 Expression Expression::simplify(Expression exp)
 {
@@ -57,12 +57,12 @@ Expression Expression::simplify(Expression exp)
 
 
 // --- Expression Simplification Methods ---
-void Expression::PEMDAS(Expression* exp)
+void Expression::PEMDAS()
 {
     // --Exponent
     for (std::vector<int>::iterator
-        indP = exp->exp_indexes.begin();
-        indP != exp->exp_indexes.end();
+        indP = this->exp_indexes.begin();
+        indP != this->exp_indexes.end();
         indP++)
     {
         //TODO: finish exponent calculation in Expression
@@ -72,14 +72,14 @@ void Expression::PEMDAS(Expression* exp)
 
     // --Multiplying/Dividing
     for (std::vector<int>::iterator
-        indP = exp->mult_div_indexes.begin();
-        indP != exp->mult_div_indexes.end();
+        indP = this->mult_div_indexes.begin();
+        indP != this->mult_div_indexes.end();
         indP++)
     {
         double multiplication = 1;
         std::vector<string> tempVect;
-        lib::split(exp->terms[*indP].termStr, "*/", tempVect, true);
-        tempVect[0] = exp->terms[*indP].sign + tempVect[0];
+        lib::split(this->terms[*indP].termStr, "*/", tempVect, true);
+        tempVect[0] = this->terms[*indP].sign + tempVect[0];
 
         for (std::vector<string>::iterator
             sign = tempVect.begin() + 1;
@@ -98,22 +98,22 @@ void Expression::PEMDAS(Expression* exp)
         }
 
         if (multiplication >= 0)
-            exp->terms[*indP] = Term('+' + std::to_string(multiplication));
+            this->terms[*indP] = Term('+' + std::to_string(multiplication));
         else
-            exp->terms[*indP] = Term(std::to_string(multiplication));
+            this->terms[*indP] = Term(std::to_string(multiplication));
     }
-    exp->mult_div_indexes.clear();
+    this->mult_div_indexes.clear();
 
     // --Adding/Subtracting
     for (std::vector<Term>::reverse_iterator
-        termP = exp->terms.rbegin() + 1;
-        termP != exp->terms.rend();)
+        termP = this->terms.rbegin() + 1;
+        termP != this->terms.rend();)
     {
         *termP += *(termP - 1);
         termP++;
-        exp->terms.erase(exp->terms.end() - 1);
+        this->terms.erase(this->terms.end() - 1);
     }
-    exp->updateExpression();
+    this->updateExpression();
 }
 // --- ---
 

@@ -11,6 +11,7 @@ public:
 	char sign;
 	double value;
 
+	Term(double num);
 	Term(const string& str);
 
 	void updateStr();
@@ -35,6 +36,8 @@ public:
 	virtual Term operator *(const string& str) const;
 	virtual Term operator /(const Term& term) const;
 	virtual Term operator /(const string& str) const;
+
+	virtual Term operator^(const Term& term) const;
 
 	virtual void operator +=(const Term& term);
 	virtual void operator +=(const string& str);

@@ -39,9 +39,6 @@ public:
     void simplify();
     static Expression simplify(Expression exp);
 
-    // Expression simplify methods
-    static void PEMDAS(Expression* exp);
-
     Expression operator +(const Expression& exp) const;
     Expression operator +(const string& exp) const;
     void operator +=(const Expression& exp);
@@ -55,5 +52,9 @@ private:
     void updateTerms();
     void updateExpression();
     static string parseString(const string& exp);
+
+
+    // Expression simplify methods
+    void PEMDAS();
 };
 
