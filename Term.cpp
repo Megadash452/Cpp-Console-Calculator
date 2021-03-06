@@ -153,3 +153,8 @@ void Term::operator /=(const string& str)
 	this->value /= Term(str).value;
 	this->updateStr();
 }
+
+void Term::operator ^=(const Term& term)
+{
+	this->value = std::pow(this->value, term.value);
+}

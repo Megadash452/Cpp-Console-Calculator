@@ -48,6 +48,8 @@ public:
 	virtual void operator *=(const string& str);
 	virtual void operator /=(const Term& term);
 	virtual void operator /=(const string& str);
+
+	virtual void operator ^=(const Term& term);
 };
 
 struct AlgebraicTerm : public Term // Use this for an Arithmetic Term, but set the exponent (n) = 0;

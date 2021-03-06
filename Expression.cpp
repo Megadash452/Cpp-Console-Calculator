@@ -160,11 +160,22 @@ void Expression::updateTerms()
         if (charP != this->expression.begin() && (*charP == '+' || *charP == '-')) // might remove last && for optimization
         {
             this->terms.push_back(Term(tempStr));
-            tempStr.clear();
-            tempStr.push_back(*charP);
             index++;
             mult_on_this_term = false;
             exp_on_this_term = false;
+            tempStr.clear();
+            if (*charP == '-' && *(charP + 1) == '+')
+            {
+                tempStr.push_back('-');
+                charP++;
+                continue;
+            }
+            else if ((*charP == '-' || *charP == '+') && *(charP + 1) == *charP)
+            {
+                tempStr.push_back('-');
+                charP++;
+                continue;
+            }
         }
         else if ((*charP == '*' || *charP == '/') && !mult_on_this_term)
         {
@@ -205,7 +216,11 @@ string Expression::parseString(const string& exp)
         charP != exp.end();
         charP++)
     {
-        if (has_valid_expression_chars(*charP))
+        if (char_in_operators(*charP) &&
+            char_in_operators(*(charP+1)) &&
+            char_in_operators(*(charP+2)))
+                throw string("Invalid Expression Syntax");
+        else if (has_valid_expression_chars(*charP))
             parsed.push_back(*charP);
     }
 
