@@ -11,6 +11,7 @@ public:
 	char sign;
 	double value;
 
+	Term();
 	Term(double num);
 	Term(const string& str);
 
@@ -37,7 +38,7 @@ public:
 	virtual Term operator /(const Term& term) const;
 	virtual Term operator /(const string& str) const;
 
-	virtual Term operator^(const Term& term) const;
+	virtual Term operator ^(const Term& term) const;
 
 	virtual void operator +=(const Term& term);
 	virtual void operator +=(const string& str);
@@ -52,7 +53,14 @@ public:
 	virtual void operator ^=(const Term& term);
 };
 
-struct AlgebraicTerm : public Term // Use this for an Arithmetic Term, but set the exponent (n) = 0;
+struct ArithmeticTerm : public Term
+{
+	ArithmeticTerm();
+	ArithmeticTerm(double num);
+	ArithmeticTerm(const string& str);
+};
+
+struct AlgebraicTerm : public Term // Use this for an Arithmetic Term, but set the exponent (n) = 0; // <- no
 {
 
 };

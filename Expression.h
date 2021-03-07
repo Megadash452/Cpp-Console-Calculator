@@ -6,13 +6,13 @@ using string = std::string;
 
 #include "Lib.h"
 #include "Term.h"
-#define _allTerms_ Term, AlgebraicTerm, ExponentialTerm, NestedTerm
-#define terms_variant std::variant<Term, AlgebraicTerm, ExponentialTerm, NestedTerm>
+#define _allTerms_ ArithmeticTerm, AlgebraicTerm, ExponentialTerm, NestedTerm
+#define terms_variant std::variant<ArithmeticTerm, AlgebraicTerm, ExponentialTerm, NestedTerm>
 
 class Expression // ONly works for arithmetic Terms, for now.
 {
 public:
-    std::vector<Term> terms; // st
+    std::vector<ArithmeticTerm> terms; // st
     string expression;
 
     static char operators[12];

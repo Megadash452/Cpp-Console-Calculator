@@ -28,7 +28,7 @@ Expression::Expression(std::vector<string>& vect)
 
 void Expression::print()
 {
-    for (std::vector<Term>::const_iterator
+    for (std::vector<ArithmeticTerm>::const_iterator
         termP = this->terms.begin();
         termP != this->terms.end();
         termP++)
@@ -37,7 +37,7 @@ void Expression::print()
 }
 void Expression::print(const Expression& exp)
 {
-    for (std::vector<Term>::const_iterator
+    for (std::vector<ArithmeticTerm>::const_iterator
         termP = exp.terms.begin();
         termP != exp.terms.end();
         termP++)
@@ -98,14 +98,14 @@ void Expression::PEMDAS()
         }
 
         if (multiplication >= 0)
-            this->terms[*indP] = Term('+' + std::to_string(multiplication));
+            this->terms[*indP] = ArithmeticTerm('+' + std::to_string(multiplication));
         else
-            this->terms[*indP] = Term(std::to_string(multiplication));
+            this->terms[*indP] = ArithmeticTerm(std::to_string(multiplication));
     }
     this->mult_div_indexes.clear();
 
     // --Adding/Subtracting
-    for (std::vector<Term>::reverse_iterator
+    for (std::vector<ArithmeticTerm>::reverse_iterator
         termP = this->terms.rbegin() + 1;
         termP != this->terms.rend();)
     {
@@ -159,12 +159,13 @@ void Expression::updateTerms()
     {
         if (charP != this->expression.begin() && (*charP == '+' || *charP == '-')) // might remove last && for optimization
         {
-            this->terms.push_back(Term(tempStr));
+            this->terms.push_back(ArithmeticTerm(tempStr));
             index++;
             mult_on_this_term = false;
             exp_on_this_term = false;
             tempStr.clear();
-            if (*charP == '-' && *(charP + 1) == '+')
+            if ((*charP == '-' && *(charP + 1) == '+') ||
+                (*charP == '+' && *(charP + 1) == '-'))
             {
                 tempStr.push_back('-');
                 charP++;
@@ -172,10 +173,12 @@ void Expression::updateTerms()
             }
             else if ((*charP == '-' || *charP == '+') && *(charP + 1) == *charP)
             {
-                tempStr.push_back('-');
+                tempStr.push_back('+');
                 charP++;
                 continue;
             }
+            else
+                tempStr.push_back(*charP);
         }
         else if ((*charP == '*' || *charP == '/') && !mult_on_this_term)
         {
@@ -192,13 +195,13 @@ void Expression::updateTerms()
         else
             tempStr += *charP;
     }
-    this->terms.push_back(Term(tempStr));
+    this->terms.push_back(ArithmeticTerm(tempStr));
     tempStr.clear();
 }
 void Expression::updateExpression()
 {
     this->expression.clear();
-    for (std::vector<Term>::iterator
+    for (std::vector<ArithmeticTerm>::iterator
         termP = this->terms.begin();
         termP != this->terms.end();
         termP++)

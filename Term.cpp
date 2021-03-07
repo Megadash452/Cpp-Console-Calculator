@@ -4,6 +4,12 @@
 #include "Lib.h"
 
 
+// --- --- Term Parent --- ---
+Term::Term()
+{
+	this->value = 0;
+	this->updateStr();
+}
 Term::Term(double num)
 {
 	this->value = num;
@@ -158,3 +164,49 @@ void Term::operator ^=(const Term& term)
 {
 	this->value = std::pow(this->value, term.value);
 }
+// --- --- --- ---
+
+// --- --- Arithmetic Term --- ---
+ArithmeticTerm::ArithmeticTerm()
+{
+
+}
+ArithmeticTerm::ArithmeticTerm(double num)
+{
+	this->value = num;
+	this->updateStr();
+}
+ArithmeticTerm::ArithmeticTerm(const string& str)
+{
+	int start = 0;
+
+	if (str[0] == '-' || str[0] == '+')
+	{
+		this->sign = str[0];
+		start = 1;
+	}
+	else
+		this->sign = '+';
+
+	bool mult = false;
+	for (string::const_iterator
+		charP = str.begin() + start;
+		charP != str.end();
+		charP++)
+	{
+		this->termStr.push_back(*charP);
+		if (*charP == '*' || *charP == '/' || *charP == '^')
+			mult = true;
+	}
+
+	if (!mult)
+		try {
+		this->value = stod(string(str.begin(), str.end()));
+	}
+	catch (std::invalid_argument) {
+		throw string("Invalid character in Term{" + str + "}");// TODO:bad: use std::exception instead
+	}
+	else
+		this->value = 0;
+}
+// --- --- --- ---
