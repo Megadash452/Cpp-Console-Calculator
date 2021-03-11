@@ -60,41 +60,73 @@ void Term::updateStr()
 
 Term Term::operator +(const Term& term) const
 {
-	return std::to_string(this->value + term.value);
+	int val = this->value + term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator +(const string& str) const
 {
 	Term term(str);
-	return std::to_string(this->value + term.value);
+	int val = this->value + term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator -(const Term& term) const
 {
-	return std::to_string(this->value - term.value);
+	int val = this->value - term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator -(const string& str) const
 {
 	Term term(str);
-	return std::to_string(this->value - term.value);
+	int val = this->value - term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 
 
 Term Term::operator *(const Term& term) const
 {
-	return std::to_string(this->value * term.value);
+	int val = this->value * term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator *(const string& str) const
 {
 	Term term(str);
-	return std::to_string(this->value * term.value);
+	int val = this->value * term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator /(const Term& term) const
 {
-	return std::to_string(this->value / term.value);
+	int val = this->value / term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 Term Term::operator /(const string& str) const
 {
 	Term term(str);
-	return std::to_string(this->value / term.value);
+	int val = this->value / term.value;
+	if (val < 0)
+		return std::to_string(val);
+	else
+		return '+' + std::to_string(val);
 }
 
 
