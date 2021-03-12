@@ -47,7 +47,12 @@ void Expression::print(const Expression& exp)
 
 void Expression::simplify()
 {
-    this->PEMDAS();
+    // F
+    for (auto funcP = this->procs.begin();
+        funcP != this->procs.end();
+        funcP++)
+        (*funcP)(this);
+    //Expression::PEMDAS(this);
 }
 Expression Expression::simplify(Expression exp)
 {
@@ -57,12 +62,12 @@ Expression Expression::simplify(Expression exp)
 
 
 // --- Expression Simplification Methods ---
-void Expression::PEMDAS()
+void Expression::PEMDAS(Expression* exp)
 {
     // --Exponent
     for (std::vector<int>::iterator
-        indP = this->exp_indexes.begin();
-        indP != this->exp_indexes.end();
+        indP = exp->exp_indexes.begin();
+        indP != exp->exp_indexes.end();
         indP++)
     {
         //TODO: finish exponent calculation in Expression
@@ -72,14 +77,14 @@ void Expression::PEMDAS()
 
     // --Multiplying/Dividing
     for (std::vector<int>::iterator
-        indP = this->mult_div_indexes.begin();
-        indP != this->mult_div_indexes.end();
+        indP = exp->mult_div_indexes.begin();
+        indP != exp->mult_div_indexes.end();
         indP++)
     {
         double multiplication = 1;
         std::vector<string> tempVect;
-        lib::split(this->terms[*indP].termStr, "*/", tempVect, true);
-        tempVect[0] = this->terms[*indP].sign + tempVect[0];
+        lib::split(exp->terms[*indP].termStr, "*/", tempVect, true);
+        tempVect[0] = exp->terms[*indP].sign + tempVect[0];
 
         for (std::vector<string>::iterator
             sign = tempVect.begin() + 1;
@@ -98,22 +103,22 @@ void Expression::PEMDAS()
         }
 
         if (multiplication >= 0)
-            this->terms[*indP] = ArithmeticTerm('+' + std::to_string(multiplication));
+            exp->terms[*indP] = ArithmeticTerm('+' + std::to_string(multiplication));
         else
-            this->terms[*indP] = ArithmeticTerm(std::to_string(multiplication));
+            exp->terms[*indP] = ArithmeticTerm(std::to_string(multiplication));
     }
-    this->mult_div_indexes.clear();
+    exp->mult_div_indexes.clear();
 
     // --Adding/Subtracting
     for (std::vector<ArithmeticTerm>::reverse_iterator
-        termP = this->terms.rbegin() + 1;
-        termP != this->terms.rend();)
+        termP = exp->terms.rbegin() + 1;
+        termP != exp->terms.rend();)
     {
         *termP += *(termP - 1);
         termP++;
-        this->terms.erase(this->terms.end() - 1);
+        exp->terms.erase(exp->terms.end() - 1);
     }
-    this->updateExpression();
+    exp->updateExpression();
 }
 // --- ---
 
@@ -197,6 +202,9 @@ void Expression::updateTerms()
     }
     this->terms.push_back(ArithmeticTerm(tempStr));
     tempStr.clear();
+
+    if (this->terms.size() > 1)// TODO: ---------------vvvv
+        this->procs.push_back(Expression::PEMDAS); //TODO: put in a more complex conditional or smthn, dont leave it out in the middle of nowehre.
 }
 void Expression::updateExpression()
 {

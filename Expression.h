@@ -47,6 +47,7 @@ public:
 private:
     std::vector<int> mult_div_indexes;
     std::vector<int> exp_indexes;
+    std::vector<void (*)(Expression*)> procs;
 
     void updateTerms(const string& str);
     void updateTerms();
@@ -55,6 +56,6 @@ private:
 
 
     // Expression simplify methods
-    void PEMDAS();
+    static void PEMDAS(Expression* exp);
 };
 

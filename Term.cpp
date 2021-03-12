@@ -221,6 +221,7 @@ ArithmeticTerm::ArithmeticTerm(const string& str)
 		this->sign = '+';
 
 	bool mult = false;
+	this->termStr.clear();
 	for (string::const_iterator
 		charP = str.begin() + start;
 		charP != str.end();

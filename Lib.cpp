@@ -255,24 +255,22 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
 
     return returnVect;
 }
-void lib::organize(string source, string& command, std::vector<string>& arguments)
-{
-    command = lib::get_command(source);
-    if (command == "calculate" || command == "calc")
-        arguments = lib::get_arguments(source, 1);
-    else if (command == "add"      || command == "sum"  ||
-             command == "subtract" || command == "subt" ||
-             command == "multiply" || command == "mult" ||
-             command == "divide"   || command == "div"  ||
-             command == "store")
-                 arguments = lib::get_arguments(source, 2);
-    else if (command == "stop" || command == "quit" || command == "exit" ||
-             command == "variables" || command == "vars" ||
-             command == "help"      || command == "h")
-        arguments = lib::get_arguments(source, 0);
-    else
-        arguments = lib::get_arguments(source, 1);
-}
+//void lib::organize(string source, string& command, std::vector<string>& arguments)
+//{
+//    command = lib::get_command(source);
+//    if (command == "calculate" || command == "calc")
+//        arguments = lib::get_arguments(source, 1);
+//    else if (command == "add"      || command == "sum"  ||
+//             command == "subtract" || command == "subt" ||
+//             command == "multiply" || command == "mult" ||
+//             command == "divide"   || command == "div"  ||
+//             command == "store")
+//                 arguments = lib::get_arguments(source, 2);
+//    else if (command == "stop" || command == "quit" || command == "exit" ||
+//             command == "variables" || command == "vars" ||
+//             command == "help"      || command == "h")
+//        arguments = lib::get_arguments(source, 0);
+//}
 
 /*void lib::end_command_turn(const string& comm, const std::vector<string>& args)
 {
