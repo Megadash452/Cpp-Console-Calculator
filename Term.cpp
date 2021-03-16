@@ -243,3 +243,43 @@ ArithmeticTerm::ArithmeticTerm(const string& str)
 		this->value = 0;
 }
 // --- --- --- ---
+
+
+AlgebraicTerm::AlgebraicTerm()
+	: coefficient(0), var("0"), exponent(0)
+{
+
+}
+AlgebraicTerm::AlgebraicTerm(double num)
+	: coefficient(num), var("(1)"), exponent(0)
+{
+
+}
+AlgebraicTerm::AlgebraicTerm(const string& str) /// 2.5(444)^(2) format
+{
+	string::const_iterator f;
+	for (auto charP = str.begin();
+		charP != str.end(); charP++)
+	{
+		if (*charP == '(')
+		{
+			string str1();
+			this->coefficient = stod(string(str.begin(), charP-1));
+			f = charP + 1;
+			break;
+		}
+	}
+
+	for (auto charP = f;
+		charP == str.end(); charP++)
+	{
+		if (*charP == ')' && *(charP+1) == '^' && *(charP + 2) == '(')
+		{
+			this->var = string(f+1, charP-1);
+			f = charP + 3;
+			break;
+		}
+	}
+
+	this->exponent = stod(string(f, str.end()-1));
+}

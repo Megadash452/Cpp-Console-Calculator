@@ -9,7 +9,7 @@ using string = std::string;
 #define _allTerms_ ArithmeticTerm, AlgebraicTerm, ExponentialTerm, NestedTerm
 #define terms_variant std::variant<ArithmeticTerm, AlgebraicTerm, ExponentialTerm, NestedTerm>
 
-class Expression // ONly works for arithmetic Terms, for now.
+class Expression // Only works for arithmetic Terms, for now.
 {
 public:
     std::vector<ArithmeticTerm> terms; // st

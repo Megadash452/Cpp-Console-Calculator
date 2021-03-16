@@ -127,6 +127,12 @@ int main()
                 }
             }
 
+            else if (command == "term")
+            {
+                AlgebraicTerm term("1.3(34)^(23)");
+                std::cout << term.coefficient << ", " << term.var << ", " << term.exponent << std::endl;
+            }
+
             else if (command == "variables" || command == "vars")
             {
                 for (const auto& [var, exp] : variables)

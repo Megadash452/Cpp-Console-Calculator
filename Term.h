@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+
 using string = std::string;
  
 // TODO: Goal => 27x^24+25 - (x+2^2)(x-3)
@@ -62,7 +63,13 @@ struct ArithmeticTerm : public Term
 
 struct AlgebraicTerm : public Term // Use this for an Arithmetic Term, but set the exponent (n) = 0; // <- no
 {
+	AlgebraicTerm();
+	AlgebraicTerm(double num);
+	AlgebraicTerm(const string& str);
 
+	string var;
+	double coefficient;
+	double exponent;
 };
 
 struct ExponentialTerm : public Term
