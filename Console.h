@@ -61,10 +61,8 @@ struct Console
 	Console();
 
 	void log(string msg, int color = 0, bool new_line = true);
-	void log(std::wstring str, int color = 0, bool new_line = true);
 	void input(string& var);
 	void input(int& var);
-	//void input(int& var);
 
 	void error(std::string error);
 
