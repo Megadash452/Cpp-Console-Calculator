@@ -63,10 +63,6 @@ void Console::log(string msg, int color, bool new_line)
 	if (color)
 		this->set_previous_color();
 }
-void Console::log(std::wstring str, int color, bool new_line)
-{
-	std::wcout << str;
-}
 
 void Console::input(string& var)
 {
@@ -79,6 +75,8 @@ void Console::input(int& var)
 {
 	std::cout << "║  --> ";
 	this->set_color(8);
+        std::cin << var;
+        this->reset_color();
 }
 
 
