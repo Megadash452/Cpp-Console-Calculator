@@ -1,4 +1,4 @@
-#include "Console.h"
+﻿#include "Console.h"
 
 string Console::Keywords[30] = {"null", "true", "false", "console", "term", "expression", "function", "func"
                                "bool", "char", "int", "string", "str", "array", "arr", "map",
@@ -10,6 +10,7 @@ string Console::Keywords[30] = {"null", "true", "false", "console", "term", "exp
 
 Console::Console()
 {
+	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTextAttribute(this->handle, 7);
 }
 
@@ -17,7 +18,7 @@ void Console::log(string msg, int color, bool new_line)
 {
 	this->set_color(color);
 
-	std::cout << "|  ";
+	std::cout << "║  ";
 	for (string::iterator
 		charP = msg.begin();
 		charP != msg.end();
@@ -62,12 +63,22 @@ void Console::log(string msg, int color, bool new_line)
 	if (color)
 		this->set_previous_color();
 }
+void Console::log(std::wstring str, int color, bool new_line)
+{
+	std::wcout << str;
+}
 
 void Console::input(string& var)
 {
+	std::cout << "║  --> ";
 	this->set_color(8);
 	getline(std::cin, var);
 	this->reset_color();
+}
+void Console::input(int& var)
+{
+	std::cout << "║  --> ";
+	this->set_color(8);
 }
 
 

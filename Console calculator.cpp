@@ -40,14 +40,17 @@ int main()
     std::vector<string> arguments;
     std::map<string, Expression> variables;
 
-    std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
+    
+    // if (arcg > 0) {
+    std::cout << "                           ╔═════════════════════════╗                          \n";
+    std::cout << "╔══════════════════════════╣ Command Line Calculator ╠═════════════════════════╗\n";
+    std::cout << "║                          ╚═════════════════════════╝                         ║\n";
+    //std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
     console.log("");
     console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
 
     while (true)
     {
-        std::cout << "|  --> ";
-
         console.input(user_input);
         command = lib::get_command(lib::lower_case(user_input));
 
@@ -55,23 +58,25 @@ int main()
             // TODO: may be Inefficient; use map with function pointers
             if (command == "help" || command == "h")
             {
-                std::cout << "|\n";
-                 console.log("c{6}[Commands:]");
-                 console.log("  c{12}[stop], c{12}[quit], c{12}[exit] (args: c{8}[None]):");
-                 console.log("    c{6}[--] Exit out of the program.");
-                 console.log("");
-                 console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
-                 console.log("    c{6}[--] Use the calculator.");
-                 console.log("");
-                 console.log("  c{11}[store] (args: c{10}[Expression]<string>):");
-                 console.log("    c{6}[--] Store a variable to use later. You can always redefine a variable.");
-                 console.log("");
-                 console.log("  c{13}[variables], c{13}[vars] (args: c{8}[None]):");
-                 console.log("    c{6}[--] See all stored variables.");
-                 console.log("");
+                console.log("");
+                console.log("c{6}[Commands:]");
+                console.log("  c{12}[stop], c{12}[quit], c{12}[exit] (args: c{8}[None]):");
+                console.log("    c{6}[--] Exit out of the program.");
+                console.log("");
+                console.log("  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):");
+                console.log("    c{6}[--] Use the calculator.");
+                console.log("");
+                console.log("  c{11}[store] (args: c{10}[Expression]<string>):");
+                console.log("    c{6}[--] Store a variable to use later. You can always redefine a variable.");
+                console.log("");
+                console.log("  c{13}[variables], c{13}[vars] (args: c{8}[None]):");
+                console.log("    c{6}[--] See all stored variables.");
+                console.log("");
             }
             else if (command == "stop" || command == "quit" || command == "exit") {
-                std::cout << "|  goodbye!";
+                console.log("goodbye!");
+                std::cout << "╚══════════════════════════════════════════════════════════════════════════════╝\n";
+                PAUSE
                 exit(0);
             }
             else if (command == "add" || command == "sum")
@@ -95,7 +100,7 @@ int main()
             { arguments = lib::get_arguments(user_input, 1);
                 try {
                     Expression e(arguments[0]);
-                    e.simplify();
+                    //e.simplify();
                     console.log("result: c{9}[" + e.expression + "]", false);
                 }
                 catch (string error) { // TODO:bad: use std::exception instead
@@ -107,7 +112,7 @@ int main()
             { arguments = lib::get_arguments(user_input, 2);
                 try {
                     Expression e(arguments[1]);
-                    e.simplify();
+                    //e.simplify();
 
                     if (char_in_constants(arguments[0][0]))
                         console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
@@ -125,12 +130,6 @@ int main()
                 catch (string error) { // TODO:bad: use std::exception instead
                     console.error("Could not store variable because: " + error);
                 }
-            }
-
-            else if (command == "term")
-            {
-                AlgebraicTerm term("1.3(34)^(23)");
-                std::cout << term.coefficient << ", " << term.var << ", " << term.exponent << std::endl;
             }
 
             else if (command == "variables" || command == "vars")
@@ -152,4 +151,6 @@ int main()
         console.log("");
         // std::cout << "__________________________________________________________________________\n\n\n";
     }
+
+    PAUSE
 }
