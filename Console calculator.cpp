@@ -9,6 +9,7 @@
 #define announce_inExpression(type, exp, x)
 #endif*/
 
+Console console;
 
 class Function
 {
@@ -32,8 +33,6 @@ int main()
 {
     //if (argc - 1)
         //std::cout << argc << " arguments passed from outside; omitted\n";
-
-    Console console;
 
     string user_input;
     string command;
@@ -109,27 +108,28 @@ int main()
             }
 
             else if (command == "store")
-            { arguments = lib::get_arguments(user_input, 2);
-                try {
-                    Expression e(arguments[1]);
-                    //e.simplify();
+            { //arguments = lib::get_arguments(user_input, 2);
+                console.warn("Not currently available.");
+                //try {
+                //    Expression e(arguments[1]);
+                //    //e.simplify();
 
-                    if (char_in_constants(arguments[0][0]))
-                        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
-                    else if (char_in_numbers(arguments[0][0]) || char_in_operators(arguments[0][0]) || char_in_symbols(arguments[0][0]))
-                        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a number or symbol.");
-                    else if (char_in_alphabet(arguments[0][0]) || char_in_alphabetUpper(arguments[0][0]))
-                    {
-                        if (var_defined(arguments[0], variables))
-                            variables[arguments[0]] = e;
-                        else
-                            variables.insert(std::pair<string, Expression>(arguments[0], e));
-                        console.log("c{11}[" + arguments[0] + "] = c{9}[" + variables[arguments[0]].expression + ']');
-                    }
-                }
-                catch (string error) { // TODO:bad: use std::exception instead
-                    console.error("Could not store variable because: " + error);
-                }
+                //    if (char_in_constants(arguments[0][0]))
+                //        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
+                //    else if (char_in_numbers(arguments[0][0]) || char_in_operators(arguments[0][0]) || char_in_symbols(arguments[0][0]))
+                //        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a number or symbol.");
+                //    else if (char_in_alphabet(arguments[0][0]) || char_in_alphabetUpper(arguments[0][0]))
+                //    {
+                //        if (var_defined(arguments[0], variables))
+                //            variables[arguments[0]] = e;
+                //        else
+                //            variables.insert(std::pair<string, Expression>(arguments[0], e));
+                //        console.log("c{11}[" + arguments[0] + "] = c{9}[" + variables[arguments[0]].expression + ']');
+                //    }
+                //}
+                //catch (string error) { // TODO:bad: use std::exception instead
+                //    console.error("Could not store variable because: " + error);
+                //}
             }
 
             else if (command == "variables" || command == "vars")

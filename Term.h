@@ -1,7 +1,17 @@
 #pragma once
-#include "Lib.h"
+//#include "Lib.h" fails compiling
 
-class Term
+struct Term
 {
 	Term();
+};
+
+struct AdditionTerm : public Term
+{
+	AdditionTerm();
+};
+
+struct MultiplicationTerm : public Term
+{
+	MultiplicationTerm();
 };

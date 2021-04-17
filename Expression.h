@@ -8,8 +8,11 @@ public:
 	Expression();
 	Expression(string str);
 
-	string expression;
-	//std::vector<Term> terms;
-private:
+	static string parseForRead(string);
+	static string parseForPrint(string);
 
+	string expression;
+	std::vector<Term> terms;
+private:
+	string readExp;
 };
