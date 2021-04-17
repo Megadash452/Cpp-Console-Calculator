@@ -29,8 +29,12 @@ bool var_defined(const string& var, std::map<string, Expression>& vars)
         return true;
 }
 
-int main()
+int main(int argc, const char** argv)
 {
+    std::cout << argc << std::endl;
+    for (int i=0; i < argc; i++)
+        std::cout << argv[i] << ", ";
+    std::cout << '\n';
     //if (argc - 1)
         //std::cout << argc << " arguments passed from outside; omitted\n";
 
@@ -48,9 +52,22 @@ int main()
     console.log("");
     console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
 
+    int iteration = 0;
     while (true)
     {
-        console.input(user_input);
+        if (argc < 2 || iteration > 0)
+            console.input(user_input);
+        else
+        {
+            for (int i = 1; i < argc; i++) {
+                user_input += argv[i];
+                if (i != argc-1)
+                    user_input += ' ';
+            }
+            console.log("--> c{8}[" + user_input + "]");
+            //console.set_color(0);
+        }
+            
         command = lib::get_command(lib::lower_case(user_input));
 
         try {
@@ -150,6 +167,7 @@ int main()
         }
         console.log("");
         // std::cout << "__________________________________________________________________________\n\n\n";
+        iteration++;
     }
 
     PAUSE
