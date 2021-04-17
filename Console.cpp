@@ -75,13 +75,16 @@ void Console::input(int& var)
 {
 	std::cout << "║  --> ";
 	this->set_color(8);
-        std::cin << var;
-        this->reset_color();
+	std::cin >> var;
+	this->reset_color();
 }
 
 
 void Console::error(string error) {
-	this->log("c{4}[--Error--] " + error);
+	this->log("c{4}[-- Error --] " + error);
+}
+void Console::warn(string warning) {
+	this->log("c{6}[--Warning--] " + warning);
 }
 
 
@@ -126,7 +129,7 @@ void Console::log_int(int i)
 }*/
 void Console::log(std::vector<string> vect)
 {
-	std::cout << "|  string";
+	std::cout << "║  string";
 	this->set_color(15);
 	std::cout << '[';
 
@@ -145,7 +148,7 @@ void Console::log(std::vector<string> vect)
 }
 void Console::log(std::vector<char> vect)
 {
-	std::cout << "|  char";
+	std::cout << "║  char";
 	this->set_color(15);
 	std::cout << '[';
 
@@ -164,7 +167,7 @@ void Console::log(std::vector<char> vect)
 }
 void Console::log(std::vector<int> vect)
 {
-	std::cout << "|  int";
+	std::cout << "║  int";
 	this->set_color(15);
 	std::cout << '[';
 

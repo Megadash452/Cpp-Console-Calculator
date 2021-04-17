@@ -1,4 +1,4 @@
-#include "Lib.h"
+﻿#include "Lib.h"
 
 extern std::map<char, char> lib::closeDelims({
         {'\'', '\''},
@@ -246,8 +246,8 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
             actual_num_of_args++;
 
     if (actual_num_of_args > num_of_args)
-        std::cout << "|  --WARNING!--  Too many arguments. Please provide " << num_of_args << " arguments\n"
-                     "|                Unnecessary arguments were ignored\n";
+        std::cout << "║  --WARNING!--  Too many arguments. Please provide " << num_of_args << " arguments\n"
+                     "║                Unnecessary arguments were ignored\n";
     else if (actual_num_of_args < num_of_args)
     {
         throw string("Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments"); // TODO:bad: use std::exception instead 

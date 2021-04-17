@@ -18,6 +18,7 @@ using string = std::string;
 #define char_in_symbols(c) (c==(char)228||c==(char)233||c==(char)244||c==(char)245||c==(char)248)
 #define has_valid_expression_chars(c) (char_in_operators(c)||char_in_numbers(c)||char_in_constants(c)||char_in_alphabet(c)||char_in_alphabetUpper(c)||char_in_symbols(c))
 
+
 namespace lib {
     extern std::map<char, char> closeDelims;
     extern std::map<char, char> openDelims;
@@ -58,7 +59,7 @@ namespace lib {
 
     string get_command(string str, char split = ' ');
     std::vector<string> get_arguments(string str, int num_of_args, char split = ' ');
-    void organize(string from, string& command, std::vector<string>& arguments);
+    //void organize(string from, string& command, std::vector<string>& arguments);
 
     //void end_command_turn(const string& comm, const std::vector<string>& args);
 }

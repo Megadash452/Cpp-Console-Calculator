@@ -65,6 +65,7 @@ struct Console
 	void input(int& var);
 
 	void error(std::string error);
+	void warn(std::string warning);
 
 	void log_str(string str);
 	void log_char(char c);
