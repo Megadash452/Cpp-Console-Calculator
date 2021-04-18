@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <iostream>
 #include <string>
-#include <corecrt_wstring.h>
 #include <stdexcept>
 #include <windows.h>
 

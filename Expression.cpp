@@ -26,33 +26,40 @@ string Expression::parseForRead(string str)
             }
             if ((*charP == '^' || *charP == '/') && *(charP + 1) != '(')
             {
-                // this one (^) doesnt work properly but (/) does
-                // for some reason.
+                // insert opening parenthesis
+                auto charT = charP;
                 str.insert(charP + 1, '(');
+                charP = charT;
+                // insert closing parenthesis
                 for (string::iterator i = charP+2;
                     i != str.end(); i++)
-                {
                     if (char_in_operators(*i) && i != str.end() - 1)
                     {
                         str.insert(i, ')');
                         break;
                     }
                     else if (i == str.end() - 1 && *i != ')')
+                    {
                         str.push_back(')');
-                }
+                        break;
+                    }
             }
 
             if (*charP == '/' && *(charP - 1) != ')')
             {
                 str.insert(charP, ')');
-                for (string::reverse_iterator i = static_cast<string::reverse_iterator>(charP) - 1; i != str.rend()-1; i++)
+                for (string::reverse_iterator
+                    i = static_cast<string::reverse_iterator>(charP) - 1;
+                    i != str.rend()-1; i++)
                 {
                     if (i == str.rend() - 1 && *i != '(')
                         str = "(" + str;
                 }
             }
 
-            if (charP != str.end() - 1 && *(charP + 1) == '(' && (!char_in_operators(*charP) || *charP == ')'))
+            if ((charP != str.end()-1 && charP != str.begin()) &&
+                *(charP) == '(' &&
+                (!char_in_operators(*(charP-1)) || *(charP-1) == ')'))
             {
                 str.insert(charP, '*');
             }
