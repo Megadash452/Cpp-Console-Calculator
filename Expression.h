@@ -6,7 +6,7 @@ class Expression
 {
 public:
 	Expression();
-	Expression(string str);
+	Expression(string);
 
 	static string parseForRead(string);
 	static string parseForPrint(string);

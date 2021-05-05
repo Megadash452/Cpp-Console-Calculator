@@ -6,6 +6,8 @@
 
 #include "Lib.h"
 
+#define println(x) std::cout <<"║  "<<x<<std::endl
+
 #define PAUSE system("pause");
 
 #define COLOR_DEFAULT 0
@@ -45,6 +47,8 @@
 #define HILIGT_YELLOW(x)       x+224
 #define HILIGT_WHTIE(x)        x+240
 
+
+
 struct Console
 {
 	// Rules:
@@ -59,12 +63,15 @@ struct Console
 
 	Console();
 
-	void log(string msg, int color = 0, bool new_line = true);
+	void log(string msg, int color=0, bool new_line=true);
+
+	//string input(string msg);
 	void input(string& var);
 	void input(int& var);
 
-	void error(std::string error);
-	void warn(std::string warning);
+	void error(string error);
+	void error(lib::calc_exception);
+	void warn(string warning);
 
 	void log_str(string str);
 	void log_char(char c);
@@ -80,7 +87,8 @@ struct Console
 	void reset_color();
 
 private:
-	void color_by_delim(string::iterator& charP, int color, bool keep_delims = false); // Before using, make sure that the string::iterator is in this->closeDelims map;
+	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);
 };
 
+extern Console console;

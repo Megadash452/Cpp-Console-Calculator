@@ -1,4 +1,5 @@
 ﻿#include "Lib.h"
+#include "Calc Exceptions.h"
 
 extern std::map<char, char> lib::closeDelims({
         {'\'', '\''},
@@ -146,7 +147,7 @@ string::iterator lib::find_closing(string::iterator it)
     {
         int extraCount = 0;
         char target = lib::closeDelims[*it];
-        for (; !(*it == '\0' || *it == '\n');)
+        while (!(*it == '\0' || *it == '\n'))
         {
             it++;
             if (*it == target)
@@ -296,3 +297,24 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
     std::cout << "\n\n";
         
 }*/
+
+
+/// --- EXCEPTIONS ---
+
+lib::calc_exception::calc_exception() {
+}
+
+lib::calc_exception::calc_exception(string str)
+    : std::exception(str.c_str())
+{
+
+}
+
+lib::syntax_error::syntax_error() {
+}
+
+lib::syntax_error::syntax_error(string str)
+    : calc_exception(str)
+{
+
+}

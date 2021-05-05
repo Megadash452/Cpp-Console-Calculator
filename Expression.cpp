@@ -13,79 +13,92 @@ Expression::Expression(string str)
 
 string Expression::parseForRead(string str)
 {
-    string parsed;
-    for (string::iterator
-        charP = str.begin();
-        charP < str.end();
-        charP++)
-    {
-        try {
-            if (*charP == '*' && *(charP + 1) == '*')
-            {
-                str.replace(charP, charP + 2, "^");
-            }
-            if ((*charP == '^' || *charP == '/') && *(charP + 1) != '(')
-            {
-                // insert opening parenthesis
-                auto charT = charP;
-                str.insert(charP + 1, '(');
-                charP = charT;
-                // insert closing parenthesis
-                for (string::iterator i = charP+2;
-                    i != str.end(); i++)
-                    if (char_in_operators(*i) && i != str.end() - 1)
-                    {
-                        str.insert(i, ')');
-                        break;
-                    }
-                    else if (i == str.end() - 1 && *i != ')')
-                    {
-                        str.push_back(')');
-                        break;
-                    }
-            }
+	/*format:
+		from "2/3-4**5+3*8"
+		to   "(2)/(3)-4^(5)+3*8"
+	*/
 
-            if (*charP == '/' && *(charP - 1) != ')')
-            {
-                str.insert(charP, ')');
-                for (string::reverse_iterator
-                    i = static_cast<string::reverse_iterator>(charP) - 1;
-                    i != str.rend()-1; i++)
-                {
-                    if (i == str.rend() - 1 && *i != '(')
-                        str = "(" + str;
-                }
-            }
+	for (auto charP = str.begin();
+		charP < str.end(); charP++)
+	{
+		try {
+			// EXPONENT "**": change to symbol "^"
+			if (*charP == '*' && *(charP + 1) == '*')
+				str.replace(charP, charP + 2, "^");
 
-            if ((charP != str.end()-1 && charP != str.begin()) &&
-                *(charP) == '(' &&
-                (!char_in_operators(*(charP-1)) || *(charP-1) == ')'))
-            {
-                str.insert(charP, '*');
-            }
+			/* insert MULTIPLICATION "*" when symbol not present
+			   AND when MULTIPLICATION applicable
+			*/
+			if ((charP != str.end() - 1 && charP != str.begin()) &&
+				*(charP) == '(' &&
+				(!char_in_operators(*(charP - 1)) || *(charP - 1) == ')'))
+			{
+				str.insert(charP, '*');
+			}
 
+			/* EXPONENT symbol "^" and DIVISION symbol "/"
+			   append PARENTHESIS after symbol
+			*/
+			if ((*charP == '^' || *charP == '/') && *(charP + 1) != '(')
+			{
+				// append OPENING PARENTHESIS
+				str.insert(charP+1, '(');
 
-            // put last
-           /* if ((charP < str.end()-3) &&
-                char_in_operators(*charP) &&
-                char_in_operators(*(charP + 1)) &&
-                char_in_operators(*(charP + 2)))
-                throw string("Invalid Expression Syntax");
-            else if (has_valid_expression_chars(*charP))
-                parsed.push_back(*charP);*/
-        }
-        catch (std::out_of_range e) {
-            break;
-        }
-    }
+				// append CLOSING PARENTHESIS
+				for (auto it = charP + 1; it < str.end(); it++)
+					if (char_in_operators(*it) &&  *it != '(')
+					{
+						str.insert(it, ')');
+						break;
+					}
+					else if (it == str.end() - 1)
+					{
+						str.push_back(')');
+						break;
+					}
 
-    /*if (parsed[0] != '+' || parsed[0] != '-' ||
-        parsed[0] != (char)241 ||
-        parsed[0] != '*' || parsed[0] != '/' ||
-        parsed[0] != '^')
-        parsed = '+' + parsed;*/
-    
-    //return parsed;
+				/* DIVISION symbol "/"
+				   append PARENTHESIS before symbol
+				*/
+				if (*charP == '/' && *(charP - 1) != ')')
+				{
+					throw(std::out_of_range(""));
+					// append CLOSING PARENTHESIS
+					str.insert(charP, ')');
+
+					// append OPENING PARENTHESIS
+					for (auto it = static_cast<string::reverse_iterator>(charP);
+						; it++)
+						if (char_in_operators(*it) && *it != ')')
+						{
+							println(*it.base());
+							str.insert(it.base(), '(');
+							break;
+						}
+						else if (it == str.rend() - 1)
+						{
+							str.insert(str.begin(), '(');
+							break;
+						}
+				}
+			}
+		}
+		catch (std::out_of_range) {
+			throw(lib::syntax_error{"Bad syntax around \"" + string(charP - 1, charP + 2) + "\""});
+			break;
+		}
+		catch (lib::syntax_error e) {
+			throw(e);
+			break;
+		}
+	}
+
+	if (str[0] != '+' || str[0] != '-' ||
+		str[0] != (char)241 ||
+		str[0] != '*' || str[0] != '/' ||
+		str[0] != '^')
+			str = '+' + str;
+
     return str;
 }
 

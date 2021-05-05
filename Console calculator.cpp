@@ -9,7 +9,6 @@
 #define announce_inExpression(type, exp, x)
 #endif*/
 
-Console console;
 
 class Function
 {
@@ -52,8 +51,8 @@ int main(int argc, const char** argv)
     console.log("");
     console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
 
-    int iteration = 0;
-    while (true)
+
+    for (int iteration=0; true; iteration++)
     {
         if (argc < 2 || iteration > 0)
             console.input(user_input);
@@ -65,7 +64,6 @@ int main(int argc, const char** argv)
                     user_input += ' ';
             }
             console.log("--> c{8}[" + user_input + "]");
-            //console.set_color(0);
         }
             
         command = lib::get_command(lib::lower_case(user_input));
@@ -119,8 +117,9 @@ int main(int argc, const char** argv)
                     //e.simplify();
                     console.log("result: c{9}[" + e.expression + "]", false);
                 }
-                catch (string error) { // TODO:bad: use std::exception instead
-                    console.error("Syntax: " + error);
+                catch (lib::syntax_error e) { // TODO:bad: use std::exception instead
+                    println(e.type());
+                    console.error(e);
                 }
             }
 
@@ -167,7 +166,6 @@ int main(int argc, const char** argv)
         }
         console.log("");
         // std::cout << "__________________________________________________________________________\n\n\n";
-        iteration++;
     }
 
     PAUSE

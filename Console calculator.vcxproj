@@ -150,6 +150,7 @@
     <ClCompile Include="Term.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calc Exceptions.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Lib.h" />

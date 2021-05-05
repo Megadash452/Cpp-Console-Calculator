@@ -16,6 +16,9 @@ Console::Console()
 
 void Console::log(string msg, int color, bool new_line)
 {
+	/* Concatenate in msg by std::string. {<<} operator will come later on.
+	*/
+
 	this->set_color(color);
 
 	std::cout << "║  ";
@@ -48,13 +51,19 @@ void Console::log(string msg, int color, bool new_line)
 				color_by_delim(charP, 11, true);
 			else if (charP + 1 < msg.end())
 				if (*charP == ' ' && char_in_numbers(*(charP + 1)))
-					color_by_delim(charP, 9, true);
+				{
+					bool valid = true;
+					for (auto it = charP + 1; it < msg.end(); it++)
+						if (!char_in_numbers(*it))
+							valid = false;
+					if (valid) color_by_delim(charP, 9, true);
+				}
+
+			if (charP >= msg.end()) break;
 		}
-		catch (int e)
-		{
+		catch (std::out_of_range) {
 
 		}
-
 		
 		std::cout << *charP;
 	}
@@ -64,6 +73,14 @@ void Console::log(string msg, int color, bool new_line)
 		this->set_previous_color();
 }
 
+//string Console::input(string msg)
+//{
+//	this->log(msg);
+//	string t;
+//	string& temp = t;
+//	this->input(temp);
+//	return string();
+//}
 void Console::input(string& var)
 {
 	std::cout << "║  --> ";
@@ -82,6 +99,11 @@ void Console::input(int& var)
 
 void Console::error(string error) {
 	this->log("c{4}[-- Error --] " + error);
+}
+void Console::error(lib::calc_exception e)
+{
+	// TODO: Need to call teh overriden method of the child class instead of the method of the parent class
+	this->log("c{4}[-- " + e.type() + " --] " + string{e.what()});
 }
 void Console::warn(string warning) {
 	this->log("c{6}[--Warning--] " + warning);
@@ -244,3 +266,5 @@ void Console::color_by_delim(string::iterator& charP, int color, bool keep_delim
 void Console::iterate_for_keywords(string::iterator& charP)
 {
 }
+
+Console console;
