@@ -301,20 +301,23 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
 
 /// --- EXCEPTIONS ---
 
-lib::calc_exception::calc_exception() {
-}
-
-lib::calc_exception::calc_exception(string str)
-    : std::exception(str.c_str())
-{
-
-}
-
-lib::syntax_error::syntax_error() {
-}
-
-lib::syntax_error::syntax_error(string str)
-    : calc_exception(str)
-{
-
-}
+//lib::calc_exception::calc_exception() {
+//}
+//
+//lib::calc_exception::calc_exception(string str)
+//    : std::exception(str.c_str())
+//{
+//    
+//}
+//
+//lib::syntax_error::syntax_error() {
+//}
+//
+//lib::syntax_error::syntax_error(string w)
+//    : calc_exception(w)
+//{
+//
+//}
+//
+//const string lib::calc_exception::_type{ "Calc Expression" };
+//const string lib::syntax_error::_type{ "Syntax Error" };

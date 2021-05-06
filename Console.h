@@ -70,7 +70,7 @@ struct Console
 	void input(int& var);
 
 	void error(string error);
-	void error(lib::calc_exception);
+	void error(lib::calc_exception&);
 	void warn(string warning);
 
 	void log_str(string str);

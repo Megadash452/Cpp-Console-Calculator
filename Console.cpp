@@ -100,9 +100,8 @@ void Console::input(int& var)
 void Console::error(string error) {
 	this->log("c{4}[-- Error --] " + error);
 }
-void Console::error(lib::calc_exception e)
+void Console::error(lib::calc_exception& e)
 {
-	// TODO: Need to call teh overriden method of the child class instead of the method of the parent class
 	this->log("c{4}[-- " + e.type() + " --] " + string{e.what()});
 }
 void Console::warn(string warning) {

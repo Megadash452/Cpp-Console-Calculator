@@ -28,6 +28,7 @@ bool var_defined(const string& var, std::map<string, Expression>& vars)
         return true;
 }
 
+
 int main(int argc, const char** argv)
 {
     std::cout << argc << std::endl;
@@ -117,8 +118,7 @@ int main(int argc, const char** argv)
                     //e.simplify();
                     console.log("result: c{9}[" + e.expression + "]", false);
                 }
-                catch (lib::syntax_error e) { // TODO:bad: use std::exception instead
-                    println(e.type());
+                catch (lib::syntax_error e) {
                     console.error(e);
                 }
             }
