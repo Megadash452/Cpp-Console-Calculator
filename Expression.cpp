@@ -94,12 +94,12 @@ string Expression::parseForRead(string str)
 				}
 			}
 		}
-		catch (std::exception) {
-			throw(lib::syntax_error{ "Bad syntax around \"" + string(charP - 1, charP + 2) + "\"" });
-			break;
-		}
 		catch (lib::syntax_error e) {
 			throw(e);
+			break;
+		}
+		catch (std::exception) {
+			throw(lib::syntax_error{ "Bad syntax around \"" + string(charP - 1, charP + 2) + "\"" });
 			break;
 		}
 	}

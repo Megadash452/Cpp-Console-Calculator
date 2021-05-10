@@ -152,6 +152,7 @@
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="Lib.cpp" />
     <ClCompile Include="Term.cpp" />
+    <ClCompile Include="Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc Exceptions.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Lib.h" />
     <ClInclude Include="Term.h" />
+    <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="dumped.txt" />

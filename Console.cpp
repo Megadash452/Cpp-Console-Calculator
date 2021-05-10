@@ -12,6 +12,7 @@ Console::Console()
 {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTextAttribute(this->handle, 7);
+	this->node_indent = 0;
 }
 
 void Console::log(string msg, int color, bool new_line)
@@ -19,9 +20,10 @@ void Console::log(string msg, int color, bool new_line)
 	/* Concatenate in msg by std::string. {<<} operator will come later on.
 	*/
 
+	std::cout << "║  ";
+
 	this->set_color(color);
 
-	std::cout << "║  ";
 	for (string::iterator
 		charP = msg.begin();
 		charP != msg.end();
@@ -70,8 +72,10 @@ void Console::log(string msg, int color, bool new_line)
 	if (new_line)
 		std::cout << std::endl;
 	if (color)
-		this->set_previous_color();
+		this->set_color(this->default_color);
 }
+
+//void Console::log(lib::Tree tree) { this->log_tree(tree); }
 
 //string Console::input(string msg)
 //{
@@ -109,23 +113,70 @@ void Console::warn(string warning) {
 }
 
 
+void Console::log_node(lib::Node* node, bool prnt_chldrn)
+{
+	std::cout << "║  ";
+
+	// Apply indent
+	for (int i = 0; i < this->node_indent; i++)
+		std::cout << " ";
+
+	this->log_ptr(node);
+	this->set_color(11);
+	if (node != nullptr)
+		std::cout << "<" << node->id << ">";
+	else
+		std::cout << "<NULL>";
+	this->set_color(0);
+	std::cout << ": {" << std::endl;
+	
+	// print child nodes with indent
+	this->node_indent += 4;
+	if (prnt_chldrn)
+		for (lib::Node* child : node->children)
+			this->log_node(child);
+	this->node_indent -= 4;
+
+	this->log("", 0, false);
+
+	// Apply indent
+	for (int i = 0; i < this->node_indent; i++)
+		std::cout << " ";
+
+	std::cout << "}" << std::endl;
+}
+void Console::log_tree(lib::Tree tree)
+{
+	this->log(tree.name + "c{0}[:] c{10}[--v]", GREEN);
+	this->log_node(tree.first_node);
+	this->log("^-- " + tree.name, GREEN);
+}
+
+/// -- Inline Logs --
+
+void Console::log_ptr(const void* ptr)
+{
+	this->set_color(MAGENTA);
+	std::cout << "*Ax" << ptr << '*';
+	this->set_color(COLOR_DEFAULT);
+}
 void Console::log_str(string str)
 {
-	this->set_color(2);
-	std::cout << "\"" << str << "\"";
-	this->set_color(0);
+	this->set_color(DARK_GREEN);
+	std::cout << '\"' << str << '\"';
+	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_char(char c)
 {
-	this->set_color(3);
+	this->set_color(DARK_CYAN);
 	std::cout << "'" << c << "'";
-	this->set_color(0);
+	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_int(int i)
 {
-	this->set_color(9);
+	this->set_color(BLUE);
 	std::cout << i;
-	this->set_color(0);
+	this->set_color(COLOR_DEFAULT);
 }
 
 /*void Console::log(std::vector<const char*> vect)

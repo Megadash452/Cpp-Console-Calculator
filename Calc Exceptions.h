@@ -12,7 +12,6 @@ namespace lib {
         calc_exception(string what) 
             : _type("Calc Exception"), std::exception(what.c_str()) {}
 
-        //string type() { return this->_type; }
         virtual string type() { return "Calc Exception"; }
     private:
         string _type;
@@ -26,10 +25,9 @@ namespace lib {
         syntax_error(string what) // string where_, string::iterator p
             : _type("Syntax Error"), calc_exception(what.c_str())
         {
-            //this->_where = string{p - max_offset, p + max_offset};
+            this->_where = ""; //string{p - max_offset, p + max_offset};
         }
 
-        //string type() { return this->_type; }
         string where() { return this->_where; };
         string type() override { return "Syntax Error"; }
     private:

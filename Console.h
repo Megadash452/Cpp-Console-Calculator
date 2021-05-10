@@ -64,6 +64,7 @@ struct Console
 	Console();
 
 	void log(string msg, int color=0, bool new_line=true);
+	//void log(lib::Tree);
 
 	//string input(string msg);
 	void input(string& var);
@@ -73,6 +74,10 @@ struct Console
 	void error(lib::calc_exception&);
 	void warn(string warning);
 
+	void log_node(lib::Node*, bool prnt_chldrn=true);
+	void log_tree(lib::Tree);
+	/// -- Inline Logs
+	void log_ptr(const void* ptr);
 	void log_str(string str);
 	void log_char(char c);
 	void log_int(int i);
@@ -89,6 +94,7 @@ struct Console
 private:
 	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);
+	int node_indent;
 };
 
 extern Console console;

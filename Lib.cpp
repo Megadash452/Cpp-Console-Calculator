@@ -147,18 +147,24 @@ string::iterator lib::find_closing(string::iterator it)
     {
         int extraCount = 0;
         char target = lib::closeDelims[*it];
-        while (!(*it == '\0' || *it == '\n'))
+        
+        while (*it != '\0' && *it != '\n')
         {
             it++;
-            if (*it == target)
-            {
-                if (extraCount)
-                    extraCount--;
-                else
-                    return it;
+            try {
+                if (*it == target)
+                {
+                    if (extraCount)
+                        extraCount--;
+                    else
+                        return it;
+                }
+                else if (*it == *opening)
+                    extraCount++;
             }
-            else if (*it == *opening)
-                extraCount++;
+            catch (std::exception) {
+                throw(std::out_of_range{ "" });
+            }
         }
     }
     return opening;

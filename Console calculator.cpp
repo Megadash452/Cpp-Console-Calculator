@@ -52,8 +52,20 @@ int main(int argc, const char** argv)
     console.log("");
     console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
 
+    lib::Tree tree{"tree1"};
+    tree.first_node->append_child(new lib::Node)->append_child(new lib::Node);
+    tree.first_node->append_child(new lib::Node);
+    tree.first_node->append_child(new lib::Node)->append_child(new lib::Node)->append_child(new lib::Node);
+    for (int i=0; i < 2; i++)
+        tree.first_node->append_child(new lib::Node);
+    // TODO: Logging tree breaks the tree
+    console.log_tree(tree);
+    console.log_tree(tree);
+    console.log_node(tree.get_node_by_id(6), false);
+    
 
-    for (int iteration=0; true; iteration++)
+
+    for (int iteration=0; false; iteration++)
     {
         if (argc < 2 || iteration > 0)
             console.input(user_input);
