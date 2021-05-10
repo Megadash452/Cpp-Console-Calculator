@@ -7,6 +7,7 @@
 #include "Lib.h"
 
 #define println(x) std::cout <<"║  "<<x<<std::endl
+#define NEW_LINE "  ║"
 
 #define PAUSE system("pause");
 
@@ -49,7 +50,7 @@
 
 
 
-struct Console
+struct Console // TODO: close the right borders when printing new line
 {
 	// Rules:
 	// "c{color}[part]" to apply color to a part of the string; (alternative: pass in the color as second parameter of console.log();
@@ -95,6 +96,16 @@ private:
 	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);
 	int node_indent;
+
+	int margin_size;
+	int border_size;
+	int padding_size;
+	
+	int text_area_width;
+	int text_area_height;
+
+	int width;
+	int height;
 };
 
 extern Console console;

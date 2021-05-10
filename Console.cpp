@@ -13,6 +13,18 @@ Console::Console()
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTextAttribute(this->handle, 7);
 	this->node_indent = 0;
+
+	this->margin_size = 0;
+	this->border_size = 1;
+	this->padding_size = 2;
+
+	this->text_area_width = 75;
+	this->text_area_height = 75;
+
+	this->width = this->border_size * 2 + this->padding_size * 2 + this->text_area_width;
+	this->height = 1 + this->border_size * 2 + this->padding_size * 2 + this->text_area_height;
+
+	assert(this->padding_size >= 2);
 }
 
 void Console::log(string msg, int color, bool new_line)
@@ -24,11 +36,19 @@ void Console::log(string msg, int color, bool new_line)
 
 	this->set_color(color);
 
+	int chars_printed = 0;
 	for (string::iterator
 		charP = msg.begin();
 		charP != msg.end();
 		charP++)
 	{
+		if (*charP == '\n')
+		{
+			this->new_line();
+			continue;
+		}
+			
+
 		if (*charP == 'c' && *(charP + 1) == '{')
 		{
 			string tempStr;
@@ -68,6 +88,10 @@ void Console::log(string msg, int color, bool new_line)
 		}
 		
 		std::cout << *charP;
+		chars_printed++;
+		// TODO: close the right borders when printing new line
+		if (chars_printed >= this->text_area_width)
+			std::cout << 
 	}
 	if (new_line)
 		std::cout << std::endl;
