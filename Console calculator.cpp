@@ -58,8 +58,6 @@ int main(int argc, const char** argv)
     tree.first_node->append_child(new lib::Node)->append_child(new lib::Node)->append_child(new lib::Node);
     for (int i=0; i < 2; i++)
         tree.first_node->append_child(new lib::Node);
-    // TODO: Logging tree breaks the tree
-    console.log_tree(tree);
     console.log_tree(tree);
     console.log_node(tree.get_node_by_id(6), false);
     

@@ -88,6 +88,7 @@ Node* Node::append_child(Node* _child) // return Node*
 
 Node* lib::Node::get_child_by_id(unsigned int _id)
 {
+    // TODO: Finish this function
     for (Node* child : this->children)
         if (child->id == _id)
             return child;

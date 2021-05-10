@@ -75,7 +75,7 @@ struct Console
 	void warn(string warning);
 
 	void log_node(lib::Node*, bool prnt_chldrn=true);
-	void log_tree(lib::Tree);
+	void log_tree(const lib::Tree&);
 	/// -- Inline Logs
 	void log_ptr(const void* ptr);
 	void log_str(string str);

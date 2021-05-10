@@ -132,7 +132,7 @@ void Console::log_node(lib::Node* node, bool prnt_chldrn)
 	
 	// print child nodes with indent
 	this->node_indent += 4;
-	if (prnt_chldrn)
+	if (prnt_chldrn && node)
 		for (lib::Node* child : node->children)
 			this->log_node(child);
 	this->node_indent -= 4;
@@ -145,7 +145,7 @@ void Console::log_node(lib::Node* node, bool prnt_chldrn)
 
 	std::cout << "}" << std::endl;
 }
-void Console::log_tree(lib::Tree tree)
+void Console::log_tree(const lib::Tree& tree)
 {
 	this->log(tree.name + "c{0}[:] c{10}[--v]", GREEN);
 	this->log_node(tree.first_node);
@@ -157,7 +157,7 @@ void Console::log_tree(lib::Tree tree)
 void Console::log_ptr(const void* ptr)
 {
 	this->set_color(MAGENTA);
-	std::cout << "*Ax" << ptr << '*';
+	std::cout << "*0x" << ptr << '*';
 	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_str(string str)
