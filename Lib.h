@@ -73,7 +73,4 @@ namespace lib {
     //void organize(string from, string& command, std::vector<string>& arguments);
 
     //void end_command_turn(const string& comm, const std::vector<string>& args);
-
-    struct Node;
-    struct Tree;
 }

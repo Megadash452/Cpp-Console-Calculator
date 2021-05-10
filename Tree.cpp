@@ -73,6 +73,7 @@ Node* Node::append_child(Node* _child) // return Node*
         {
             std::cout << "Cannot append Child Node id= <" << _child->id << "> because there already exists a child with that id" << std::endl;
         }*/
+
     _child->set_parent(this);
     _child->set_used_ids(this, this->used_ids);
     if (!_child->id)
@@ -87,17 +88,20 @@ Node* Node::append_child(Node* _child) // return Node*
 }
 
 Node* lib::Node::get_child_by_id(unsigned int _id)
-{
-    // TODO: Finish this function
-    for (Node* child : this->children)
-        if (child->id == _id)
-            return child;
-        
+{ // Get child node if node->id matches the wanted id
+    if (this->id == _id)
+        return this;
+    
+    Node* target_node = nullptr;
     if (this->children.size() > 0)
         for (Node* child : this->children)
-            child->get_child_by_id(_id);
-    else
-        return nullptr;
+        {
+            target_node = child->get_child_by_id(_id);
+            if (target_node)
+                return target_node;
+        }
+            
+    return nullptr;
 }
 
 Node* lib::Node::get_parent()
