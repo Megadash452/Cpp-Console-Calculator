@@ -9,6 +9,7 @@
 #define announce_inExpression(type, exp, x)
 #endif*/
 
+Console console{ 5 };
 
 class Function
 {
@@ -31,12 +32,13 @@ bool var_defined(const string& var, std::map<string, Expression>& vars)
 
 int main(int argc, const char** argv)
 {
-    std::cout << argc << std::endl;
-    for (int i=0; i < argc; i++)
-        std::cout << argv[i] << ", ";
-    std::cout << '\n';
-    //if (argc - 1)
-        //std::cout << argc << " arguments passed from outside; omitted\n";
+    #if _DEBUG
+        std::cout << argc << std::endl;
+        for (int i=0; i < argc; i++)
+            std::cout << argv[i] << ", ";
+        std::cout << '\n';
+    #endif
+
 
     string user_input;
     string command;
@@ -49,12 +51,16 @@ int main(int argc, const char** argv)
     std::cout << "                           ╔═════════════════════════╗                          \n";
     std::cout << "╔══════════════════════════╣ Command Line Calculator ╠═════════════════════════╗\n";
     std::cout << "║                          ╚═════════════════════════╝                         ║\n";
+    std::cout << "║  ";                                                                        //║\n";
+    auto cpos = console.get_cursor_pos();                                                      //║\n";
+  std::cout << "\n╚══════════════════════════════════════════════════════════════════════════════╝\n";
+    console.set_cursor_pos(cpos);
     //std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
     console.log("");
     console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
-    console.log("--------------------------------------------------------------------------------------------------------");
+    console.log("---------------------------------------------------------------------------");
 
-    lib::Tree tree{"tree1"};
+    /*lib::Tree tree{"tree1"};
     tree.first_node
         ->append_child(new lib::Node)
             ->append_child(new lib::Node);
@@ -72,7 +78,7 @@ int main(int argc, const char** argv)
 
     
     console.log_node(tree.get_node_by_id(6)->append_child(new lib::Node), false);
-    console.log_tree(tree);
+    console.log_tree(tree);*/
     
 
 
@@ -178,13 +184,16 @@ int main(int argc, const char** argv)
                     console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');
                 }
             }
+            else if (command == "amogus") {
+                console.log("When the Imposter is c{12}[sus!] c{14}[:flushed:]");
+            }
             else
             {
                 console.error("\"" + command + "\" is not a valid command.");
             }
         }
-        catch (string error) { // TODO:bad: use std::exception instead
-            console.error(error);
+        catch (lib::argument_error e) {
+            console.error(e);
             continue;
         }
         console.log("");

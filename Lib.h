@@ -43,7 +43,8 @@ namespace lib {
     char upper_case(char c);
 
     int integer(char c);
-    int integer(string str, int base = 10);
+    int integer(string str, int base=10);
+    int digits(int num, int base=10);
 
     string to_string(int num);
 

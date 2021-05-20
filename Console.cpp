@@ -12,39 +12,56 @@ Console::Console()
 {
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleTextAttribute(this->handle, 7);
+	this->chars_printed = 0;
+
 	this->node_indent = 0;
 
 	this->margin_size = 0;
 	this->border_size = 1;
 	this->padding_size = 2;
 
-	this->text_area_width = 75;
+	this->text_area_width = 74;
 	this->text_area_height = 75;
 
 	this->width = this->border_size * 2 + this->padding_size * 2 + this->text_area_width;
 	this->height = 1 + this->border_size * 2 + this->padding_size * 2 + this->text_area_height;
 
+	this->initiated = false;
+
 	assert(this->padding_size >= 2);
+}
+
+Console::Console(int i)
+	: Console::Console()
+{
+	if (!this->initiated)
+	{
+
+		this->initiated = true;
+	}
 }
 
 void Console::log(string msg, int color, bool new_line)
 {
+	// TODO: fix so that two color marks can be printed without the need for a space in between
 	/* Concatenate in msg by std::string. {<<} operator will come later on.
 	*/
 
-	std::cout << "║  ";
+	/*std::cout << "║";
+	this->apply_padding();*/
 
 	this->set_color(color);
 
-	int chars_printed = 0;
 	for (string::iterator
 		charP = msg.begin();
 		charP != msg.end();
 		charP++)
 	{
-		if (*charP == '\n')
+		if (*charP == '\n' ||
+			this->chars_printed >= this->text_area_width)
 		{
 			this->new_line();
+			this->chars_printed = 0;
 			continue;
 		}
 			
@@ -88,15 +105,17 @@ void Console::log(string msg, int color, bool new_line)
 		}
 		
 		std::cout << *charP;
-		chars_printed++;
+		this->chars_printed++;
 		// TODO: close the right borders when printing new line
-		if (chars_printed >= this->text_area_width)
-			std::cout << 
+		/*if (this->chars_printed >= this->text_area_width)
+			std::cout << */
 	}
-	if (new_line)
-		std::cout << std::endl;
+
 	if (color)
 		this->set_color(this->default_color);
+
+	if (new_line)
+		this->new_line();
 }
 
 //void Console::log(lib::Tree tree) { this->log_tree(tree); }
@@ -111,17 +130,33 @@ void Console::log(string msg, int color, bool new_line)
 //}
 void Console::input(string& var)
 {
-	std::cout << "║  --> ";
+	std::cout << "--> ";
+	this->hprint(4);
+
 	this->set_color(8);
+	auto pos = this->get_cursor_pos();
 	getline(std::cin, var);
+	int length = var.size();
 	this->reset_color();
+
+	this->set_cursor_pos(pos[0] + length, pos[1]);
+	this->hprint(length);
+	this->new_line();
 }
 void Console::input(int& var)
 {
-	std::cout << "║  --> ";
+	std::cout << "--> ";
+	this->hprint(4);
+
 	this->set_color(8);
+	auto pos = this->get_cursor_pos();
 	std::cin >> var;
+	int length = lib::digits(var);
 	this->reset_color();
+
+	this->set_cursor_pos(pos[0] + length, pos[1]);
+	this->hprint(length);
+	this->new_line();
 }
 
 
@@ -133,26 +168,37 @@ void Console::error(lib::calc_exception& e)
 	this->log("c{4}[-- " + e.type() + " --] " + string{e.what()});
 }
 void Console::warn(string warning) {
-	this->log("c{6}[--Warning--] " + warning);
+	this->log("c{6}[-- Warning --] " + warning);
 }
 
 
 void Console::log_node(lib::Node* node, bool prnt_chldrn)
 {
-	std::cout << "║  ";
+	/*std::cout << "║";
+	this->apply_padding();*/
 
 	// Apply indent
 	for (int i = 0; i < this->node_indent; i++)
-		std::cout << " ";
+	{
+		std::cout << ' ';
+		this->hprint();
+	}
+		
 
 	this->log_ptr(node);
 	this->set_color(11);
-	if (node != nullptr)
+	if (node != nullptr) {
 		std::cout << "<" << node->id << ">";
-	else
+		this->hprint(lib::digits(node->id)+2);
+	}
+	else {
 		std::cout << "<NULL>";
-	this->set_color(0);
-	std::cout << ": {" << std::endl;
+		this->hprint(6);
+	}
+	this->set_previous_color(); // TODO: might not work
+	std::cout << ": {";
+	this->hprint(3);
+	this->new_line();
 	
 	// print child nodes with indent
 	this->node_indent += 4;
@@ -165,9 +211,15 @@ void Console::log_node(lib::Node* node, bool prnt_chldrn)
 
 	// Apply indent
 	for (int i = 0; i < this->node_indent; i++)
+	{
 		std::cout << " ";
+		this->hprint();
+	}
+		
 
-	std::cout << "}" << std::endl;
+	std::cout << "}";
+	this->hprint();
+	this->new_line();
 }
 void Console::log_tree(const lib::Tree& tree)
 {
@@ -182,24 +234,31 @@ void Console::log_ptr(const void* ptr)
 {
 	this->set_color(MAGENTA);
 	std::cout << "*0x" << ptr << '*';
+	this->hprint(SYS_PTR_DIGITS + 4);
 	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_str(string str)
 {
 	this->set_color(DARK_GREEN);
 	std::cout << '\"' << str << '\"';
+	for (char c : str)
+		this->hprint();
+
+	this->hprint(2);
 	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_char(char c)
 {
 	this->set_color(DARK_CYAN);
 	std::cout << "'" << c << "'";
+	this->hprint(3);
 	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_int(int i)
 {
 	this->set_color(BLUE);
 	std::cout << i;
+	this->hprint();
 	this->set_color(COLOR_DEFAULT);
 }
 
@@ -225,9 +284,11 @@ void Console::log_int(int i)
 }*/
 void Console::log(std::vector<string> vect)
 {
-	std::cout << "║  string";
+	// TODO: functional padding
+	std::cout << "string";
 	this->set_color(15);
 	std::cout << '[';
+	this->hprint(7);
 
 	for (std::vector<string>::iterator
 		strP = vect.begin();
@@ -236,17 +297,23 @@ void Console::log(std::vector<string> vect)
 	{
 		this->log_str(*strP);
 		std::cout << ", ";
+		this->hprint(2);
 	}
 	this->set_color(15);
 	std::cout << "\b\b";
-	std::cout << "]\n";
+	std::cout << "]";
+	this->hprint();
 	this->set_color(this->default_color);
+
+	this->new_line();
 }
 void Console::log(std::vector<char> vect)
 {
-	std::cout << "║  char";
+	// TODO: functional padding
+	std::cout << "char";
 	this->set_color(15);
 	std::cout << '[';
+	this->hprint(5);
 
 	for (std::vector<char>::iterator
 		charP = vect.begin();
@@ -255,17 +322,23 @@ void Console::log(std::vector<char> vect)
 	{
 		this->log_char(*charP);
 		std::cout << ", ";
+		this->hprint(2);
 	}
 	this->set_color(15);
 	std::cout << "\b\b";
-	std::cout << "]\n";
+	std::cout << "]";
+	this->hprint();
 	this->set_color(this->default_color);
+
+	this->new_line();
 }
 void Console::log(std::vector<int> vect)
 {
-	std::cout << "║  int";
+	// TODO: functional padding
+	std::cout << "int";
 	this->set_color(15);
 	std::cout << '[';
+	this->hprint(4);
 
 	for (std::vector<int>::iterator
 		intP = vect.begin();
@@ -274,11 +347,15 @@ void Console::log(std::vector<int> vect)
 	{
 		this->log_int(*intP);
 		std::cout << ", ";
+		this->hprint(2);
 	}
 	this->set_color(15);
 	std::cout << "\b\b";
-	std::cout << "]\n";
+	std::cout << "]";
+	this->hprint();
 	this->set_color(this->default_color);
+
+	this->new_line();
 }
 
 
@@ -313,15 +390,20 @@ void Console::color_by_delim(string::iterator& charP, int color, bool keep_delim
 		this->set_color(color);
 		if (keep_delims)
 		{
-			for (; charP != closeTarget;
-				charP++)
+			for (; charP != closeTarget; charP++)
+			{
 				std::cout << *charP;
+				this->hprint();
+			}
 			std::cout << *charP;
+			this->hprint();
 		}
 		else
-			for (; charP != closeTarget;
-				charP++)
+			for (; charP != closeTarget; charP++)
+			{
 				std::cout << *charP;
+				this->hprint();
+			}
 		charP++;
 		this->set_previous_color();
 	}
@@ -330,15 +412,103 @@ void Console::color_by_delim(string::iterator& charP, int color, bool keep_delim
 		for (; *charP != ' ' ||
 			charP == delimP;
 			charP++)
+		{
 			std::cout << *charP;
+			this->hprint();
+		}
 		this->set_color(4);
 		std::cout << "<-(error applying color)";
+		this->hprint(24);
+
 		this->set_previous_color();
 		std::cout << *charP;
+		this->hprint();
 	}
 }
 void Console::iterate_for_keywords(string::iterator& charP)
 {
 }
 
-Console console;
+std::vector<int> Console::get_cursor_pos()
+{
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if (!GetConsoleScreenBufferInfo(
+			GetStdHandle(STD_OUTPUT_HANDLE),
+			&csbi
+		)
+	)   return std::vector<int>{ -1, -1 };
+	
+	return std::vector<int>{ csbi.dwCursorPosition.X, csbi.dwCursorPosition.Y };
+}
+
+void Console::set_cursor_pos(int x, int y)
+{
+	COORD coord;
+	coord.X = x;
+	coord.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void Console::set_cursor_pos(std::vector<int> pos)
+{
+	this->set_cursor_pos(pos[0], pos[1]);
+}
+
+
+void Console::hprint(int printed)
+{ // Handles printing a character
+	this->chars_printed += printed;
+	if (this->chars_printed >= this->text_area_width)
+	{
+		this->new_line();
+		this->chars_printed = 0;
+	}
+}
+
+void Console::new_line()
+{
+	this->set_color(0);
+
+	/*for (; this->chars_printed < this->text_area_width; this->chars_printed++)
+		std::cout << ' ';
+	this->apply_padding();*/
+
+	this->set_cursor_pos(
+		this->padding_size * 2 + this->text_area_width+1,
+		this->get_cursor_pos()[1]
+	);
+	std::cout << "║\n║";
+	this->chars_printed = 0;
+	this->apply_padding();
+
+	auto pos = this->get_cursor_pos();
+	// this->closing_statement();
+	std::cout << "\n╚══════════════════════════════════════════════════════════════════════════════╝";
+
+	this->set_cursor_pos(pos);
+	for (int i=0; i < this->text_area_width; i++)
+		std::cout << ' ';
+	this->apply_padding();
+	std::cout << "║";
+	this->set_cursor_pos(pos);
+}
+void Console::apply_padding()
+{
+	for (int i = 0; i < this->padding_size; i++)
+		std::cout << ' ';
+}
+
+
+
+
+
+/*Console console{[]() {
+	/// string printed cna only be 75 chars long (81-3-3)
+    std::cout << "                           ╔═════════════════════════╗                          \n";
+    std::cout << "╔══════════════════════════╣ Command Line Calculator ╠═════════════════════════╗\n";
+    std::cout << "║                          ╚═════════════════════════╝                         ║\n";
+    //std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
+    console.log("");
+    console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
+    console.log("--------------------------------------------------------------------------------------------------------");
+}};*/

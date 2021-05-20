@@ -109,6 +109,17 @@ int lib::integer(string str, int base)
     return num;
 }
 
+int lib::digits(int num, int base)
+{
+    if (!num)
+        return 1;
+
+    int i = 0;
+    for (; num != 0; i++)
+        num /= 10;
+    return i;
+}
+
 string lib::to_string(int num)
 {
     string returnStr;
@@ -253,11 +264,13 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
             actual_num_of_args++;
 
     if (actual_num_of_args > num_of_args)
-        std::cout << "║  --WARNING!--  Too many arguments. Please provide " << num_of_args << " arguments\n"
-                     "║                Unnecessary arguments were ignored\n";
+        console.warn(
+            "Too many arguments. Please provide " + std::to_string(num_of_args) + " arguments\n" +
+            "              Unnecessary arguments were ignored"
+        );
     else if (actual_num_of_args < num_of_args)
     {
-        throw string("Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments"); // TODO:bad: use std::exception instead 
+        throw lib::argument_error{ "Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments" }; // TODO:bad: use std::exception instead 
     }
 
     return returnVect;

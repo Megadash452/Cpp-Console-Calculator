@@ -7,7 +7,7 @@
 #include "Lib.h"
 
 #define println(x) std::cout <<"║  "<<x<<std::endl
-#define NEW_LINE "  ║"
+#define NEW_LINE "  ║\n║  "
 
 #define PAUSE system("pause");
 
@@ -48,6 +48,9 @@
 #define HILIGT_YELLOW(x)       x+224
 #define HILIGT_WHTIE(x)        x+240
 
+#define SYS_PTR_DIGITS 16      // How many digits in a pointer for this system
+                               // TODO: Make system dependable
+
 
 
 struct Console // TODO: close the right borders when printing new line
@@ -63,6 +66,7 @@ struct Console // TODO: close the right borders when printing new line
 	static string Keywords[30];
 
 	Console();
+	Console(int i);
 
 	void log(string msg, int color=0, bool new_line=true);
 	//void log(lib::Tree);
@@ -92,9 +96,22 @@ struct Console // TODO: close the right borders when printing new line
 	void set_previous_color();
 	void reset_color();
 
+	std::vector<int> get_cursor_pos();
+	void set_cursor_pos(int x, int y);
+	void set_cursor_pos(std::vector<int> pos);
+
 private:
 	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);
+	
+	void hprint(int printed=1);
+
+	void new_line();
+	void apply_padding();
+	
+
+	int chars_printed;
+
 	int node_indent;
 
 	int margin_size;
@@ -106,6 +123,8 @@ private:
 
 	int width;
 	int height;
+
+	bool initiated;
 };
 
 extern Console console;

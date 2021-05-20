@@ -35,4 +35,17 @@ namespace lib {
         string _type;
         string _where; // const
     };
+
+    struct argument_error : public calc_exception
+    {
+        argument_error()
+            : _type("Argument Error") {}
+
+        argument_error(string what)
+            : _type("Argument Error"), calc_exception(what.c_str()) {}
+
+        string type() override { return "Argument Error"; }
+    private:
+        string _type;
+    };
 }
