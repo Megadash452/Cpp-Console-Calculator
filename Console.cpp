@@ -26,24 +26,12 @@ Console::Console()
 	this->width = this->border_size * 2 + this->padding_size * 2 + this->text_area_width;
 	this->height = 1 + this->border_size * 2 + this->padding_size * 2 + this->text_area_height;
 
-	this->initiated = false;
-
 	assert(this->padding_size >= 2);
-}
-
-Console::Console(int i)
-	: Console::Console()
-{
-	if (!this->initiated)
-	{
-
-		this->initiated = true;
-	}
+	// DO NOT call this->log(), this->color_by_delims(), or access openDelims/closeDelims here.
 }
 
 void Console::log(string msg, int color, bool new_line)
 {
-	// TODO: fix so that two color marks can be printed without the need for a space in between
 	/* Concatenate in msg by std::string. {<<} operator will come later on.
 	*/
 
@@ -76,18 +64,25 @@ void Console::log(string msg, int color, bool new_line)
 					charP = i + 2;
 			}
 			this->color_by_delim(charP, stoi(tempStr));
+			continue;
 		}
 		if (charP >= msg.end())
 			break;
 
 		// TODO: Add keyword syntax highlight
 		try {
-			if (*charP == '"')
+			if (*charP == '"') {
 				color_by_delim(charP, 2, true);
-			else if (*charP == '\'' && *(charP + 2) == '\'')
+				continue;
+			}
+			else if (*charP == '\'' && *(charP + 2) == '\'') {
 				color_by_delim(charP, 3, true);
-			else if (*charP == '<')
+				continue;
+			}
+			else if (*charP == '<') {
 				color_by_delim(charP, 11, true);
+				continue;
+			}
 			else if (charP + 1 < msg.end())
 				if (*charP == ' ' && char_in_numbers(*(charP + 1)))
 				{
@@ -95,10 +90,11 @@ void Console::log(string msg, int color, bool new_line)
 					for (auto it = charP + 1; it < msg.end(); it++)
 						if (!char_in_numbers(*it))
 							valid = false;
-					if (valid) color_by_delim(charP, 9, true);
+					if (valid) {
+						color_by_delim(charP, 9, true);
+						continue;
+					}
 				}
-
-			if (charP >= msg.end()) break;
 		}
 		catch (std::out_of_range) {
 
@@ -116,6 +112,11 @@ void Console::log(string msg, int color, bool new_line)
 
 	if (new_line)
 		this->new_line();
+}
+
+void Console::log(string msg, bool new_line)
+{
+	this->log(msg, 0, new_line);
 }
 
 //void Console::log(lib::Tree tree) { this->log_tree(tree); }
@@ -404,7 +405,6 @@ void Console::color_by_delim(string::iterator& charP, int color, bool keep_delim
 				std::cout << *charP;
 				this->hprint();
 			}
-		charP++;
 		this->set_previous_color();
 	}
 	else
@@ -454,6 +454,22 @@ void Console::set_cursor_pos(std::vector<int> pos)
 	this->set_cursor_pos(pos[0], pos[1]);
 }
 
+void Console::initializer_print()
+{
+	// string printed can only be 75 chars long (81-3-3)
+	std::cout << "                           ╔═════════════════════════╗                          \n";
+	std::cout << "╔══════════════════════════╣ Command Line Calculator ╠═════════════════════════╗\n";
+	std::cout << "║                          ╚═════════════════════════╝                         ║\n";
+	std::cout << "║  ";                                                                        //║\n";
+	auto cpos = this->get_cursor_pos();  std::cout << '\n';                                    //║\n";
+	std::cout << "╚══════════════════════════════════════════════════════════════════════════════╝\n";
+
+	this->set_cursor_pos(cpos);
+
+	this->log("\nWhat do you want to do? (type \"help\" or \"h\" to see your options)");
+	this->log("---------------------------------------------------------------------------");
+}
+
 
 void Console::hprint(int printed)
 { // Handles printing a character
@@ -499,16 +515,4 @@ void Console::apply_padding()
 }
 
 
-
-
-
-/*Console console{[]() {
-	/// string printed cna only be 75 chars long (81-3-3)
-    std::cout << "                           ╔═════════════════════════╗                          \n";
-    std::cout << "╔══════════════════════════╣ Command Line Calculator ╠═════════════════════════╗\n";
-    std::cout << "║                          ╚═════════════════════════╝                         ║\n";
-    //std::cout << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _\n";
-    console.log("");
-    console.log("What do you want to do? (type \"help\" or \"h\" to see your options)");
-    console.log("--------------------------------------------------------------------------------------------------------");
-}};*/
+Console console{};

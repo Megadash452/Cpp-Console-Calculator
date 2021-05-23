@@ -66,9 +66,10 @@ struct Console // TODO: close the right borders when printing new line
 	static string Keywords[30];
 
 	Console();
-	Console(int i);
+	// template <typename Function> Console(Function);
 
 	void log(string msg, int color=0, bool new_line=true);
+	void log(string msg, bool new_line);
 	//void log(lib::Tree);
 
 	//string input(string msg);
@@ -100,6 +101,8 @@ struct Console // TODO: close the right borders when printing new line
 	void set_cursor_pos(int x, int y);
 	void set_cursor_pos(std::vector<int> pos);
 
+	void initializer_print();
+
 private:
 	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);
@@ -110,9 +113,9 @@ private:
 	void apply_padding();
 	
 
-	int chars_printed;
+	mutable int chars_printed;
 
-	int node_indent;
+	mutable int node_indent;
 
 	int margin_size;
 	int border_size;
@@ -122,9 +125,11 @@ private:
 	int text_area_height;
 
 	int width;
-	int height;
-
-	bool initiated;
+	mutable int height;
 };
 
 extern Console console;
+//Console& console() {
+//	static Console c;
+//	return c;
+//}

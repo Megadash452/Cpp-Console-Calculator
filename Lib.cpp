@@ -1,16 +1,16 @@
 ﻿#include "Lib.h"
 #include "Calc Exceptions.h"
 
-extern std::map<char, char> lib::closeDelims({
-        {'\'', '\''},
-        {'"', '"'},
-        {'<', '>'},
-        {'[', ']'},
-        {'(', ')'},
-        {'{', '}'},
-        {' ', ' '}
-    });
-extern std::map<char, char> lib::openDelims({
+std::map<char, char> lib::closeDelims({
+    {'\'', '\''},
+    {'"', '"'},
+    {'<', '>'},
+    {'[', ']'},
+    {'(', ')'},
+    {'{', '}'},
+    {' ', ' '}
+});
+std::map<char, char> lib::openDelims({
     {'\'', '\''},
     {'"', '"'},
     {'>', '<'},
@@ -270,7 +270,7 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)/
         );
     else if (actual_num_of_args < num_of_args)
     {
-        throw lib::argument_error{ "Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments" }; // TODO:bad: use std::exception instead 
+        throw lib::argument_error{ "Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments" };
     }
 
     return returnVect;

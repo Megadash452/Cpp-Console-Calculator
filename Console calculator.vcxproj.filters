@@ -55,6 +55,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="dumped.txt" />
+    <None Include="commands.json">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="dumped.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

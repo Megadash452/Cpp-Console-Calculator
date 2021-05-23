@@ -8,6 +8,12 @@ Tree::Tree(string _name)
     this->first_node->set_used_ids(this, this->used_node_ids);
 }
 
+Tree::Tree(Tree& t)
+    : name(t.name), first_node(nullptr), used_node_ids(new std::vector<unsigned int>{ *t.used_node_ids })
+{ // TODO: Finish
+
+}
+
 Tree::~Tree()
 {
     delete this->first_node;

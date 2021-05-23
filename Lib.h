@@ -76,3 +76,43 @@ namespace lib {
 
     //void end_command_turn(const string& comm, const std::vector<string>& args);
 }
+
+//std::map<char, char> closeDelims()
+//{
+//    static std::map<char, char> closeDelims{ {
+//        {'\'', '\''},
+//        {'"', '"'},
+//        {'<', '>'},
+//        {'[', ']'},
+//        {'(', ')'},
+//        {'{', '}'},
+//        {' ', ' '}
+//    } };
+//    return closeDelims;
+//}
+//std::map<char, char> openDelims()
+//{
+//    static std::map<char, char> openDelims{ {
+//        {'\'', '\''},
+//        {'"', '"'},
+//        {'>', '<'},
+//        {']', '['},
+//        {')', '('},
+//        {'}', '{'},
+//        {' ', ' '}
+//    } };
+//    return openDelims;
+//}
+//
+//static bool global_initialization = []()
+//{
+//    try {
+//        closeDelims();
+//        openDelims();
+//        console();
+//        return true;
+//    }
+//    catch (std::exception) {
+//        return false;
+//    }
+//}();

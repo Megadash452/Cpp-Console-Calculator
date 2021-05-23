@@ -1,0 +1,26 @@
+[
+    {
+        "name": "stop",
+        "aliases": [ "quit", "exit" ],
+        "args": [ "None" ],
+        "description": "Exit out of the program."
+    },
+    {
+        "name": "calculate",
+        "aliases": [ "calc" ],
+        "args": [ "Expression<string>" ],
+        "description": "Calculate the value of an expression. return: int"
+    },
+    {
+        "name": "store",
+        "aliases": [ "variable", "var" ],
+        "args": [ "Expression<string>" ],
+        "description": "Store a variable to use later. You can always redefine a variable."
+    },
+    {
+        "name": "variables",
+        "aliases": [ "vars" ],
+        "args": [ "None" ],
+        "description": "See all stored variables."
+    }
+]

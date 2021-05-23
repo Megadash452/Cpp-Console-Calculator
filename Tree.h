@@ -30,6 +30,7 @@ namespace lib {
 
     struct Tree {
         Tree(string _name);
+        Tree(Tree&);
         ~Tree();
 
         Node* get_node_by_id(unsigned int _id);
