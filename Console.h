@@ -6,8 +6,8 @@
 
 #include "Lib.h"
 
-#define println(x) std::cout <<"║  "<<x<<std::endl
-#define NEW_LINE "  ║\n║  "
+//#define println(x) std::cout <<"║  "<<x<<std::endl
+//#define NEW_LINE "  ║\n║  "
 
 #define PAUSE system("pause");
 
@@ -53,7 +53,7 @@
 
 
 
-struct Console // TODO: close the right borders when printing new line
+struct Console
 {
 	// Rules:
 	// "c{color}[part]" to apply color to a part of the string; (alternative: pass in the color as second parameter of console.log();
@@ -72,6 +72,11 @@ struct Console // TODO: close the right borders when printing new line
 	void log(string msg, bool new_line);
 	//void log(lib::Tree);
 
+	//void log(std::vector<const char*> vect);
+	void log(std::vector<string>);
+	void log(std::vector<char>);
+	void log(std::vector<int>);
+
 	//string input(string msg);
 	void input(string& var);
 	void input(int& var);
@@ -83,15 +88,11 @@ struct Console // TODO: close the right borders when printing new line
 	void log_node(lib::Node*, bool prnt_chldrn=true);
 	void log_tree(const lib::Tree&);
 	/// -- Inline Logs
-	void log_ptr(const void* ptr);
-	void log_str(string str);
-	void log_char(char c);
-	void log_int(int i);
+	void log_ptr(const void*);
+	void log_str(string);
+	void log_char(char);
+	void log_int(int);
 
-	//void log(std::vector<const char*> vect);
-	void log(std::vector<string> vect);
-	void log(std::vector<char> vect);
-	void log(std::vector<int> vect);
 
 	void set_color(int color);
 	void set_previous_color();
@@ -102,6 +103,18 @@ struct Console // TODO: close the right borders when printing new line
 	void set_cursor_pos(std::vector<int> pos);
 
 	void initializer_print();
+
+	Console& operator <<(string);
+	Console& operator <<(const char*);
+	Console& operator <<(char);
+	Console& operator <<(int);
+	Console& operator <<(std::vector<string>);
+	Console& operator <<(std::vector<char>);
+	Console& operator <<(std::vector<int>);
+	Console& operator <<(const void*);
+
+	Console& operator <<(lib::Tree);
+	Console& operator <<(lib::Node*);
 
 private:
 	void color_by_delim(string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;

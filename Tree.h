@@ -5,8 +5,10 @@ namespace lib {
     struct Node {
         Node();
         //Node(int _id);
-        Node(Node* _parent);
+        //Node(Node* _parent);
         //Node(Node* _parent, int _id);
+        Node(Node&);
+        Node(Node*);
         ~Node();
 
         Node* append_child(Node* _child); // return Node*

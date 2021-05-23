@@ -1,5 +1,16 @@
 #include "Expression.h"
 
+/// --- Expression Tree ---
+
+//Expression_Tree::Expression_Tree()
+//	: lib::Tree{"Expression"}
+//{
+//
+//}
+
+
+
+/// --- Expression ---
 
 Expression::Expression()
 {
@@ -82,7 +93,7 @@ string Expression::parseForRead(string str)
 						it < str.rend(); it++)
 						if (char_in_operators(*it) && *it != ')')
 						{
-							println(*it.base());
+							//println(*it.base());
 							str.insert(it.base(), '(');
 							break;
 						}

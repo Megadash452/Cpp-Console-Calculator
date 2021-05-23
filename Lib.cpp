@@ -102,7 +102,7 @@ int lib::integer(string str, int base)
     {
         if (char_in_numbers(*charP) && base == 10)
         {
-            num += integer(*charP) * pow(base, place);
+            num += integer(*charP) * (int)pow(base, place);
             place++;
         }
     }
@@ -173,8 +173,8 @@ string::iterator lib::find_closing(string::iterator it)
                 else if (*it == *opening)
                     extraCount++;
             }
-            catch (std::exception) {
-                throw(std::out_of_range{ "" });
+            catch (std::out_of_range e) {
+                throw(std::out_of_range{e});
             }
         }
     }

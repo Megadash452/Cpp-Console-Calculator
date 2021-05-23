@@ -32,12 +32,12 @@ bool var_defined(const string& var, std::map<string, Expression>& vars)
 int main(int argc, const char** argv)
 {
     // print commands from argv
-    #if _DEBUG
-        std::cout << argc << std::endl;
-        for (int i=0; i < argc; i++)
-            std::cout << argv[i] << ", ";
-        std::cout << '\n';
-    #endif
+#if _DEBUG
+    std::cout << argc << std::endl;
+    for (int i = 0; i < argc; i++)
+        std::cout << argv[i] << ", ";
+    std::cout << '\n';
+#endif
 
     // set up console borders and such
     console.initializer_print();
@@ -49,28 +49,30 @@ int main(int argc, const char** argv)
         {"ans", Expression{}}
     } };
 
-    
-    // if (arcg > 0) {
 
-    /*lib::Tree tree{"tree1"};
-    tree.first_node
-        ->append_child(new lib::Node)
-            ->append_child(new lib::Node);
-    tree.first_node
-        ->append_child(new lib::Node);
-    tree.first_node
-        ->append_child(new lib::Node)
-            ->append_child(new lib::Node)
-                ->append_child(new lib::Node)
-                    ->append_child(new lib::Node)
-                        ->append_child(new lib::Node);
-    for (int i=0; i < 2; i++)
+    {
+        lib::Tree tree{ "tree1" };
         tree.first_node
-        ->append_child(new lib::Node);
+            ->append_child(new lib::Node)
+            ->append_child(new lib::Node);
+        tree.first_node
+            ->append_child(new lib::Node);
+        tree.first_node
+            ->append_child(new lib::Node)
+            ->append_child(new lib::Node)
+            ->append_child(new lib::Node)
+            ->append_child(new lib::Node)
+            ->append_child(new lib::Node);
+        for (int i = 0; i < 2; i++)
+            tree.first_node
+            ->append_child(new lib::Node);
 
-    
-    console.log_node(tree.get_node_by_id(6)->append_child(new lib::Node), false);
-    console.log_tree(tree);*/
+        lib::Tree tree2 = tree;
+
+        console << tree << string{ "c{3}[Amogus]" }; // "c{3}[Amogus}"
+        console.log("\n-----------------------------------\n");
+        console.log_tree(tree2);
+    }
     
 
 

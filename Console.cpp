@@ -102,9 +102,6 @@ void Console::log(string msg, int color, bool new_line)
 		
 		std::cout << *charP;
 		this->chars_printed++;
-		// TODO: close the right borders when printing new line
-		/*if (this->chars_printed >= this->text_area_width)
-			std::cout << */
 	}
 
 	if (color)
@@ -196,7 +193,7 @@ void Console::log_node(lib::Node* node, bool prnt_chldrn)
 		std::cout << "<NULL>";
 		this->hprint(6);
 	}
-	this->set_previous_color(); // TODO: might not work
+	this->set_previous_color();
 	std::cout << ": {";
 	this->hprint(3);
 	this->new_line();
@@ -381,7 +378,13 @@ void Console::reset_color(){set_color(0);}
 void Console::color_by_delim(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
 {
 	string::iterator delimP = charP;
-	string::iterator closeTarget = lib::find_closing(delimP);
+	string::iterator closeTarget{};
+	try {
+		closeTarget = lib::find_closing(delimP);
+	}
+	catch (std::out_of_range) {
+		return;
+	}
 
 	if (lib::closeDelims[*delimP])
 	{
@@ -469,6 +472,67 @@ void Console::initializer_print()
 	this->log("\nWhat do you want to do? (type \"help\" or \"h\" to see your options)");
 	this->log("---------------------------------------------------------------------------");
 }
+
+Console& Console::operator<<(string msg)
+{
+	console.log(msg);
+	return *this;
+}
+
+Console& Console::operator<<(const char* msg)
+{
+	this->log(string{ msg });
+	return *this;
+}
+
+Console& Console::operator<<(char c)
+{
+	this->log_char(c);
+	return *this;
+}
+
+Console& Console::operator<<(int i)
+{
+	this->log_int(i);
+	return *this;
+}
+
+Console& Console::operator<<(std::vector<string> vect)
+{
+	this->log(vect);
+	return *this;
+}
+
+Console& Console::operator<<(std::vector<char> vect)
+{
+	this->log(vect);
+	return *this;
+}
+
+Console& Console::operator<<(std::vector<int> vect)
+{
+	this->log(vect);
+	return *this;
+}
+
+Console& Console::operator<<(const void* ptr)
+{
+	this->log_ptr(ptr);
+	return *this;
+}
+
+Console& Console::operator<<(lib::Tree tree)
+{
+	this->log_tree(tree);
+	return *this;
+}
+
+Console& Console::operator<<(lib::Node* node)
+{
+	this->log_node(node);
+	return *this;
+}
+
 
 
 void Console::hprint(int printed)

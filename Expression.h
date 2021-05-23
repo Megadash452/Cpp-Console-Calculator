@@ -1,6 +1,12 @@
 #pragma once
 #include "Lib.h"
-#include "Term.h"
+//#include "Term.h"
+
+//struct Expression_Tree : public lib::Tree
+//{
+//	Expression_Tree();
+//};
+
 
 class Expression
 {
@@ -12,7 +18,7 @@ public:
 	static string parseForPrint(string);
 
 	string expression;
-	std::vector<Term> terms;
+	//Expression_Tree exp_tree;
 private:
 	string readExp;
 };
