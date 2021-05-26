@@ -2,11 +2,11 @@
 
 /// --- Expression Tree ---
 
-//Expression_Tree::Expression_Tree()
-//	: lib::Tree{"Expression"}
-//{
-//
-//}
+Expression_Tree::Expression_Tree()
+	: lib::Tree{"Expression"}
+{
+
+}
 
 
 
@@ -33,6 +33,8 @@ string Expression::parseForRead(string str)
 		charP < str.end(); charP++)
 	{
 		try {
+			if (*charP == ' ')
+				str.erase(charP);
 			// remove redundant ARITHMETIC
 			if ((*charP == '+' && *(charP + 1) == '+') ||
 				(*charP == '+' && *(charP + 1) == '-'))

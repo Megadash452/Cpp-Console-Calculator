@@ -48,33 +48,7 @@ int main(int argc, const char** argv)
     std::map<string, Expression> variables{ {
         {"ans", Expression{}}
     } };
-
-
-    {
-        lib::Tree tree{ "tree1" };
-        tree.first_node
-            ->append_child(new lib::Node)
-            ->append_child(new lib::Node);
-        tree.first_node
-            ->append_child(new lib::Node);
-        tree.first_node
-            ->append_child(new lib::Node)
-            ->append_child(new lib::Node)
-            ->append_child(new lib::Node)
-            ->append_child(new lib::Node)
-            ->append_child(new lib::Node);
-        for (int i = 0; i < 2; i++)
-            tree.first_node
-            ->append_child(new lib::Node);
-
-        lib::Tree tree2 = tree;
-
-        console << tree << string{ "c{3}[Amogus]" }; // "c{3}[Amogus}"
-        console.log("\n-----------------------------------\n");
-        console.log_tree(tree2);
-    }
     
-
 
     for (int iteration=0; true; iteration++)
     {
@@ -83,7 +57,10 @@ int main(int argc, const char** argv)
         else
         {
             for (int i = 1; i < argc; i++) {
-                user_input += argv[i];
+                if (i < 2)
+                    user_input += argv[i];
+                else
+                    user_input += '"' + string{ argv[i] } + '"';
                 if (i != argc-1)
                     user_input += ' ';
             }
@@ -195,9 +172,7 @@ int main(int argc, const char** argv)
             else if (command == "variables" || command == "vars")
             {
                 for (const auto& [var, exp] : variables)
-                {
                     console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');
-                }
             }
             else if (command == "amogus") {
                 console.log("When the Imposter is c{12}[sus!] c{14}[:flushed:]");

@@ -223,57 +223,73 @@ string lib::get_command(string str, char split)
             returnStr.push_back(*charP);
     return returnStr;
 }
-std::vector<string> lib::get_arguments(string str, int num_of_args, char split)//TODO: throw error when missing arguments
+std::vector<string> lib::get_arguments(int argc, char** argv, int num_of_args)
 {
-    std::vector<string> returnVect;
+    std::vector<string> vect;
+    for (int i = 2; i < argc; i++)
+        vect.push_back(argv[i]);
+    return std::vector<string>{};
+}
+std::vector<string> lib::get_arguments(string str, int num_of_args, char split)
+{
+    std::vector<string> vect;
     string::iterator left_over = str.begin();
     string push_backStr;
+    bool in_quotes = false;
 
-    for (int i = 0; i < num_of_args + 1; i++)
-        for (string::iterator
-            charP = left_over;
-            charP != str.end();
-            charP++)
+    while (left_over < str.end())
+        for (string::iterator charP = left_over;
+            charP != str.end(); charP++)
         {
-            if (*charP == split && left_over == str.begin())
+            // determine the start of first argument
+            if (*charP == split && left_over == str.begin() && !in_quotes)
             {
                 left_over = charP + 1;
                 break;
             }
-            else if (*charP == split || charP == str.end()-1)
+            // when argument is enclosed in quotes
+            else if (*charP == '"' && *(charP - 1) != '\\' && in_quotes)
             {
-                if (charP == str.end() - 1) {
-                    string tempStr(left_over, charP + 1);
-                    returnVect.push_back(tempStr);
-                }
-                else {
-                    string tempStr(left_over, charP);
-                    returnVect.push_back(tempStr);
-                }
+                vect.push_back(string{ left_over + 1, charP });
+                if (charP <= str.end() - 2)
+                    left_over = charP + 2;
+                else
+                    left_over = str.end();
+                in_quotes = false;
+                if (charP < str.end() - 1)
+                    charP++;
+            }
+            // when reached the end of an argument on str
+            else if ((*charP == split || charP == str.end()-1) && !in_quotes && *left_over != '"')
+            {
+                if (charP == str.end() - 1)
+                    vect.push_back(string{ left_over, charP + 1 });
+                else
+                    vect.push_back(string{ left_over, charP });
                 left_over = charP + 1;
                 break;
             }
-        }
-    
-    int actual_num_of_args = 0;
-    for (string::iterator
-        charP = str.begin();
-        charP != str.end();
-        charP++)
-        if (*charP == split)
-            actual_num_of_args++;
 
-    if (actual_num_of_args > num_of_args)
+            // toggle the in_quote state
+            if (*charP == '"' && *(charP - 1) != '\\')
+                if (in_quotes)
+                    in_quotes = false;
+                else
+                    in_quotes = true;
+        }
+
+    // if the num of args in the vector is GREATER than the desired num of args
+    if ((unsigned int)vect.size() > (unsigned int)num_of_args)
         console.warn(
             "Too many arguments. Please provide " + std::to_string(num_of_args) + " arguments\n" +
             "              Unnecessary arguments were ignored"
         );
-    else if (actual_num_of_args < num_of_args)
-    {
+    // if the num of args in the vector is LESS than the desired num of args
+    else if ((unsigned int)vect.size() < (unsigned int)num_of_args)
         throw lib::argument_error{ "Too few arguments. Please provide " + std::to_string(num_of_args) + " arguments" };
-    }
 
-    return returnVect;
+    // only return the disired num of args
+    return std::vector<string>{ vect.begin(), vect.begin() + num_of_args };
 }
 //void lib::organize(string source, string& command, std::vector<string>& arguments)
 //{

@@ -2,10 +2,10 @@
 #include "Lib.h"
 //#include "Term.h"
 
-//struct Expression_Tree : public lib::Tree
-//{
-//	Expression_Tree();
-//};
+struct Expression_Tree : public lib::Tree
+{
+	Expression_Tree();
+};
 
 
 class Expression

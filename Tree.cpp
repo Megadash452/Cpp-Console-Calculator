@@ -1,32 +1,30 @@
 #include "Tree.h"
-using lib::Tree;
-using lib::Node;
 
-Tree::Tree(string _name)
-    : name(_name), first_node(new Node), used_node_ids(new std::vector<unsigned int>)
+lib::Tree::Tree(string _name)
+    : name(_name), first_node(new lib::Node), used_node_ids(new std::vector<unsigned int>)
 {
     this->first_node->set_used_ids(this, this->used_node_ids);
 }
 
-Tree::Tree(Tree& t)
-    : name(t.name), first_node(new Node{ t.first_node }), used_node_ids(new std::vector<unsigned int>{ *t.used_node_ids })
+lib::Tree::Tree(lib::Tree& t)
+    : name(t.name), first_node(new lib::Node{ t.first_node }), used_node_ids(new std::vector<unsigned int>{ *t.used_node_ids })
 {
 }
 
-Tree::~Tree()
+lib::Tree::~Tree()
 {
     delete this->first_node;
     delete this->used_node_ids;
 }
 
-Node* lib::Tree::get_node_by_id(unsigned int _id)
+lib::Node* lib::Tree::get_node_by_id(unsigned int _id)
 {
     return this->first_node->get_child_by_id(_id);
 }
 
 /// --- Node ---
 
-Node::Node()
+lib::Node::Node()
     : id(0), parent(nullptr), used_ids(nullptr)
 {
 
@@ -58,34 +56,34 @@ Node::Node()
 //        }
 //}
 
-Node::Node(Node& other)
+lib::Node::Node(lib::Node& other)
     : id(other.id), parent(other.parent), used_ids(other.used_ids)
 {
     // make a copy of each child (Node*)
     for (auto i = other.children.begin(); i != other.children.end(); i++)
     {
-        this->children.push_back(new Node(**i));
+        this->children.push_back(new lib::Node(**i));
     }
 }
 
-lib::Node::Node(Node* other)
+lib::Node::Node(lib::Node* other)
     : id(other->id), parent(other->parent), used_ids(other->used_ids)
 {
     // make a copy of each child (Node*)
     for (auto i = other->children.begin(); i != other->children.end(); i++)
     {
-        this->children.push_back(new Node(*i));
+        this->children.push_back(new lib::Node(*i));
     }
 }
 
-Node::~Node()
+lib::Node::~Node()
 {
-    for (Node* child : this->children)
+    for (lib::Node* child : this->children)
         delete child;
 }
 
 
-Node* Node::append_child(Node* _child) // return Node*
+lib::Node* lib::Node::append_child(lib::Node* _child) // return Node*
 {
     /*for (Node* child : this->parent->children)
         if (child->id == _child->id)
@@ -106,14 +104,14 @@ Node* Node::append_child(Node* _child) // return Node*
     return _child;
 }
 
-Node* lib::Node::get_child_by_id(unsigned int _id)
+lib::Node* lib::Node::get_child_by_id(unsigned int _id)
 { // Get child node if node->id matches the wanted id
     if (this->id == _id)
         return this;
     
-    Node* target_node = nullptr;
+    lib::Node* target_node = nullptr;
     if (this->children.size() > 0)
-        for (Node* child : this->children)
+        for (lib::Node* child : this->children)
         {
             target_node = child->get_child_by_id(_id);
             if (target_node)
@@ -123,12 +121,12 @@ Node* lib::Node::get_child_by_id(unsigned int _id)
     return nullptr;
 }
 
-Node* lib::Node::get_parent()
+lib::Node* lib::Node::get_parent()
 {
     return this->parent;
 }
 
-Node* lib::Node::set_parent(Node* _parent)
+lib::Node* lib::Node::set_parent(lib::Node* _parent)
 {
     this->parent = _parent;
     for (this->id = 0; this->id < this->parent->children.size(); this->id++)
@@ -144,20 +142,20 @@ std::vector<unsigned int> lib::Node::get_used_ids()
     return *(this->used_ids);
 }
 
-void lib::Node::set_used_ids(Tree* _key, std::vector<unsigned int>* vect)
+void lib::Node::set_used_ids(lib::Tree* _key, std::vector<unsigned int>* vect)
 {
     // find out if this node belongs to the _key
     this->used_ids = _key->used_node_ids;
 }
 
-void lib::Node::set_used_ids(Node* _key, std::vector<unsigned int>* vect)
+void lib::Node::set_used_ids(lib::Node* _key, std::vector<unsigned int>* vect)
 {
     // find out if this node belongs to the _key
     if (this->parent == _key)
         this->used_ids = vect;
 }
 
-std::vector<unsigned int>* lib::Node::access_used_ids_ptr(Node* _key)
+std::vector<unsigned int>* lib::Node::access_used_ids_ptr(lib::Node* _key)
 {
     // find out if this node belongs to the _key
     if (this->parent == _key)
@@ -165,7 +163,7 @@ std::vector<unsigned int>* lib::Node::access_used_ids_ptr(Node* _key)
     return nullptr;
 }
 
-std::vector<unsigned int>* lib::Node::access_used_ids_ptr(Tree* _key)
+std::vector<unsigned int>* lib::Node::access_used_ids_ptr(lib::Tree* _key)
 {
     // find out if this node belongs to the _key
     return nullptr;

@@ -16,9 +16,11 @@ namespace lib {
 
 
 #include "Calc Exceptions.h"
-#include "Console.h"
 #include "Tree.h"
+#include "Console.h"
+
 #include "Expression.h"
+
 
 // Comparisons
 #define char_in_operators(c) (c=='+'||c=='-'||c==(char)241||c=='*'||c=='/'||c=='^'||c=='!'||c=='%'||c=='|'||c=='('||c==')'||c=='.')
@@ -71,10 +73,8 @@ namespace lib {
 
 
     string get_command(string str, char split = ' ');
+    std::vector<string> get_arguments(int argc, char** argv, int num_of_args);
     std::vector<string> get_arguments(string str, int num_of_args, char split = ' ');
-    //void organize(string from, string& command, std::vector<string>& arguments);
-
-    //void end_command_turn(const string& comm, const std::vector<string>& args);
 }
 
 //std::map<char, char> closeDelims()
