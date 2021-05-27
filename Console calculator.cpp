@@ -1,13 +1,5 @@
 ﻿#include "Lib.h"
-
-//#define print(x) std::cout << x << std::endl
-
-/*#if _DEBUG
-#define announce(x) std::cout<<x<<std::endl
-#define announce_inExpression(type, exp, x) std::cout<<type<<" ("<<exp[x]<<") in exp["<<x<<']'<<std::endl
-#else
-#define announce_inExpression(type, exp, x)
-#endif*/
+#include <algorithm>
 
 
 //class Function
@@ -45,16 +37,20 @@ int main(int argc, const char** argv)
     string user_input;
     string command;
     std::vector<string> arguments;
-    std::map<string, int> h;
+
+
+    /*std::map<string, int> h;
     h.insert(std::pair<string, int>{string{ "" }, 2});
+
+    std::map<string, lib::Tree> v{ {"what", lib::Tree{"sadness"}} };
 
     std::map<string, lib::Tree> variables;
     variables.insert(std::pair<string, lib::Tree>{ string{ "" }, lib::Tree{ "sad" } });
 
-    lib::Tree t{ "more sad" };
+    lib::Tree t{ "more sad" };*/
     
 
-    for (int iteration=0; true; iteration++)
+    for (int iteration=0; false; iteration++)
     {
         if (argc < 2 || iteration > 0)
             console.input(user_input);

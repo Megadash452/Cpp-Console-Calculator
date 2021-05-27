@@ -1,6 +1,10 @@
 #pragma once
+#include <string>
+#include <vector>
+using std::string;
 
 namespace lib {
+    struct Tree;
     struct Node {
         Node();
         //Node(int _id);

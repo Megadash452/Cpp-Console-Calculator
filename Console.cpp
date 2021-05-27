@@ -1,4 +1,5 @@
 ﻿#include "Console.h"
+#include "Tree.h"
 
 string Console::Keywords[30] = {"null", "true", "false", "console", "term", "expression", "function", "func"
                                "bool", "char", "int", "string", "str", "array", "arr", "map",
@@ -26,7 +27,7 @@ Console::Console()
 	this->width = this->border_size * 2 + this->padding_size * 2 + this->text_area_width;
 	this->height = 1 + this->border_size * 2 + this->padding_size * 2 + this->text_area_height;
 
-	assert(this->padding_size >= 2);
+	//this->padding_size >= 2;
 	// DO NOT call this->log(), this->color_by_delims(), or access openDelims/closeDelims here.
 }
 
@@ -256,6 +257,14 @@ void Console::log_int(int i)
 {
 	this->set_color(BLUE);
 	std::cout << i;
+	this->hprint();
+	this->set_color(COLOR_DEFAULT);
+}
+
+void Console::log_dbl(double d)
+{
+	this->set_color(BLUE);
+	std::cout << d;
 	this->hprint();
 	this->set_color(COLOR_DEFAULT);
 }
@@ -494,6 +503,12 @@ Console& Console::operator<<(char c)
 Console& Console::operator<<(int i)
 {
 	this->log_int(i);
+	return *this;
+}
+
+Console& Console::operator<<(double d)
+{
+	this->log_dbl(d);
 	return *this;
 }
 

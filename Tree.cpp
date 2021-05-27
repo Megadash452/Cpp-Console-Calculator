@@ -1,4 +1,4 @@
-#include "Lib.h"
+#include "Tree.h"
 
 lib::Tree::Tree()
     : name("Tree"), first_node(new lib::Node), used_node_ids(new std::vector<unsigned int>)

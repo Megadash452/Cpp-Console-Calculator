@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include <iostream>
-#include <string>
-#include <stdexcept>
 #include <windows.h>
 
-#include "Lib.h"
+#include "Utils.h"
+#include "Calc Exceptions.h"
+#include "Tree.h"
 
 //#define println(x) std::cout <<"║  "<<x<<std::endl
 //#define NEW_LINE "  ║\n║  "
@@ -92,6 +92,7 @@ struct Console
 	void log_str(string);
 	void log_char(char);
 	void log_int(int);
+	void log_dbl(double);
 
 
 	void set_color(int color);
@@ -108,6 +109,7 @@ struct Console
 	Console& operator <<(const char*);
 	Console& operator <<(char);
 	Console& operator <<(int);
+	Console& operator <<(double);
 	Console& operator <<(std::vector<string>);
 	Console& operator <<(std::vector<char>);
 	Console& operator <<(std::vector<int>);

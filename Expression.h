@@ -1,5 +1,6 @@
 #pragma once
 #include "Utils.h"
+#include "Calc Exceptions.h"
 #include "Tree.h"
 
 
