@@ -126,7 +126,6 @@ double lib::to_double(string str, int base)
     // put it behind the decimal by multiplying it by the number of digits
     double sub_dec = lib::to_int(sub_point, base) / pow(10, sub_point.size());
 
-
     return super_dec + sub_dec;
 }
 
