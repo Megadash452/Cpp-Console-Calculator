@@ -2,8 +2,13 @@
 
 /// --- Expression Tree ---
 
-Expression_Tree::Expression_Tree()
+ExpTree::ExpTree()
 	: lib::Tree{"Expression"}
+{
+
+}
+
+ExpTree::ExpTree(ExpTree&)
 {
 
 }
@@ -16,6 +21,11 @@ Expression::Expression()
 {
 
 }
+Expression::Expression(Expression&)
+{
+
+}
+
 Expression::Expression(string str)
 {
 	this->readExp = Expression::parseForRead(str);

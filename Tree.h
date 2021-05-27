@@ -1,5 +1,4 @@
 #pragma once
-#include "Lib.h"
 
 namespace lib {
     struct Node {
@@ -11,7 +10,7 @@ namespace lib {
         Node(Node*);
         ~Node();
 
-        Node* append_child(Node* _child); // return Node*
+        Node* append_child(Node* _child);
         Node* get_child_by_id(unsigned int _id);
 
         Node* get_parent();
@@ -31,6 +30,7 @@ namespace lib {
     };
 
     struct Tree {
+        Tree();
         Tree(string _name);
         Tree(Tree&);
         ~Tree();

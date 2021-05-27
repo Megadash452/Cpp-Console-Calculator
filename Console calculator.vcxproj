@@ -151,15 +151,15 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="Lib.cpp" />
-    <ClCompile Include="Term.cpp" />
     <ClCompile Include="Tree.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calc Exceptions.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Lib.h" />
-    <ClInclude Include="Term.h" />
     <ClInclude Include="Tree.h" />
   </ItemGroup>
   <ItemGroup>

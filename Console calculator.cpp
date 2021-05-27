@@ -45,9 +45,13 @@ int main(int argc, const char** argv)
     string user_input;
     string command;
     std::vector<string> arguments;
-    std::map<string, Expression> variables{ {
-        {"ans", Expression{}}
-    } };
+    std::map<string, int> h;
+    h.insert(std::pair<string, int>{string{ "" }, 2});
+
+    std::map<string, lib::Tree> variables;
+    variables.insert(std::pair<string, lib::Tree>{ string{ "" }, lib::Tree{ "sad" } });
+
+    lib::Tree t{ "more sad" };
     
 
     for (int iteration=0; true; iteration++)
@@ -115,7 +119,7 @@ int main(int argc, const char** argv)
             { arguments = lib::get_arguments(user_input, 1);
                 try {
                     Expression e(arguments[0]);
-                    variables["ans"] = e;
+                    //variables["ans"] = e;
                     //e.simplify();
                     console.log("result: c{9}[" + e.expression + "]");
                 }
@@ -131,7 +135,7 @@ int main(int argc, const char** argv)
 
                     Expression e;
                     if (lib::lower_case(varname) == "ans")
-                        e = variables["ans"];
+                        ;// e = variables["ans"];
                     else
                         e = Expression{ arguments[1] };
 
@@ -154,11 +158,11 @@ int main(int argc, const char** argv)
                     else if (char_in_alphabet(varname[0]) ||
                         char_in_alphabetUpper(varname[0]))
                     {
-                        if (var_defined(varname, variables))
-                            variables[varname] = e;
+                        if (/*var_defined(varname, variables)*/false)
+                            ;//variables[varname] = e;
                         else
-                            variables.insert(std::pair<string, Expression>(varname, e));
-                        console.log("c{11}[" + varname + "] = c{9}[" + variables[varname].expression + ']');
+                            ;// variables.insert(std::pair<string, Expression>(varname, e));
+                        console.log("c{11}[" + varname + "] = c{9}[" + /*variables[varname]*/e.expression + ']');
                     }
                 }
                 catch (lib::store_error e) {
@@ -171,8 +175,8 @@ int main(int argc, const char** argv)
 
             else if (command == "variables" || command == "vars")
             {
-                for (const auto& [var, exp] : variables)
-                    console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');
+                /*for (const auto& [var, exp] : variables)
+                    console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');*/
             }
             else if (command == "amogus") {
                 console.log("When the Imposter is c{12}[sus!] c{14}[:flushed:]");

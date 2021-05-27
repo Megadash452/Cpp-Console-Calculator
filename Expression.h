@@ -1,10 +1,13 @@
 #pragma once
-#include "Lib.h"
-//#include "Term.h"
+#include "Utils.h"
+#include "Tree.h"
 
-struct Expression_Tree : public lib::Tree
+
+struct ExpTree : public lib::Tree
 {
-	Expression_Tree();
+	ExpTree();
+	ExpTree(ExpTree&);
+
 };
 
 
@@ -12,13 +15,14 @@ class Expression
 {
 public:
 	Expression();
+	Expression(Expression&);
 	Expression(string);
 
 	static string parseForRead(string);
 	static string parseForPrint(string);
 
 	string expression;
-	//Expression_Tree exp_tree;
+	ExpTree exp_tree;
 private:
 	string readExp;
 };
