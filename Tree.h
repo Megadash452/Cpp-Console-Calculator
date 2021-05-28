@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <exception>
 using std::string;
 
 namespace lib {
@@ -18,6 +19,7 @@ namespace lib {
         Node* get_child_by_id(unsigned int _id);
 
         Node* get_parent();
+        std::vector<Node*> get_siblings();
         Node* set_parent(Node* _parent);
 
         std::vector<unsigned int> get_used_ids();

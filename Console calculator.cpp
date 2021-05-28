@@ -42,7 +42,7 @@ int main(int argc, const char** argv)
     /*std::map<string, int> h;
     h.insert(std::pair<string, int>{string{ "" }, 2});
 
-    std::map<string, lib::Tree> v{ {"what", lib::Tree{"sadness"}} };
+    std::map<string, Expression> v{ {"what", Expression{"sadness"}} };
 
     std::map<string, lib::Tree> variables;
     variables.insert(std::pair<string, lib::Tree>{ string{ "" }, lib::Tree{ "sad" } });
@@ -50,7 +50,7 @@ int main(int argc, const char** argv)
     lib::Tree t{ "more sad" };*/
     
 
-    for (int iteration=0; false; iteration++)
+    for (int iteration=0; true; iteration++)
     {
         if (argc < 2 || iteration > 0)
             console.input(user_input);
@@ -118,6 +118,7 @@ int main(int argc, const char** argv)
                     //variables["ans"] = e;
                     //e.simplify();
                     console.log("result: c{9}[" + e.expression + "]");
+                    console << e.exp_tree;
                 }
                 catch (lib::syntax_error e) {
                     console.error(e);
@@ -127,11 +128,11 @@ int main(int argc, const char** argv)
             else if (command == "store")
             { arguments = lib::get_arguments(user_input, 2);
                 try {
-                    string& varname = arguments[0];
+                    /*string& varname = arguments[0];
 
                     Expression e;
                     if (lib::lower_case(varname) == "ans")
-                        ;// e = variables["ans"];
+                        e = variables["ans"];
                     else
                         e = Expression{ arguments[1] };
 
@@ -154,12 +155,12 @@ int main(int argc, const char** argv)
                     else if (char_in_alphabet(varname[0]) ||
                         char_in_alphabetUpper(varname[0]))
                     {
-                        if (/*var_defined(varname, variables)*/false)
-                            ;//variables[varname] = e;
+                        if (var_defined(varname, variables))
+                            variables[varname] = e;
                         else
-                            ;// variables.insert(std::pair<string, Expression>(varname, e));
-                        console.log("c{11}[" + varname + "] = c{9}[" + /*variables[varname]*/e.expression + ']');
-                    }
+                            variables.insert(std::pair<string, Expression>(varname, e));
+                        console.log("c{11}[" + varname + "] = c{9}[" + variables[varname]e.expression + ']');
+                    }*/
                 }
                 catch (lib::store_error e) {
                     console.error(e);

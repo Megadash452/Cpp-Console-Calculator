@@ -3,6 +3,7 @@
 lib::Tree::Tree()
     : name("Tree"), first_node(new lib::Node), used_node_ids(new std::vector<unsigned int>)
 {
+    this->first_node->set_used_ids(this, this->used_node_ids);
 }
 
 lib::Tree::Tree(string _name)
@@ -75,9 +76,9 @@ lib::Node::Node(lib::Node* other)
     : id(other->id), parent(other->parent), used_ids(other->used_ids)
 {
     // make a copy of each child (Node*)
-    for (auto i = other->children.begin(); i != other->children.end(); i++)
+    for (lib::Node* child : other->children)
     {
-        this->children.push_back(new lib::Node(*i));
+        this->children.push_back(new lib::Node{ child });
     }
 }
 
@@ -131,8 +132,21 @@ lib::Node* lib::Node::get_parent()
     return this->parent;
 }
 
+std::vector<lib::Node*> lib::Node::get_siblings()
+{
+    std::vector<lib::Node*> vect;
+
+    if (this->parent != nullptr)
+        for (lib::Node* child : this->parent->children)
+            if (child != this)
+                vect.push_back(child);
+
+    return vect;
+}
+
 lib::Node* lib::Node::set_parent(lib::Node* _parent)
 {
+    // TODO: this->parent->get_child_by_id(this->id) = nullptr;
     this->parent = _parent;
     for (this->id = 0; this->id < this->parent->children.size(); this->id++)
         if (this->parent->children[this->id]->id != this->id)
