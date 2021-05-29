@@ -33,6 +33,7 @@ namespace lib {
 
     string::const_iterator find_closing(string::const_iterator it);
     string::iterator find_closing(string::iterator it);
+    string::iterator find_opening(string::iterator it);
 
     void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 

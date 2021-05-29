@@ -15,7 +15,22 @@ namespace lib {
         Node(Node*);
         ~Node();
 
-        Node* append_child(Node* _child);
+        template<typename N_type>
+        N_type* append_child(N_type* _child)
+        {
+            _child->set_parent(this);
+            _child->set_used_ids(this, this->used_ids);
+            if (!_child->id)
+            {
+                for (unsigned int id : *(this->used_ids))
+                    _child->id++;
+                _child->id++;
+                this->used_ids->push_back(_child->id);
+            }
+            this->children.push_back(_child);
+            return _child;
+        }
+        //template<typename N_type>
         Node* get_child_by_id(unsigned int _id);
 
         Node* get_parent();
@@ -30,7 +45,7 @@ namespace lib {
 
         unsigned int id;
         std::vector<Node*> children;
-    private:
+    protected:
         Node* parent;
         std::vector<unsigned int>* used_ids;
     };
@@ -47,4 +62,6 @@ namespace lib {
         Node* first_node;
         std::vector<unsigned int>* used_node_ids;
     };
+
+    
 }

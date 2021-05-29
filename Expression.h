@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "Calc Exceptions.h"
 #include "Tree.h"
+#include "Console.h"
 
 struct Exp_Tree : public lib::Tree
 {
@@ -28,12 +29,18 @@ struct Exp_Tree : public lib::Tree
 	{
 		Exp_Node()
 			: lib::Node{   } {}
+		Exp_Node(string exp)
+			: lib::Node{ }
+		{
+			this->create_nodes_from_exp(exp);
+		}
 		Exp_Node(Exp_Tree::Exp_Node& n)
 			: lib::Node{ n } {}
 		Exp_Node(Exp_Tree::Exp_Node* n)
 			: lib::Node{ n } {}
 
 		std::vector<Exp_Node*> children;
+		//Exp_Node* append_child(Exp_Node* _child);
 		void create_nodes_from_exp(string exp);
 
 		const string node_type = "null";
@@ -42,7 +49,7 @@ struct Exp_Tree : public lib::Tree
 	// Nester Node (parenthesis, set, abs-val, etc.)
 	struct Nest_Node : public Exp_Node
 	{
-		Nest_Node(char _type)
+		Nest_Node(string n, char _type)
 			: Exp_Node{  }, nest_type(_type)
 		{}
 		char nest_type;
@@ -54,7 +61,7 @@ struct Exp_Tree : public lib::Tree
 	{
 		Op_Node(char _sign)
 			: Exp_Node{  }, sign(_sign)
-		{}
+		{console << this->sign; }
 		char sign;
 
 		const string node_type = "Operation Node";
@@ -64,7 +71,7 @@ struct Exp_Tree : public lib::Tree
 		struct Pow_Node : public Op_Node
 		{
 			Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp)
-				: Op_Node{ '/' }, base(_base), exp(_exp)
+				: Op_Node{ '^' }, base(_base), exp(_exp)
 			{}
 			const string node_type = "Division Node";
 
@@ -78,6 +85,12 @@ struct Exp_Tree : public lib::Tree
 			Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* _divisor)
 				: Op_Node{ '/' }, dividend(_dividend), divisor(_divisor)
 			{}
+			Div_Node(string _dividend, string _divisor)
+				: Op_Node{ '/' }
+			{
+				this->dividend = this->append_child(new Exp_Node{ _dividend });
+				this->divisor = this->append_child(new Exp_Node{ _divisor });
+			}
 			const string node_type = "Division Node";
 
 			Exp_Tree::Exp_Node* dividend; // number being divided
@@ -154,6 +167,10 @@ class Expression
 {
 private:
 	string readExp;
+	// helpers
+	//static string::iterator wrap_in_nester(string& str, string::iterator begin, string::iterator end, char nester = '(');
+	static string::iterator wrap_in_nester_forward(string& str, string::iterator begin, char nester = '(');
+	static string::iterator wrap_in_nester_back(string& str, string::iterator begin  , char nester = ')');
 public:
 	Expression();
 	Expression(Expression&);

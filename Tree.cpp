@@ -31,7 +31,7 @@ lib::Node* lib::Tree::get_node_by_id(unsigned int _id)
 /// --- Node ---
 
 lib::Node::Node()
-    : id(0), parent(nullptr), used_ids(nullptr)
+    : id(0), parent(nullptr), used_ids(new std::vector<unsigned int>)
 {
 
 }
@@ -89,28 +89,30 @@ lib::Node::~Node()
 }
 
 
-lib::Node* lib::Node::append_child(lib::Node* _child) // return Node*
-{
-    /*for (Node* child : this->parent->children)
-        if (child->id == _child->id)
-        {
-            std::cout << "Cannot append Child Node id= <" << _child->id << "> because there already exists a child with that id" << std::endl;
-        }*/
 
-    _child->set_parent(this);
-    _child->set_used_ids(this, this->used_ids);
-    if (!_child->id)
-    {
-        for (unsigned int id : *(this->used_ids))
-            _child->id++;
-        _child->id++;
-        this->used_ids->push_back(_child->id);
-    }
-    this->children.push_back(_child);
-    return _child;
-}
+//lib::Node* lib::Node::append_child(lib::Node* _child) // return Node*
+//{
+//    /*for (Node* child : this->parent->children)
+//        if (child->id == _child->id)
+//        {
+//            std::cout << "Cannot append Child Node id= <" << _child->id << "> because there already exists a child with that id" << std::endl;
+//        }*/
+//
+//    _child->set_parent(this);
+//    _child->set_used_ids(this, this->used_ids);
+//    if (!_child->id)
+//    {
+//        for (unsigned int id : *(this->used_ids))
+//            _child->id++;
+//        _child->id++;
+//        this->used_ids->push_back(_child->id);
+//    }
+//    this->children.push_back(_child);
+//    return _child;
+//}
 
-lib::Node* lib::Node::get_child_by_id(unsigned int _id)
+/*template<typename N_type>
+inline N_type**/ lib::Node* lib::Node::get_child_by_id(unsigned int _id)
 { // Get child node if node->id matches the wanted id
     if (this->id == _id)
         return this;

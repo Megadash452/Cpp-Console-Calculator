@@ -1,4 +1,5 @@
 ﻿#include "Console.h"
+#include "Utils.h"
 #include "Tree.h"
 
 string Console::Keywords[30] = {"null", "true", "false", "console", "term", "expression", "function", "func"

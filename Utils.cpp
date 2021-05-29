@@ -144,6 +144,7 @@ int lib::digits(int num, int base)
 
 string::const_iterator lib::find_closing(string::const_iterator it)
 {
+    // may cause errors if closer doesnt exist
     string::const_iterator opening = it;
     if (lib::closeDelims[*it])
     {
@@ -167,6 +168,7 @@ string::const_iterator lib::find_closing(string::const_iterator it)
 }
 string::iterator lib::find_closing(string::iterator it)
 {
+    // may cause errors if closer doesnt exist
     string::iterator opening = it;
     if (lib::closeDelims[*it])
     {
@@ -188,6 +190,32 @@ string::iterator lib::find_closing(string::iterator it)
         }
     }
     return opening;
+}
+
+string::iterator lib::find_opening(string::iterator it)
+{
+    // may cause errors if closer doesnt exist
+    string::iterator closing = it;
+    if (lib::openDelims[*it])
+    {
+        int extracount = 0;
+        char target = lib::openDelims[*it];
+
+        while (*it != '\n')
+        {
+            it--;
+            if (*it == target)
+            {
+                if (extracount)
+                    extracount--;
+                else
+                    return it;
+            }
+            else if (*it == *closing)
+                extracount++;
+        }
+    }
+    return closing;
 }
 
 void lib::split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters)
