@@ -67,9 +67,7 @@ lib::Node::Node(lib::Node& other)
 {
     // make a copy of each child (Node*)
     for (auto i = other.children.begin(); i != other.children.end(); i++)
-    {
-        this->children.push_back(new lib::Node(**i));
-    }
+        this->children.push_back(new lib::Node{ **i });
 }
 
 lib::Node::Node(lib::Node* other)
@@ -77,9 +75,7 @@ lib::Node::Node(lib::Node* other)
 {
     // make a copy of each child (Node*)
     for (lib::Node* child : other->children)
-    {
         this->children.push_back(new lib::Node{ child });
-    }
 }
 
 lib::Node::~Node()
@@ -152,9 +148,7 @@ lib::Node* lib::Node::set_parent(lib::Node* _parent)
     this->parent = _parent;
     for (this->id = 0; this->id < this->parent->children.size(); this->id++)
         if (this->parent->children[this->id]->id != this->id)
-        {
             break;
-        }
     return this;
 }
 
