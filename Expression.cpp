@@ -27,6 +27,11 @@ Exp_Tree::Exp_Tree(Exp_Tree& t)
 
 }
 
+Exp_Tree::~Exp_Tree()
+{
+	delete this->first_node;
+}
+
 void Exp_Tree::create_nodes_from_exp(string exp)
 {
 	this->first_node->create_nodes_from_exp(exp);
@@ -69,13 +74,14 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::append_child(Exp_Node* _child)
 	return _child;
 }
 
-void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
+Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 {
 	// TODO: COMPLETE THIS
 
-	console << "building Node...";
+	//console << "building Node...";
 
 	bool is_num_or_var = true;
+	Exp_Node* rtrn_node = nullptr;
 
 	try {
 
@@ -93,17 +99,17 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 				string add1{ exp.begin(), charP };
 				string add2{ charP + 1, exp.end() };
 
-				this->append_child(new Add_Node{ add1, add2 });
+				/*rtrn_node =*/return this->append_child(new Add_Node{ add1, add2 });
 				is_num_or_var = false;
 				break;
 			}
-			// Subtraciton
+			// Subtraction
 			else if (*charP == '-' && charP > exp.begin())
 			{
 				string minuend{ exp.begin(), charP };
 				string subtrahend{ charP + 1, exp.end() };
 
-				this->append_child(new Sub_Node{ minuend, subtrahend });
+				/*rtrn_node =*/return this->append_child(new Sub_Node{ minuend, subtrahend });
 				is_num_or_var = false;
 				break;
 			}
@@ -113,47 +119,55 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 		for (auto charP = exp.begin();
 			charP != exp.end(); charP++)
 		{
+			// skip () only if there isnt a + or - on both sides
 			if (lib::char_in_arr(*charP, Expression::nestersOpen))
 			{
-				//string::iterator c = lib::find_closing(charP, exp);
-				//// skip enclosed scope
-				//if (*(c + 1) != '+' ||
-				//	*(c + 1) != '-'  )
-				//		charP = c;
-				bool in_nest = false;
-				if (charP == exp.begin() + 1)
-					in_nest = true;
+				string::iterator close = lib::find_closing(charP, exp);
 
-				string::iterator closer = lib::find_closing(charP, exp);
-
-				// check if should go inside nester
-				if (!in_nest && closer != exp.end() - 1)
-					charP = lib::find_closing(charP, exp);
+				// keep curly brackets.
+				if (charP > exp.begin() && close < exp.end() - 1) {       // ...(___)...
+					if (!(*(charP - 1) == '+' || *(charP - 1) == '-') ||
+						!(*(close + 1) == '+' || *(close + 1) == '-'))
+						charP = close + 1;
+				}
+				else if (charP == exp.begin() && close < exp.end() - 1) { // (___)...
+					if (!(*(close + 1) == '+' || *(close + 1) == '-'))
+						charP = lib::find_closing(charP + 1, exp) + 1;
+				}
+				else if (charP > exp.begin() && close == exp.end() - 1) { // ...(___)
+					if (!(*(charP - 1) == '+' || *(charP - 1) == '-'))
+						charP = close;
+				}
+				else if (charP == exp.begin() && close == exp.end() - 1)  // (___)
+					continue;
+					//charP = lib::find_closing(charP + 1, exp);
 			}
 
-			// Division
+			// -- Division
 			if (*charP == '/')
 			{
 				string dividend{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
 				string divisor{ charP + 2, lib::find_closing(charP + 1, exp) };
 
-				this->append_child(new Div_Node{ dividend, divisor });
+				rtrn_node = this->append_child(new Div_Node{ dividend, divisor });
 				is_num_or_var = false;
 			}
+			// -- Multiplication
 			else if (*charP == '*')
 			{
 				string mul1{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
 				string mul2{ charP + 2, lib::find_closing(charP + 1, exp) };
 
-				this->append_child(new Mul_Node{ mul1, mul2 });
+				/*rtrn_node =*/return this->append_child(new Mul_Node{ mul1, mul2 });
 				is_num_or_var = false;
 			}
+			// -- Exponent
 			else if (*charP == '^')
 			{
 				string base{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
 				string expo{ charP + 2, lib::find_closing(charP + 1, exp) };
 
-				this->append_child(new Pow_Node{ base, expo });
+				/*rtrn_node =*/return this->append_child(new Pow_Node{ base, expo });
 				is_num_or_var = false;
 			}
 
@@ -178,10 +192,12 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 				is_num == false;
 
 		if (is_num)
-			this->append_child(new Num_Node{lib::to_double(exp)});
+			/*rtrn_node =*/return this->append_child(new Num_Node{lib::to_double(exp)});
 		else
-			this->append_child(new Var_Node{ exp });
+			/*rtrn_node =*/return this->append_child(new Var_Node{ exp });
 	}
+
+	return rtrn_node;
 }
 
 /// --- --- --- ---

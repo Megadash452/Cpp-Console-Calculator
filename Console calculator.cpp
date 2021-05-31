@@ -38,15 +38,12 @@ int main(int argc, const char** argv)
     std::vector<string> arguments;
 
 
-    /*std::map<string, int> h;
+    std::map<string, int> h;
     h.insert(std::pair<string, int>{string{ "" }, 2});
 
-    std::map<string, Expression> v{ {"what", Expression{"sadness"}} };
-
-    std::map<string, lib::Tree> variables;
-    variables.insert(std::pair<string, lib::Tree>{ string{ "" }, lib::Tree{ "sad" } });
-
-    lib::Tree t{ "more sad" };*/
+    /*std::map<string, Expression*> variables{
+        {"ans", new Expression}
+    };*/
     
 
     for (int iteration=0; true; iteration++)
@@ -115,7 +112,7 @@ int main(int argc, const char** argv)
                 try {
                     Expression e(arguments[0]);
                     //variables["ans"] = e;
-                    //e.simplify();
+                    e.simplify();
                     console.log("result: c{9}[" + e.expression + "]");
                     console << e.exp_tree;
                 }
