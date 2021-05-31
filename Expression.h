@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "Utils.h"
 #include "Calc Exceptions.h"
 #include "Tree.h"
@@ -33,6 +35,7 @@ struct Exp_Tree : public lib::Tree
 			: lib::Node{ }
 		{
 			this->create_nodes_from_exp(exp);
+			// TODO: define type for each class after this constructor is done
 		}
 		Exp_Node(Exp_Tree::Exp_Node& n)
 			: lib::Node{ n } {}
@@ -40,10 +43,11 @@ struct Exp_Tree : public lib::Tree
 			: lib::Node{ n } {}
 
 		std::vector<Exp_Node*> children;
-		//Exp_Node* append_child(Exp_Node* _child);
+		Exp_Node* append_child(Exp_Node* _child);
 		void create_nodes_from_exp(string exp);
+		virtual string type() { return this->node_type; }
 
-		const string node_type = "null";
+	protected: string node_type = "null";
 	};
 
 	// Nester Node (parenthesis, set, abs-val, etc.)
@@ -53,7 +57,7 @@ struct Exp_Tree : public lib::Tree
 			: Exp_Node{  }, nest_type(_type)
 		{}
 		char nest_type;
-		const string node_type = "Nester Node";
+	protected: string node_type = "Nester Node";
 	};
 
 	// Operation Node
@@ -64,7 +68,7 @@ struct Exp_Tree : public lib::Tree
 		{console << this->sign; }
 		char sign;
 
-		const string node_type = "Operation Node";
+	protected: string node_type = "Operation Node";
 	};
 	// Operation Nodes
 		// Exponent Node
@@ -73,11 +77,17 @@ struct Exp_Tree : public lib::Tree
 			Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp)
 				: Op_Node{ '^' }, base(_base), exp(_exp)
 			{}
-			const string node_type = "Division Node";
-
+			Pow_Node(string _base, string _exp)
+				: Op_Node{ '^' }
+			{
+				this->base = this->append_child(new Exp_Node{ _base });
+				this->exp = this->append_child(new Exp_Node{ _exp });
+			}
+		
 			Exp_Tree::Exp_Node* base; // number being divided
 			Exp_Tree::Exp_Node* exp; // number dividing
 
+		protected: string node_type = "Division Node";
 		};
 		// Division Node
 		struct Div_Node : public Op_Node
@@ -91,66 +101,90 @@ struct Exp_Tree : public lib::Tree
 				this->dividend = this->append_child(new Exp_Node{ _dividend });
 				this->divisor = this->append_child(new Exp_Node{ _divisor });
 			}
-			const string node_type = "Division Node";
-
+			
 			Exp_Tree::Exp_Node* dividend; // number being divided
 			Exp_Tree::Exp_Node* divisor; // number dividing
-			
+
+		protected: string node_type = "Division Node";
 		};
 		// Multiplication Node
 		struct Mul_Node : public Op_Node
 		{
-			Mul_Node(Exp_Tree::Exp_Node* n1, Exp_Tree::Exp_Node* n2)
-				: Op_Node{ '*' }, mul1(n1), mul2(n2)
+			Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul2)
+				: Op_Node{ '*' }, mul1(_mul1), mul2(_mul2)
 			{}
-			const string node_type = "Multipliaction Node";
-
+			Mul_Node(string _mul1, string _mul2)
+				: Op_Node{ '*' }
+			{
+				this->mul1 = this->append_child(new Exp_Node{ _mul1 });
+				this->mul2 = this->append_child(new Exp_Node{ _mul2 });
+			}
+		
 			Exp_Tree::Exp_Node* mul1;
 			Exp_Tree::Exp_Node* mul2;
+
+		protected: string node_type = "Multipliaction Node";
 		};
 		// Subtraction Node (do addition with negative number instead)
-		/*struct Sub_Node : public Op_Node
+		struct Sub_Node : public Op_Node
 		{
-			Sub_Node()
-				: Op_Node{ '-' }
+			Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _subtrahend)
+				: Op_Node{ '-' }, minuend(_minuend), subtrahend(_subtrahend)
 			{}
-			const string node_type = "Subtraction Node";
+			Sub_Node(string _minuend, string _subtrahend)
+				: Op_Node{ '-' }
+			{
+				this->minuend = this->append_child(new Exp_Node{ _minuend });
+				this->subtrahend = this->append_child(new Exp_Node{ _subtrahend });
+			}
+			
+			Exp_Tree::Exp_Node* minuend; // number being subtracted
+			Exp_Tree::Exp_Node* subtrahend; // number subtrahend is subtracted from
+			// e.g.:     1     -      2
+			//       (minuend)   (subtrahend)
 
-			Exp_Tree::Exp_Node* sub;
-		};*/
+		protected: string node_type = "Subtraction Node";
+		};
 		// Addition Node
 		struct Add_Node : public Op_Node
 		{
-			Add_Node(Exp_Tree::Exp_Node* n1, Exp_Tree::Exp_Node* n2)
-				: Op_Node{ '+' }, add1(n1), add2(n2)
+			Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add2)
+				: Op_Node{ '+' }, add1(_add1), add2(_add2)
 			{}
-			const string node_type = "Addition Node";
-
+			Add_Node(string _add1, string _add2)
+				: Op_Node{ '+' }
+			{
+				this->add1 = this->append_child(new Exp_Node{ _add1 });
+				this->add2 = this->append_child(new Exp_Node{ _add2 });
+			}
+		
 			Exp_Tree::Exp_Node* add1;
 			Exp_Tree::Exp_Node* add2;
+
+		protected: string node_type = "Addition Node";
 		};
 	// ---
 
 	// Number Node (double)
 	struct Num_Node : public Exp_Node
 	{
-		Num_Node(int _num)
+		Num_Node(double _num)
 			: Exp_Node{  }, num(_num)
 		{}
-		int num;
-		const string node_type = "Number Node";
+		double num;
+	protected: string node_type = "Number Node";
 	};
 
 	// Variable Node
 	struct Var_Node : public Exp_Node
 	{
-		Var_Node(char _var)
+		Var_Node(string _var)
 			: Exp_Node{  }
 		{
 			this->var = _var;
 		}
 		string var;
-		const string node_type = "Variable Node";
+	protected: string node_type = "Variable Node";
 	};
 
 
@@ -183,4 +217,15 @@ public:
 
 	string expression;
 	Exp_Tree exp_tree;
+
+	static const std::array<uint32_t, 11> operators;
+	static const std::array<uint32_t, 10> numbers;
+	static const std::array<uint32_t, 6> constants;
+	static const std::array<uint32_t, 26> alphabet;
+	static const std::array<uint32_t, 26> alphabetUpper;
+	static const std::array<uint32_t, 6> symbols;
+	static const std::array<uint32_t, 7> nesters;
+	static const std::array<uint32_t, 4> nestersOpen;
+	static const std::array<uint32_t, 4> nestersClose;
+	static const std::array<uint32_t, 14> punctuation;
 };

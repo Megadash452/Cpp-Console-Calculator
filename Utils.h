@@ -18,22 +18,30 @@ namespace lib {
     extern std::map<char, char> closeDelims;
     extern std::map<char, char> openDelims;
 
-    bool char_in_string(char character, string str);
+    template <typename _type>
+    bool char_in_arr(char character, _type arr) {
+        for (char c : arr)
+            if (character == c)
+                return true;
 
-    string lower_case(string str);
-    string upper_case(string str);
-    char lower_case(char c);
-    char upper_case(char c);
+        return false;
+    }
+    bool char_in_string(char, string);
 
-    int to_int(char c, int base=10);
-    int to_int(string str, int base=10);
-    double to_double(char c, int base=10);
-    double to_double(string str, int base=10);
-    int digits(int num, int base=10);
+    string lower_case(string);
+    string upper_case(string);
+    char lower_case(char);
+    char upper_case(char);
 
-    string::const_iterator find_closing(string::const_iterator it);
-    string::iterator find_closing(string::iterator it);
-    string::iterator find_opening(string::iterator it);
+    int to_int(char, int base=10);
+    int to_int(string, int base=10);
+    double to_double(char, int base=10);
+    double to_double(string, int base=10);
+    int digits(int, int base=10);
+
+    string::const_iterator find_closing(string::const_iterator it, const string& str);
+    string::iterator find_closing(string::iterator it, const string& str);
+    string::iterator find_opening(string::iterator it, const string& str);
 
     void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 

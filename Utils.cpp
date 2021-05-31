@@ -121,7 +121,9 @@ double lib::to_double(string str, int base)
             break;
 
     // number of digits after the point
-    string sub_point{ point + 1, trail + 1 };
+    string sub_point = "";
+    if (point < str.end())
+        sub_point = string{ point + 1, trail + 1 };
     // convert the part before the point to a double
     // put it behind the decimal by multiplying it by the number of digits
     double sub_dec = lib::to_int(sub_point, base) / pow(10, sub_point.size());
@@ -142,15 +144,14 @@ int lib::digits(int num, int base)
 }
 
 
-string::const_iterator lib::find_closing(string::const_iterator it)
+string::const_iterator lib::find_closing(string::const_iterator it, const string& str)
 {
-    // may cause errors if closer doesnt exist
     string::const_iterator opening = it;
     if (lib::closeDelims[*it])
     {
         int extraCount = 0;
         char target = lib::closeDelims[*it];
-        for (; !(*it == '\0' || *it == '\n');)
+        while (*it != '\n' && it < str.end())
         {
             it++;
             if (*it == target)
@@ -166,7 +167,7 @@ string::const_iterator lib::find_closing(string::const_iterator it)
     }
     return opening;
 }
-string::iterator lib::find_closing(string::iterator it)
+string::iterator lib::find_closing(string::iterator it, const string& str)
 {
     // may cause errors if closer doesnt exist
     string::iterator opening = it;
@@ -175,7 +176,7 @@ string::iterator lib::find_closing(string::iterator it)
         int extraCount = 0;
         char target = lib::closeDelims[*it];
 
-        while (*it != '\0' && *it != '\n')
+        while (*it != '\n' && it < str.end())
         {
             it++;
             if (*it == target)
@@ -192,7 +193,7 @@ string::iterator lib::find_closing(string::iterator it)
     return opening;
 }
 
-string::iterator lib::find_opening(string::iterator it)
+string::iterator lib::find_opening(string::iterator it, const string& str)
 {
     // may cause errors if closer doesnt exist
     string::iterator closing = it;
@@ -201,7 +202,7 @@ string::iterator lib::find_opening(string::iterator it)
         int extracount = 0;
         char target = lib::openDelims[*it];
 
-        while (*it != '\n')
+        while (*it != '\n' && it > str.begin())
         {
             it--;
             if (*it == target)
@@ -225,7 +226,7 @@ void lib::split(string str, string delimeters, std::vector<string>& save_to, boo
     while (left_over != str.end())
         for (string::iterator charP = left_over;
             charP != str.end(); charP++)
-            if (lib::char_in_string(*charP, delimeters) || charP == str.end() - 1)
+            if (lib::char_in_arr(*charP, delimeters) || charP == str.end() - 1)
             {
                 if (charP == str.end() - 1) {
                     string tempStr(left_over, charP + 1);

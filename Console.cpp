@@ -65,7 +65,7 @@ void Console::log(string msg, int color, bool new_line)
 				if (*(i + 1) == '}')
 					charP = i + 2;
 			}
-			this->color_by_delim(charP, stoi(tempStr));
+			this->color_by_delim(msg, charP, stoi(tempStr));
 			continue;
 		}
 		if (charP >= msg.end())
@@ -74,15 +74,15 @@ void Console::log(string msg, int color, bool new_line)
 		// TODO: Add keyword syntax highlight
 		try {
 			if (*charP == '"') {
-				color_by_delim(charP, 2, true);
+				color_by_delim(msg, charP, 2, true);
 				continue;
 			}
 			else if (*charP == '\'' && *(charP + 2) == '\'') {
-				color_by_delim(charP, 3, true);
+				color_by_delim(msg, charP, 3, true);
 				continue;
 			}
 			else if (*charP == '<') {
-				color_by_delim(charP, 11, true);
+				color_by_delim(msg, charP, 11, true);
 				continue;
 			}
 			else if (charP + 1 < msg.end())
@@ -93,7 +93,7 @@ void Console::log(string msg, int color, bool new_line)
 						if (!char_in_numbers(*it))
 							valid = false;
 					if (valid) {
-						color_by_delim(charP, 9, true);
+						color_by_delim(msg, charP, 9, true);
 						continue;
 					}
 				}
@@ -385,12 +385,12 @@ void Console::set_color(int color)
 void Console::set_previous_color() {set_color(this->previous_color);}
 void Console::reset_color(){set_color(0);}
 
-void Console::color_by_delim(string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
+void Console::color_by_delim(const string& str, string::iterator& charP, int color, bool keep_delims) // Before using, make sure that the string::iterator is in this->closeDelims map;
 {
 	string::iterator delimP = charP;
 	string::iterator closeTarget{};
 	try {
-		closeTarget = lib::find_closing(delimP);
+		closeTarget = lib::find_closing(delimP, str);
 	}
 	catch (std::out_of_range) {
 		return;

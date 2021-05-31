@@ -1,4 +1,4 @@
-#include "Expression.h"
+﻿#include "Expression.h"
 //#include "Console.h"
 
 /// --- Expression Tree ---
@@ -54,61 +54,119 @@ void Exp_Tree::reset_nodes(string exp)
 
 /// --- Expression Tree Node ---
 
-//Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::append_child(Exp_Node* _child)
-//{
-//	_child->set_parent(this);
-//	_child->set_used_ids(this, this->used_ids);
-//	if (!_child->id)
-//	{
-//		for (unsigned int id : *(this->used_ids))
-//			_child->id++;
-//		_child->id++;
-//		this->used_ids->push_back(_child->id);
-//	}
-//	this->children.push_back(_child);
-//	return _child;
-//}
+Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::append_child(Exp_Node* _child)
+{
+	_child->set_parent(this);
+	_child->set_used_ids(this, this->used_ids);
+	if (!_child->id)
+	{
+		for (unsigned int id : *(this->used_ids))
+			_child->id++;
+		_child->id++;
+		this->used_ids->push_back(_child->id);
+	}
+	this->children.push_back(_child);
+	return _child;
+}
 
 void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 {
 	// TODO: COMPLETE THIS
 
 	console << "building Node...";
-	for (auto charP = exp.begin();
-		charP != exp.end(); charP++)
-	{
-		Add_Node* current_add = nullptr;
-		try {
-			if (*charP == '(' ||
-				*charP == '[' ||
-				*charP == '{' ||
-				*charP == '|')
-				charP = lib::find_closing(charP);
 
-			if (*charP == '+' && charP != exp.begin())
+	bool is_num_or_var = true;
+
+	try {
+
+		// (pemd)AS
+		for (auto charP = exp.begin();
+			charP != exp.end(); charP++)
+		{
+			// skip enclosed scope
+			if (lib::char_in_arr(*charP, Expression::nestersOpen))
+				charP = lib::find_closing(charP, exp);
+
+			// Addition
+			else if (*charP == '+' && charP > exp.begin())
 			{
-				if (current_add != nullptr)
-					;
-				else
-					;// current_add = this->append_child(new Add_Node{});
+				string add1{ exp.begin(), charP };
+				string add2{ charP + 1, exp.end() };
 
-				// TODO: Handle a little differently
+				this->append_child(new Add_Node{ add1, add2 });
+				is_num_or_var = false;
+			}
+			// Subtraciton
+			else if (*charP == '-' && charP > exp.begin())
+			{
+				string minuend{ exp.begin(), charP };
+				string subtrahend{ charP + 1, exp.end() };
+
+				this->append_child(new Sub_Node{ minuend, subtrahend });
+				is_num_or_var = false;
+			}
+		}
+
+		// PEMD(as)
+		for (auto charP = exp.begin();
+			charP != exp.end(); charP++)
+		{
+			if (lib::char_in_arr(*charP, Expression::nestersOpen))
+			{
+				string::iterator c = lib::find_closing(charP, exp);
+				// skip enclosed scope
+				if (*(c + 1) != '+' ||
+					*(c + 1) != '-'  )
+						charP = c;
 			}
 
+			// Division
 			if (*charP == '/')
 			{
-				string dividend{ lib::find_opening(charP - 1) + 1, charP - 1 };
-				string divisor{ charP + 2, lib::find_closing(charP + 1) };
-				
+				string dividend{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+				string divisor{ charP + 2, lib::find_closing(charP + 1, exp) };
+
 				this->append_child(new Div_Node{ dividend, divisor });
+				is_num_or_var = false;
 			}
-		}
-		catch (std::out_of_range e) {
+			else if (*charP == '*')
+			{
+				string mul1{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+				string mul2{ charP + 2, lib::find_closing(charP + 1, exp) };
 
-		}
-		catch (lib::calc_exception e) {
+				this->append_child(new Div_Node{ mul1, mul2 });
+				is_num_or_var = false;
+			}
+			else if (*charP == '^')
+			{
 
+				is_num_or_var = false;
+			}
+
+			// TODO: if the first char is -, multiply by -1
 		}
+	}
+	catch (std::out_of_range e) {
+
+	}
+	catch (lib::calc_exception e) {
+
+	}
+
+	if (is_num_or_var)
+	{
+		bool is_num = true;
+		// TODO: check if the first character is number, but the rest aren't
+
+		for (char c : exp)
+			if (lib::char_in_arr(c, Expression::alphabet) ||
+				lib::char_in_arr(c, Expression::alphabetUpper))
+				is_num == false;
+
+		if (is_num)
+			this->append_child(new Num_Node{lib::to_double(exp)});
+		else
+			this->append_child(new Var_Node{ exp });
 	}
 }
 
@@ -148,9 +206,9 @@ string::iterator Expression::wrap_in_nester_forward(string& str, string::iterato
 	// append before the next operrator
 	// if no operator found, place nester at the end of str
 	for (int it = 1; begin + it < str.end(); it++)
-		if (char_in_operators(*(begin + it)) &&
-			*(begin + it) != nester &&
-			it != 1)
+		if (lib::char_in_arr(*(begin + it), operators) &&
+			*(begin + it) != '^' && it != 1 &&
+			*(begin + it) != nester)
 		{
 			begin = str.insert(begin + it, closer) - it;
 			break;
@@ -174,7 +232,8 @@ string::iterator Expression::wrap_in_nester_back(string& str, string::iterator b
 	// append before the next operrator
 	// if no operator found, place nester at the beginning of str
 	for (int it = 0; begin - it > str.begin(); it--)
-		if (char_in_operators(*(begin - it)) && 
+		if ((lib::char_in_arr(*(begin + it - 1), operators) ||
+			lib::char_in_arr(*(begin + it - 1), nesters)) && //char_in_operators(*(begin + it - 1)) && 
 			*(begin + it) != nester &&
 			it != 0)
 		{
@@ -209,7 +268,7 @@ string Expression::parseForRead(string str)
 		try {
 
 			// remove redundant ARITHMETIC
-			if (*charP == '+' && *(charP + 1) == '+')
+			/*if (*charP == '+' && *(charP + 1) == '+')
 				charP = str.erase(charP);
 			else if (*charP == '+' && *(charP + 1) == '-')
 				charP = Expression::wrap_in_nester_forward(str, charP + 1) - 1;
@@ -221,11 +280,12 @@ string Expression::parseForRead(string str)
 			else if (*charP == '-' && *(charP + 1) == '-') {
 				charP = str.erase(charP, charP + 2);
 				charP = str.insert(charP, '+');
-			}
+			}*/
 
 			// TODO: convert subtraction to negative addition in Node assignment
 			//       perhaps even do the entire code above in node assignment?*/
-				
+
+			
 
 			// EXPONENT "**": change to symbol "^"
 			if (*charP == '*' && *(charP + 1) == '*')
@@ -234,25 +294,26 @@ string Expression::parseForRead(string str)
 			/* insert MULTIPLICATION "*" when symbol not present
 			   AND when MULTIPLICATION applicable
 			*/
+			// TODO: a letter after a number?
 			if (charP > str.begin() && charP < str.end()-1)
 			{
-				if (*(charP + 1) == '('                 ||
-					char_in_alphabet(*(charP + 1))      ||
-					char_in_alphabetUpper(*(charP + 1)) ||
-					char_in_numbers(*(charP + 1))       ||
-					char_in_constants(*(charP + 1))     ||
-					char_in_symbols(*(charP + 1)))
-						if (*charP != '*' && *charP == ')')
-							charP = str.insert(charP + 1, '*') - 1;
-
-				if (*(charP - 1) == ')'                 ||
-					char_in_alphabet(*(charP - 1))      ||
-					char_in_alphabetUpper(*(charP - 1)) ||
-					char_in_numbers(*(charP - 1))       ||
-					char_in_constants(*(charP - 1))     ||
-					char_in_symbols(*(charP - 1)))
-						if (*charP != '*' && *charP == '(')
+				if (*charP == '('                             ||
+					lib::char_in_arr(*charP, alphabet)      ||
+					lib::char_in_arr(*charP, alphabetUpper) ||
+					lib::char_in_arr(*charP, numbers)       ||
+					lib::char_in_arr(*charP, constants)     ||
+					lib::char_in_arr(*charP, symbols)         )
+						if (*(charP - 1) != '*' && *(charP - 1) == ')')
 							charP = str.insert(charP, '*');
+
+				if (*charP == ')'                             ||
+					lib::char_in_arr(*charP, alphabet)      ||
+					lib::char_in_arr(*charP, alphabetUpper) ||
+					lib::char_in_arr(*charP, numbers)       ||
+					lib::char_in_arr(*charP, constants)     ||
+					lib::char_in_arr(*charP, symbols)         )
+						if (*(charP + 1) != '*' && *(charP + 1) == '(')
+							charP = str.insert(charP + 1, '*') - 1;
 			}
 
 			/* EXPONENT symbol "^" and DIVISION symbol "/"
@@ -283,6 +344,7 @@ string Expression::parseForRead(string str)
 	if (str[0] != '+' && str[0] != '-')
 			str = '+' + str;
 
+	console << '"' + str + '"';
     return str;
 }
 
@@ -298,3 +360,39 @@ Expression& Expression::simplify()
 }
 
 /// --- --- --- ---
+
+// TODO: rearrantge these
+const std::array<uint32_t, 11> Expression::operators = { //8
+	'+', '-', '±', '*', '/', '^', '!', '%' ///*end*/, '|', '(', ')'
+};
+const std::array<uint32_t, 10> Expression::numbers = {
+	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+};
+const std::array<uint32_t, 6> Expression::constants = { // 4
+	'e', 'π', 'φ', '∞' ///*end*/, '≥', '≤'
+};
+const std::array<uint32_t, 26> Expression::alphabet = { // e is in constants
+	'a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j',
+	'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+	't', 'u', 'v', 'w', 'x', 'y', 'z', 'ƒ' // function f
+};
+const std::array<uint32_t, 26> Expression::alphabetUpper = {
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+	'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+	'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+};
+const std::array<uint32_t, 6> Expression::symbols = {
+	'Σ', 'Θ', '⌠', '⌡', '∫', '°'
+};
+const std::array<uint32_t, 7> Expression::nesters = {
+	'(', '[', '{', ')', ']', '}', '|'
+};
+const std::array<uint32_t, 4> Expression::nestersOpen = {
+	'(', '[', '{', '|'
+};
+const std::array<uint32_t, 4> Expression::nestersClose = {
+	')', ']', '}', '|'
+};
+const std::array<uint32_t, 14> Expression::punctuation = {
+	'\'', '"', '<', '≤', '>', '≥', '[', ']', '(', ')', '{', '}', '.', ','
+};
