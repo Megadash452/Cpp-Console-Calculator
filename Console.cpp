@@ -250,8 +250,19 @@ void Console::log_str(string str)
 void Console::log_char(char c)
 {
 	this->set_color(DARK_CYAN);
-	std::cout << "'" << c << "'";
-	this->hprint(3);
+	if (c > 31)
+	{
+		std::cout << "'" << c << "'";
+		this->hprint(3);
+	}
+	else
+	{
+		if (c == '\n')
+			this->new_line();
+		else
+			std::cout << "'" << c << "'";
+			this->hprint(3);
+	}
 	this->set_color(COLOR_DEFAULT);
 }
 void Console::log_int(int i)
@@ -485,13 +496,13 @@ void Console::initializer_print()
 
 Console& Console::operator<<(string msg)
 {
-	console.log(msg);
+	console.log(msg, false);
 	return *this;
 }
 
 Console& Console::operator<<(const char* msg)
 {
-	this->log(string{ msg });
+	this->log(string{ msg }, false);
 	return *this;
 }
 

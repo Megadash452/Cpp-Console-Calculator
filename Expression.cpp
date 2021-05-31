@@ -95,6 +95,7 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 
 				this->append_child(new Add_Node{ add1, add2 });
 				is_num_or_var = false;
+				break;
 			}
 			// Subtraciton
 			else if (*charP == '-' && charP > exp.begin())
@@ -104,6 +105,7 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 
 				this->append_child(new Sub_Node{ minuend, subtrahend });
 				is_num_or_var = false;
+				break;
 			}
 		}
 
@@ -113,11 +115,20 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 		{
 			if (lib::char_in_arr(*charP, Expression::nestersOpen))
 			{
-				string::iterator c = lib::find_closing(charP, exp);
-				// skip enclosed scope
-				if (*(c + 1) != '+' ||
-					*(c + 1) != '-'  )
-						charP = c;
+				//string::iterator c = lib::find_closing(charP, exp);
+				//// skip enclosed scope
+				//if (*(c + 1) != '+' ||
+				//	*(c + 1) != '-'  )
+				//		charP = c;
+				bool in_nest = false;
+				if (charP == exp.begin() + 1)
+					in_nest = true;
+
+				string::iterator closer = lib::find_closing(charP, exp);
+
+				// check if should go inside nester
+				if (!in_nest && closer != exp.end() - 1)
+					charP = lib::find_closing(charP, exp);
 			}
 
 			// Division
@@ -134,12 +145,15 @@ void Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 				string mul1{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
 				string mul2{ charP + 2, lib::find_closing(charP + 1, exp) };
 
-				this->append_child(new Div_Node{ mul1, mul2 });
+				this->append_child(new Mul_Node{ mul1, mul2 });
 				is_num_or_var = false;
 			}
 			else if (*charP == '^')
 			{
+				string base{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+				string expo{ charP + 2, lib::find_closing(charP + 1, exp) };
 
+				this->append_child(new Pow_Node{ base, expo });
 				is_num_or_var = false;
 			}
 
@@ -344,7 +358,7 @@ string Expression::parseForRead(string str)
 	if (str[0] != '+' && str[0] != '-')
 			str = '+' + str;
 
-	console << '"' + str + '"';
+	console << '"' + str + '"' + '\n';
     return str;
 }
 
