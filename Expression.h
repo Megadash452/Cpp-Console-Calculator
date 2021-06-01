@@ -48,23 +48,23 @@ struct Exp_Tree : public lib::Tree
 	// Nester Node (parenthesis, set, abs-val, etc.)
 	struct Nest_Node : public Exp_Node
 	{
-		Nest_Node(string n, char _type)
-			: Exp_Node{  }, nest_type(_type)
-		{}
+		Nest_Node(string n, char _type);
+
 		char nest_type;
 		string type() override { return this->node_type; }
-	protected: string node_type = "Nester Node";
+	protected:
+		string node_type = "Nester Node";
 	};
 
 	// Operation Node
 	struct Op_Node : public Exp_Node
 	{
-		Op_Node(char _sign)
-			: Exp_Node{  }, sign(_sign)
-		{}
+		Op_Node(char _sign);
+
 		char sign;
 		string type() override { return this->node_type; }
-	protected: string node_type = "Operation Node";
+	protected:
+		string node_type = "Operation Node";
 	};
 
 
@@ -72,75 +72,52 @@ struct Exp_Tree : public lib::Tree
 		// Exponent Node
 		struct Pow_Node : public Op_Node
 		{
-			Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp)
-				: Op_Node{ '^' }, base(_base), exp(_exp)
-			{}
-			Pow_Node(string _base, string _exp)
-				: Op_Node{ '^' }
-			{
-				this->base = this->create_nodes_from_exp(_base);
-				this->exp = this->create_nodes_from_exp(_exp);
-			}
+			Pow_Node(string _base, string _exp);
+			Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp);
 		
 			Exp_Tree::Exp_Node* base; // number being divided
 			Exp_Tree::Exp_Node* exp; // number dividing
 
 			string type() override { return this->node_type; }
-		protected: string node_type = "Division Node";
+		protected:
+			string node_type = "Division Node";
 		};
 
 		// Division Node
 		struct Div_Node : public Op_Node
 		{
-			Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* _divisor)
-				: Op_Node{ '/' }, dividend(_dividend), divisor(_divisor)
-			{}
-			Div_Node(string _dividend, string _divisor)
-				: Op_Node{ '/' }
-			{
-				this->dividend = this->create_nodes_from_exp(_dividend);
-				this->divisor = this->create_nodes_from_exp(_divisor);
-			}
+			Div_Node(string _dividend, string _divisor);
+			Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* _divisor);
 			
 			Exp_Tree::Exp_Node* dividend; // number being divided
 			Exp_Tree::Exp_Node* divisor; // number dividing
+			// e.g.:     1      /     2
+			//       (dividend)   (divisor)
 
 			string type() override { return this->node_type; }
-		protected: string node_type = "Division Node";
+		protected:
+			string node_type = "Division Node";
 		};
 
 		// Multiplication Node
 		struct Mul_Node : public Op_Node
 		{
-			Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul2)
-				: Op_Node{ '*' }, mul1(_mul1), mul2(_mul2)
-			{}
-			Mul_Node(string _mul1, string _mul2)
-				: Op_Node{ '*' }
-			{
-				this->mul1 = this->create_nodes_from_exp(_mul1);
-				this->mul2 = this->create_nodes_from_exp(_mul2);
-			}
+			Mul_Node(string _mul1, string _mul2);
+			Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul2);
 		
 			Exp_Tree::Exp_Node* mul1;
 			Exp_Tree::Exp_Node* mul2;
 
 			string type() override { return this->node_type; }
-		protected: string node_type = "Multipliaction Node";
+		protected:
+			string node_type = "Multipliaction Node";
 		};
 
-		// Subtraction Node (do addition with negative number instead)
+		// Subtraction Node
 		struct Sub_Node : public Op_Node
 		{
-			Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _subtrahend)
-				: Op_Node{ '-' }, minuend(_minuend), subtrahend(_subtrahend)
-			{}
-			Sub_Node(string _minuend, string _subtrahend)
-				: Op_Node{ '-' }
-			{
-				this->minuend = this->create_nodes_from_exp(_minuend);
-				this->subtrahend = this->create_nodes_from_exp(_subtrahend);
-			}
+			Sub_Node(string _minuend, string _subtrahend);
+			Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _subtrahend);
 			
 			Exp_Tree::Exp_Node* minuend; // number being subtracted
 			Exp_Tree::Exp_Node* subtrahend; // number subtrahend is subtracted from
@@ -151,18 +128,12 @@ struct Exp_Tree : public lib::Tree
 		protected:
 			string node_type = "Subtraction Node";
 		};
+
 		// Addition Node
 		struct Add_Node : public Op_Node
 		{
-			Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add2)
-				: Op_Node{ '+' }, add1(_add1), add2(_add2)
-			{}
-			Add_Node(string _add1, string _add2)
-				: Op_Node{ '+' }
-			{
-				this->add1 = this->create_nodes_from_exp(_add1);
-				this->add2 = this->create_nodes_from_exp(_add2);
-			}
+			Add_Node(string _add1, string _add2);
+			Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add2);
 		
 			Exp_Tree::Exp_Node* add1;
 			Exp_Tree::Exp_Node* add2;
@@ -176,9 +147,7 @@ struct Exp_Tree : public lib::Tree
 	// Number Node (double)
 	struct Num_Node : public Exp_Node
 	{
-		Num_Node(double _num)
-			: Exp_Node{  }, num(_num)
-		{}
+		Num_Node(double _num);
 		double num;
 
 		string type() override { return this->node_type; }
@@ -189,9 +158,7 @@ struct Exp_Tree : public lib::Tree
 	// Variable Node
 	struct Var_Node : public Exp_Node
 	{
-		Var_Node(string _var)
-			: Exp_Node{  }, var(_var)
-		{}
+		Var_Node(string _var);
 		string var;
 
 		string type() override { return this->node_type; }

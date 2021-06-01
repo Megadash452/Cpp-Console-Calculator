@@ -227,7 +227,81 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	return rtrn_node;
 }
 
+/// -- Other Nodes
 
+Exp_Tree::Nest_Node::Nest_Node(string n, char _type)
+	: Exp_Tree::Exp_Node{  }, nest_type(_type)
+{}
+
+
+Exp_Tree::Op_Node::Op_Node(char _sign)
+	: Exp_Tree::Exp_Node{  }, sign(_sign)
+{}
+
+// Exponent Node
+Exp_Tree::Pow_Node::Pow_Node(string _base, string _exp)
+	: Exp_Tree::Op_Node{ '^' }
+{
+	this->base = this->create_nodes_from_exp(_base);
+	this->exp = this->create_nodes_from_exp(_exp);
+}
+Exp_Tree::Pow_Node::Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp)
+	: Exp_Tree::Op_Node{ '^' }, base(_base), exp(_exp)
+{}
+
+// Division Node
+Exp_Tree::Div_Node::Div_Node(string _dividend, string _divisor)
+	: Exp_Tree::Op_Node{ '/' }
+{
+	this->dividend = this->create_nodes_from_exp(_dividend);
+	this->divisor = this->create_nodes_from_exp(_divisor);
+}
+Exp_Tree::Div_Node::Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* _divisor)
+	: Exp_Tree::Op_Node{ '/' }, dividend(_dividend), divisor(_divisor)
+{}
+
+// Multiplication Node
+Exp_Tree::Mul_Node::Mul_Node(string _mul1, string _mul2)
+	: Exp_Tree::Op_Node{ '*' }
+{
+	this->mul1 = this->create_nodes_from_exp(_mul1);
+	this->mul2 = this->create_nodes_from_exp(_mul2);
+}
+Exp_Tree::Mul_Node::Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul2)
+	: Exp_Tree::Op_Node{ '*' }, mul1(_mul1), mul2(_mul2)
+{}
+
+// Subtraction Node
+Exp_Tree::Sub_Node::Sub_Node(string _minuend, string _subtrahend)
+	: Exp_Tree::Op_Node{ '-' }
+{
+	this->minuend = this->create_nodes_from_exp(_minuend);
+	this->subtrahend = this->create_nodes_from_exp(_subtrahend);
+}
+Exp_Tree::Sub_Node::Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _subtrahend)
+	: Exp_Tree::Op_Node{ '-' }, minuend(_minuend), subtrahend(_subtrahend)
+{}
+
+// Addition Node
+Exp_Tree::Add_Node::Add_Node(string _add1, string _add2)
+	: Exp_Tree::Op_Node{ '+' }
+{
+	this->add1 = this->create_nodes_from_exp(_add1);
+	this->add2 = this->create_nodes_from_exp(_add2);
+}
+Exp_Tree::Add_Node::Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add2)
+	: Exp_Tree::Op_Node{ '+' }, add1(_add1), add2(_add2)
+{}
+
+
+// Num and var nodes
+Exp_Tree::Num_Node::Num_Node(double _num)
+	: Exp_Node{  }, num(_num)
+{}
+
+Exp_Tree::Var_Node::Var_Node(string _var)
+	: Exp_Node{  }, var(_var)
+{}
 
 /// --- --- --- ---
 
