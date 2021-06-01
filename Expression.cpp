@@ -7,30 +7,25 @@ Exp_Tree::Exp_Tree()
 	: lib::Tree{ "Expression<>" },
 	first_node(new Exp_Tree::Exp_Node),
 	entry_node(first_node)
-{
-
-}
+{}
 
 Exp_Tree::Exp_Tree(string exp)
 	: lib::Tree{ "Expression<" + exp + ">"},
 	first_node(new Exp_Tree::Exp_Node{ exp }),
 	entry_node(first_node)
-{
-	//this->create_nodes_from_exp(exp);
-}
+{}
 
 Exp_Tree::Exp_Tree(Exp_Tree& t)
 	: lib::Tree{ t },
 	first_node(t.first_node),
 	entry_node(first_node)
-{
-
-}
+{}
 
 Exp_Tree::~Exp_Tree()
 {
 	delete this->first_node;
 }
+
 
 void Exp_Tree::create_nodes_from_exp(string exp)
 {
@@ -58,6 +53,38 @@ void Exp_Tree::reset_nodes(string exp)
 
 
 /// --- Expression Tree Node ---
+
+Exp_Tree::Exp_Node::Exp_Node()
+	: lib::Node{  }
+{}
+
+Exp_Tree::Exp_Node::Exp_Node(string exp)
+	: lib::Node{  }
+{
+	this->create_nodes_from_exp(exp);
+}
+
+Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node& n)
+	: lib::Node{ n }
+{
+	// make a copy of each child (Node*)
+	for (auto i = n.children.begin(); i != n.children.end(); i++)
+		this->children.push_back(new Exp_Tree::Exp_Node{ **i });
+}
+
+Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node* n)
+	: lib::Node{ n }
+{
+	// make a copy of each child (Node*)
+	for (Exp_Tree::Exp_Node* child : n->children)
+		this->children.push_back(new Exp_Tree::Exp_Node{ child });
+}
+
+Exp_Tree::Exp_Node::~Exp_Node() {
+	for (Exp_Tree::Exp_Node* n : this->children)
+		delete n;
+}
+
 
 Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::append_child(Exp_Node* _child)
 {
@@ -199,6 +226,8 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 
 	return rtrn_node;
 }
+
+
 
 /// --- --- --- ---
 

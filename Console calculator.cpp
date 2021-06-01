@@ -114,7 +114,6 @@ int main(int argc, const char** argv)
                     //variables["ans"] = e;
                     e.simplify();
                     console.log("result: c{9}[" + e.expression + "]");
-                    console << e.exp_tree;
                 }
                 catch (lib::syntax_error e) {
                     console.error(e);
