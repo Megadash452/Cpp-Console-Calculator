@@ -19,7 +19,7 @@ namespace lib {
     struct syntax_error : public calc_exception
     {
         syntax_error(string what="") // string where_, string::iterator p
-            : _type("Syntax Error"), calc_exception(what.c_str())
+            : _type("Syntax Error"), calc_exception(what)
         {
             this->_where = ""; //string{p - max_offset, p + max_offset};
         }
@@ -36,7 +36,7 @@ namespace lib {
     struct argument_error : public calc_exception
     {
         argument_error(string what="")
-            : _type("Argument Error"), calc_exception(what.c_str()) {}
+            : _type("Argument Error"), calc_exception(what) {}
 
         string type() override { return this->_type; }
     private:
@@ -47,7 +47,17 @@ namespace lib {
     struct store_error : public calc_exception
     {
         store_error(string what="")
-            : _type("Storing Error"), calc_exception(what.c_str()) {}
+            : _type("Storing Error"), calc_exception(what) {}
+
+        string type() override { return this->_type; }
+    private:
+        string _type;
+    };
+
+    struct var_error : public calc_exception
+    {
+        var_error(string what = "")
+            : _type("Variable Access Error"), calc_exception(what) {}
 
         string type() override { return this->_type; }
     private:

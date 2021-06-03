@@ -74,12 +74,17 @@ int lib::to_int(char c, int base)
         return ((int)c) - 48;
     // check if c is an ASCII number
     // or    if c is an ASCII letter
-    else if ((
-        (c > 47 && c <= 57) ||
-        (c > 96 && c <= 96 + base - 10)) && base > 10)
-        return ((int)c) - 86;
+    else if (base > 10)
+        if (c > 47 && c <= 57)
+            ;
+        else if (c > 96 && c <= 96 + base - 10)
+            return ((int)c) - 86;
+        else;
     else
-        return 0;
+        throw std::exception{ (
+            string{ "cannot convert " } + c + " in base "
+          + std::to_string(base) + ". Try another base"
+        ).c_str()};
 }
 int lib::to_int(string str, int base)
 {
@@ -89,9 +94,19 @@ int lib::to_int(string str, int base)
     for (auto charP = str.rbegin();
         charP != str.rend(); charP++)
     {
-        num += lib::to_int(*charP, base) * (int)pow(base, place);
-        place++;
+        int result = 0;
+        try {
+            int result = lib::to_int(*charP) * (int)pow(base, place);
+            if ((result > 0 && *charP > 48) ||
+                (result == 0 && *charP == 48))
+                num += result;
+            place++;
+        }
+        catch (std::exception) {
+        }
     }
+    if (str[0] == '-')
+        return -num;
     return num;
 }
 
@@ -105,6 +120,30 @@ double lib::to_double(string str, int base)
     str = lib::lower_case(str);
     string::iterator point = str.begin();
     string::iterator trail = str.end() - 1;
+
+    // check base
+    if (str[0] == '+' || str[0] == '-')
+        if (str[1] == '0')
+            if (str[2] == 'x') {
+                base = 16;
+                str.erase(str.begin() + 1, str.begin() + 3);
+            }
+            else if (str[2] == 'b') {
+                base = 2;
+                str.erase(str.begin() + 1, str.begin() + 3);
+            }
+            else;
+        else;
+    else
+        if (str[0] == '0')
+            if (str[1] == 'x') {
+                base = 16;
+                str.erase(str.begin(), str.begin() + 2);
+            }
+            else if (str[1] == 'b') {
+                base = 2;
+                str.erase(str.begin(), str.begin() + 2);
+            }
 
     // find decimal point
     // if no decimal, will behave like lib::to_int()

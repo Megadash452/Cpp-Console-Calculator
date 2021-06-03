@@ -11,14 +11,6 @@
 //    }
 //};
 
-bool var_defined(const string& var, std::map<string, Expression>& vars)
-{
-    if (vars.find(var) == vars.end())
-        return false;
-    else
-        return true;
-}
-
 
 int main(int argc, const char** argv)
 {
@@ -66,7 +58,6 @@ int main(int argc, const char** argv)
         command = lib::get_command(lib::lower_case(user_input));
 
         try {
-            /// TODO: may be Inefficient; use map with function pointers
             if (command == "help" || command == "h")
             {
                 console.log(string{ "\nc{6}[Commands:]\n" }
@@ -74,13 +65,38 @@ int main(int argc, const char** argv)
                        +    "    c{6}[--] Exit out of the program.\n\n"
 
                        +    "  c{14}[calculate], c{14}[calc] (args: c{10}[Expression]<string>):\n"
-                       +    "    c{6}[--] Use the calculator.\n\n"
+                       +    "    c{6}[--] Use the calculator.\n"
+                       +    "    c{6}[--] You can also type in anything that isn't a command.\n\n"
 
-                       +    "  c{11}[store] (args: c{10}[Expression]<string>):\n"
-                       +    "    c{6}[--] Store a variable to use later. You can always redefine a variable.\n\n"
+                       +    "  c{11}[store], c{11}[var] (args: c{10}[Expression]<string>):\n"
+                       +    "    c{6}[--] Store a variable to use later. Variables can be redifined.\n\n"
 
                        +    "  c{13}[variables], c{13}[vars] (args: c{8}[None]):\n"
-                       +    "    c{6}[--] See all stored variables.\n"
+                       +    "    c{6}[--] See all stored variables.\n\n\n"
+
+
+                       +    "c{6}[Correct Syntax:]\n"
+                       +    "  c{3}[Numbers]:\n"
+                       +    "    c{2}[-type-] Numbers can be integers (e.g. c{12}[24]) or floating point\n"
+                       +    "           (e.g. 24c{12}[.]56).\n\n"
+
+                       +    "    c{2}[-base-] base 10 numbers (e.g. 432) have digits\n"
+                       +    "           0-9 (10 digits, hence base 10) Numbers can also be of base\n"
+                       +    "           16 (e.g. c{12}[0x]6a7f) a.k.a Hexadecimal or base 2 (e.g. c{12}[0b]1011)\n"
+                       +    "           a.k.a binary.\n\n"
+
+                       +    "  c{3}[Expression]:\n"
+                       +    "    c{2}[-Structure-] Expressions are series of one or more mathematical\n"
+                       +    "                operations (e.g. 2+2).\n\n"
+
+                       +    "  c{3}[Variables]:\n"
+                       +    "    c{2}[-naming-]    Variable names are 1-lettered and may hold an expression.\n"
+                       +    "                Variables can be named with multiple letters if they are\n"
+                       +    "                given a subscript. Name cannot be a number.\n\n"
+
+                       +    "    c{2}[-subscript-] To give a variable a superscript (i.e. a second name after\n"
+                       +    "                its letter) add an underscore (c{9}[_]) (e.g. hc{12}[_]var2). Subscript\n"
+                       +    "                may also include numbers.\n\n"
                 );
             }
             else if (command == "stop" || command == "quit" || command == "exit") {
@@ -109,75 +125,58 @@ int main(int argc, const char** argv)
 
             else if (command == "calculate" || command == "calc")
             { arguments = lib::get_arguments(user_input, 1);
-                try {
-                    Expression e(arguments[0]);
-                    //variables["ans"] = e;
-                    e.simplify();
-                    console.log("result: c{9}[" + e.expression + "]");
-                }
-                catch (lib::syntax_error e) {
-                    console.error(e);
-                }
+                Expression* e = new Expression{ arguments[0] };
+                e->simplify();
+
+                Expression::set_var("ans", e);
+                console.log("\nresult: c{9}[" + e->expression + "]");
             }
 
-            else if (command == "store")
+            else if (command == "store" || command == "var")
             { arguments = lib::get_arguments(user_input, 2);
-                try {
-                    /*string& varname = arguments[0];
-
-                    Expression e;
-                    if (lib::lower_case(varname) == "ans")
-                        e = variables["ans"];
-                    else
-                        e = Expression{ arguments[1] };
-
-                    
-                    if (varname[0] == '_') {
-                        throw(lib::store_error{ "Cannot start variable name with '_'" });
-                    }
-                    else if (char_in_constants(varname[0])) {
-                        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a predefined constant.");
-                    }
-                    else if (char_in_numbers(varname[0]) ||
-                        char_in_operators(varname[0]) ||
-                       char_in_symbols(varname[0]))
-                    {
-                        console.error("first letter of variable{ c{11}[" + arguments[0] + "] } cannot be a number or symbol.");
-                    }
-                    else if (varname[1] != '_' && varname.size() > 1) {
-                        throw(lib::store_error{ "Variable name can only be one char (may be followed by '_' for subscript)" });
-                    }
-                    else if (char_in_alphabet(varname[0]) ||
-                        char_in_alphabetUpper(varname[0]))
-                    {
-                        if (var_defined(varname, variables))
-                            variables[varname] = e;
-                        else
-                            variables.insert(std::pair<string, Expression>(varname, e));
-                        console.log("c{11}[" + varname + "] = c{9}[" + variables[varname]e.expression + ']');
-                    }*/
-                }
-                catch (lib::store_error e) {
-                    console.error(e);
-                }
-                catch (lib::syntax_error e) {
-                    console.error(e);
-                }
+                Expression::set_var(arguments[0], arguments[1]);
             }
 
             else if (command == "variables" || command == "vars")
             {
-                /*for (const auto& [var, exp] : variables)
-                    console.log("c{11}[" + var + "] = c{9}[" + exp.expression + ']');*/
+                for (std::pair<string, Expression*> pair : Expression::get_vars())
+                {
+                    if (pair.second != nullptr)
+                        if (pair.second->expression != "")
+                            console.log("c{11}[" + pair.first + "] = c{9}[" + pair.second->expression + "]");
+                        else
+                            console.log("c{11}[" + pair.first + "] = c{1}[Null]");
+                    else
+                        console.log("c{11}[" + pair.first + "] = c{1}[Null]");
+                    delete pair.second;
+                }
             }
             else if (command == "amogus") {
                 console.log("When the Imposter is c{12}[sus!] c{14}[:flushed:]");
             }
             else {
-                console.error("\"" + command + "\" is not a valid command.");
+                // defaults to calculate command, but every argument is part of the expression
+                arguments = lib::get_arguments(user_input);
+                for (string arg : arguments)
+                    command += arg;
+
+                Expression* e = new Expression{ command };
+                e->simplify();
+
+                Expression::set_var("ans", e);
+                console.log("\nresult: c{9}[" + e->expression + "]");
             }
         }
         catch (lib::argument_error e) {
+            console.error(e);
+        }
+        catch (lib::syntax_error e) {
+            console.error(e);
+        }
+        catch (lib::store_error e) {
+            console.error(e);
+        }
+        catch (lib::var_error e) {
             console.error(e);
         }
         console.log("");

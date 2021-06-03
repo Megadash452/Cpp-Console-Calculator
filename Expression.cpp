@@ -40,6 +40,17 @@ void Exp_Tree::reset_nodes(string exp)
 	this->create_nodes_from_exp(exp);
 }
 
+void Exp_Tree::simplify()
+{
+	this->first_node->attempt_collapse();
+	// TODO:
+}
+
+string Exp_Tree::to_str()
+{
+	return string{};
+}
+
 //void Exp_Tree::operator=(Exp_Tree& t)
 //{
 //	this->first_node = t.first_node;
@@ -55,17 +66,18 @@ void Exp_Tree::reset_nodes(string exp)
 /// --- Expression Tree Node ---
 
 Exp_Tree::Exp_Node::Exp_Node()
-	: lib::Node{  }
+	: lib::Node{  }, collapsed(false)
 {}
 
 Exp_Tree::Exp_Node::Exp_Node(string exp)
-	: lib::Node{  }
+	: lib::Node{  }, collapsed(false)
 {
-	this->create_nodes_from_exp(exp);
+	if (exp != "")
+		this->create_nodes_from_exp(exp);
 }
 
 Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node& n)
-	: lib::Node{ n }
+	: lib::Node{ n }, collapsed(false)
 {
 	// make a copy of each child (Node*)
 	for (auto i = n.children.begin(); i != n.children.end(); i++)
@@ -73,7 +85,7 @@ Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node& n)
 }
 
 Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node* n)
-	: lib::Node{ n }
+	: lib::Node{ n }, collapsed(false)
 {
 	// make a copy of each child (Node*)
 	for (Exp_Tree::Exp_Node* child : n->children)
@@ -110,113 +122,150 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	bool is_num_or_var = true;
 	Exp_Node* rtrn_node = nullptr;
 
-	try {
+	// (pemd)AS
+	for (auto charP = exp.begin();
+		charP != exp.end(); charP++)
+	{
+		// skip enclosed scope
+		if (lib::char_in_arr(*charP, Expression::nestersOpen))
+			charP = lib::find_closing(charP, exp);
 
-		// (pemd)AS
-		for (auto charP = exp.begin();
-			charP != exp.end(); charP++)
+		// Addition
+		else if (*charP == '+' && charP > exp.begin())
 		{
-			// skip enclosed scope
-			if (lib::char_in_arr(*charP, Expression::nestersOpen))
-				charP = lib::find_closing(charP, exp);
+			string add1{ exp.begin(), charP };
+			string add2{ charP + 1, exp.end() };
 
-			// Addition
-			else if (*charP == '+' && charP > exp.begin())
-			{
-				string add1{ exp.begin(), charP };
-				string add2{ charP + 1, exp.end() };
-
-				/*rtrn_node =*/return this->append_child(new Add_Node{ add1, add2 });
-				is_num_or_var = false;
-				break;
-			}
-			// Subtraction
-			else if (*charP == '-' && charP > exp.begin())
-			{
-				string minuend{ exp.begin(), charP };
-				string subtrahend{ charP + 1, exp.end() };
-
-				/*rtrn_node =*/return this->append_child(new Sub_Node{ minuend, subtrahend });
-				is_num_or_var = false;
-				break;
-			}
+			/*rtrn_node =*/return this->append_child(new Add_Node{ add1, add2 });
+			is_num_or_var = false;
+			break;
 		}
-
-		// PEMD(as)
-		for (auto charP = exp.begin();
-			charP != exp.end(); charP++)
+		// Subtraction
+		else if (*charP == '-' && charP > exp.begin())
 		{
-			// skip () only if there isnt a + or - on both sides
-			if (lib::char_in_arr(*charP, Expression::nestersOpen))
-			{
-				string::iterator close = lib::find_closing(charP, exp);
+			string minuend{ exp.begin(), charP };
+			string subtrahend{ charP + 1, exp.end() };
 
-				// keep curly brackets.
-				if (charP > exp.begin() && close < exp.end() - 1) {       // ...(___)...
-					if (!(*(charP - 1) == '+' || *(charP - 1) == '-') ||
-						!(*(close + 1) == '+' || *(close + 1) == '-'))
-						charP = close + 1;
-				}
-				else if (charP == exp.begin() && close < exp.end() - 1) { // (___)...
-					if (!(*(close + 1) == '+' || *(close + 1) == '-'))
-						charP = lib::find_closing(charP + 1, exp) + 1;
-				}
-				else if (charP > exp.begin() && close == exp.end() - 1) { // ...(___)
-					if (!(*(charP - 1) == '+' || *(charP - 1) == '-'))
-						charP = close;
-				}
-				else if (charP == exp.begin() && close == exp.end() - 1)  // (___)
-					continue;
-					//charP = lib::find_closing(charP + 1, exp);
-			}
-
-			// -- Division
-			if (*charP == '/')
-			{
-				string dividend{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
-				string divisor{ charP + 2, lib::find_closing(charP + 1, exp) };
-
-				rtrn_node = this->append_child(new Div_Node{ dividend, divisor });
-				is_num_or_var = false;
-			}
-			// -- Multiplication
-			else if (*charP == '*')
-			{
-				string mul1{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
-				string mul2{ charP + 2, lib::find_closing(charP + 1, exp) };
-
-				/*rtrn_node =*/return this->append_child(new Mul_Node{ mul1, mul2 });
-				is_num_or_var = false;
-			}
-			// -- Exponent
-			else if (*charP == '^')
-			{
-				string base{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
-				string expo{ charP + 2, lib::find_closing(charP + 1, exp) };
-
-				/*rtrn_node =*/return this->append_child(new Pow_Node{ base, expo });
-				is_num_or_var = false;
-			}
-
-			// TODO: if the first char is -, multiply by -1
+			/*rtrn_node =*/return this->append_child(new Sub_Node{ minuend, subtrahend });
+			is_num_or_var = false;
+			break;
 		}
 	}
-	catch (std::out_of_range e) {
 
-	}
-	catch (lib::calc_exception e) {
+	// PEMD(as)
+	for (auto charP = exp.begin();
+		charP != exp.end(); charP++)
+	{
+		// skip () only if there isnt a + or - on both sides
+		if (lib::char_in_arr(*charP, Expression::nestersOpen))
+		{
+			string::iterator close = lib::find_closing(charP, exp);
 
+			// keep curly brackets.
+			if (charP > exp.begin() && close < exp.end() - 1) {       // ...(___)...
+				if (!(*(charP - 1) == '+' || *(charP - 1) == '-') ||
+					!(*(close + 1) == '+' || *(close + 1) == '-'))
+					charP = close + 1;
+			}
+			else if (charP == exp.begin() && close < exp.end() - 1) { // (___)...
+				if (!(*(close + 1) == '+' || *(close + 1) == '-'))
+					charP = lib::find_closing(charP + 1, exp) + 1;
+			}
+			else if (charP > exp.begin() && close == exp.end() - 1) { // ...(___)
+				if (!(*(charP - 1) == '+' || *(charP - 1) == '-'))
+					charP = close;
+			}
+			else if (charP == exp.begin() && close == exp.end() - 1)  // (___)
+				continue;
+				//charP = lib::find_closing(charP + 1, exp);
+		}
+
+		// TODO: when expression is 2*4/56???? consecutive non-addition
+		// -- Division
+		if (*charP == '/')
+		{
+			string dividend{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+			string divisor{ charP + 2, lib::find_closing(charP + 1, exp) };
+
+			/*rtrn_node =*/return this->append_child(new Div_Node{ dividend, divisor });
+			is_num_or_var = false;
+		}
+		// -- Multiplication
+		else if (*charP == '*')
+		{
+			string mul1{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+			string mul2{ charP + 2, lib::find_closing(charP + 1, exp) };
+
+			/*rtrn_node =*/return this->append_child(new Mul_Node{ mul1, mul2 });
+			is_num_or_var = false;
+		}
+		// -- Exponent
+		else if (*charP == '^')
+		{
+			string base{ lib::find_opening(charP - 1, exp) + 1, charP - 1 };
+			string expo{ charP + 2, lib::find_closing(charP + 1, exp) };
+
+			/*rtrn_node =*/return this->append_child(new Pow_Node{ base, expo });
+			is_num_or_var = false;
+		}
+
+		// TODO: if the first char is -, multiply by -1
 	}
 
 	if (is_num_or_var)
 	{
 		bool is_num = true;
-		// TODO: check if the first character is number, but the rest aren't
+		//int num_base = 10;
 
-		for (char c : exp)
-			if (lib::char_in_arr(c, Expression::alphabet) ||
-				lib::char_in_arr(c, Expression::alphabetUpper))
-				is_num == false;
+		// determine if node will be a num or var
+		if (!lib::char_in_arr(exp[0], Expression::numbers) &&
+			exp[0] != '+' && exp[0] != '-')
+			is_num = false;
+		// check base
+		/*if (exp[0] == '0')
+			if (exp[1] == 'x') {
+				num_base = 16;
+			}
+			else if (exp[1] == 'b') {
+				num_base = 2;
+			}*/
+		
+		if (is_num) for (char c : exp)
+			if (c == '_') {
+				is_num = false;
+				break;
+			}
+			else if (lib::char_in_arr(exp[0], Expression::alphabet) ||
+				lib::char_in_arr(exp[0], Expression::alphabetUpper) &&
+				&c != (exp.begin() + 1)._Ptr)
+
+			{
+				is_num = false;
+				break;
+			}
+			// TODO: maybe add more conditions?
+
+		// if determined that the node will be a variable, check if it has a valid name
+		if (lib::lower_case(exp) != "ans" && !is_num)
+			if (exp[0] == '_')
+				throw lib::syntax_error{ "first letter of variable{ c{11}[" + exp + "] } cannot be '_'" };
+
+			else if (exp[1] != '_' && exp.size() > 1)
+				throw lib::syntax_error{ "Variable name can only be one char (may be followed by '_' for subscript)" };
+
+			else if (lib::char_in_arr(exp[0], Expression::numbers) ||
+				lib::char_in_arr(exp[0], Expression::operators) ||
+				lib::char_in_arr(exp[0], Expression::symbols))
+					throw lib::syntax_error{ "first letter of variable{ c{11}[" + exp + "] } cannot be a number or symbol (see \"help\" for more information)" };
+			else
+				/*rtrn_node =*/return this->append_child(new Var_Node{ exp });
+
+		else if (lib::lower_case(exp) == "ans" && !is_num)
+			if (Expression::get_var("ans") != nullptr)
+				/*rtrn_node =*/return this->append_child(Expression::get_var("ans")->exp_tree.first_node->children[0]);
+			else
+				throw lib::var_error{ "This is the first calculator entry, \"ans\" is not defined" };
+
 
 		if (is_num)
 			/*rtrn_node =*/return this->append_child(new Num_Node{lib::to_double(exp)});
@@ -225,6 +274,14 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	}
 
 	return rtrn_node;
+}
+
+void Exp_Tree::Exp_Node::attempt_collapse()
+{
+	console << this->type();
+	//TODO:
+	for (Exp_Tree::Exp_Node* child : this->children)
+		;
 }
 
 /// -- Other Nodes
@@ -249,6 +306,11 @@ Exp_Tree::Pow_Node::Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp
 	: Exp_Tree::Op_Node{ '^' }, base(_base), exp(_exp)
 {}
 
+void Exp_Tree::Pow_Node::attempt_collapse()
+{
+}
+
+
 // Division Node
 Exp_Tree::Div_Node::Div_Node(string _dividend, string _divisor)
 	: Exp_Tree::Op_Node{ '/' }
@@ -259,6 +321,11 @@ Exp_Tree::Div_Node::Div_Node(string _dividend, string _divisor)
 Exp_Tree::Div_Node::Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* _divisor)
 	: Exp_Tree::Op_Node{ '/' }, dividend(_dividend), divisor(_divisor)
 {}
+
+void Exp_Tree::Div_Node::attempt_collapse()
+{
+}
+
 
 // Multiplication Node
 Exp_Tree::Mul_Node::Mul_Node(string _mul1, string _mul2)
@@ -271,6 +338,11 @@ Exp_Tree::Mul_Node::Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul
 	: Exp_Tree::Op_Node{ '*' }, mul1(_mul1), mul2(_mul2)
 {}
 
+void Exp_Tree::Mul_Node::attempt_collapse()
+{
+}
+
+
 // Subtraction Node
 Exp_Tree::Sub_Node::Sub_Node(string _minuend, string _subtrahend)
 	: Exp_Tree::Op_Node{ '-' }
@@ -281,6 +353,11 @@ Exp_Tree::Sub_Node::Sub_Node(string _minuend, string _subtrahend)
 Exp_Tree::Sub_Node::Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _subtrahend)
 	: Exp_Tree::Op_Node{ '-' }, minuend(_minuend), subtrahend(_subtrahend)
 {}
+
+void Exp_Tree::Sub_Node::attempt_collapse()
+{
+}
+
 
 // Addition Node
 Exp_Tree::Add_Node::Add_Node(string _add1, string _add2)
@@ -293,21 +370,43 @@ Exp_Tree::Add_Node::Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add
 	: Exp_Tree::Op_Node{ '+' }, add1(_add1), add2(_add2)
 {}
 
+void Exp_Tree::Add_Node::attempt_collapse()
+{
+}
+
 
 // Num and var nodes
 Exp_Tree::Num_Node::Num_Node(double _num)
 	: Exp_Node{  }, num(_num)
 {}
 
+void Exp_Tree::Num_Node::attempt_collapse()
+{
+}
+
+
 Exp_Tree::Var_Node::Var_Node(string _var)
 	: Exp_Node{  }, var(_var)
-{}
+{
+	Expression* e = Expression::get_var(var);
+	if (e == nullptr)
+		console.warn("Variable c{11}[" + var + "] is not defined.");
+	else if (e->expression == "")
+		console.warn("Variable c{11}[" + var + "] is not defined.");;
+}
+
+void Exp_Tree::Var_Node::attempt_collapse()
+{
+}
 
 /// --- --- --- ---
 
 
 
 /// --- Expression ---
+std::map<string, Expression*> Expression::variables{
+	{"ans", nullptr}
+};
 
 Expression::Expression()
 	: readExp(""), exp_tree(""), expression("")
@@ -390,10 +489,14 @@ string Expression::parseForRead(string str)
 	*/
 
 	// remove spaces
-	for (auto charP = str.begin();
-		charP < str.end(); charP++)
-		if (*charP == ' ')
-			str.erase(charP);
+	for (auto it = str.begin(); it < str.end(); it++)
+		if (*it == ' ' && it == str.end() - 1) {
+			str.pop_back();
+			break;
+		}
+		else if (*it == ' ')
+			it = str.erase(it);
+
 
 	for (auto charP = str.begin();
 		charP < str.end(); charP++)
@@ -465,19 +568,19 @@ string Expression::parseForRead(string str)
 			}
 		}
 		catch (lib::syntax_error e) {
-			throw(e);
+			throw e;
 			break;
 		}
 		catch (std::exception) {
-			throw(lib::syntax_error{ "Bad syntax around \"" + string(charP - 1, charP + 2) + "\"" });
+			throw lib::syntax_error{ "Bad syntax around \"" + string(charP - 1, charP + 2) + "\"" };
 			break;
 		}
 	}
 
-	if (str[0] != '+' && str[0] != '-')
+	if (str[0] != '+' && str[0] != '-' && str != "")
 			str = '+' + str;
 
-	console << '"' + str + '"' + '\n';
+	//console << '"' + str + '"' + '\n';
     return str;
 }
 
@@ -489,7 +592,76 @@ string Expression::parseForPrint(string str)
 Expression& Expression::simplify()
 {
 	// TODO: insert return statement here
+	this->exp_tree.simplify();
 	return *this;
+}
+
+bool Expression::var_defined(string var)
+{
+	if (Expression::variables.find(var) == Expression::variables.end())
+		return false;
+	else
+		return true;
+}
+
+void Expression::set_var(string varname, string exp)
+{
+	Expression::set_var(varname, new Expression{ exp });
+}
+
+void Expression::set_var(string varname, Expression* exp)
+{
+	if (varname[0] == '_')
+		throw lib::syntax_error{ "first letter of variable{ c{11}[" + varname + "] } cannot be '_'" };
+
+	else if (varname[1] != '_' && varname.size() > 1 && varname != "ans")
+		throw lib::syntax_error{ "Variable names can only be one char (may be followed by '_' for subscript)" };
+
+	else if (lib::char_in_arr(varname[0], numbers) ||
+		lib::char_in_arr(varname[0], operators) ||
+		lib::char_in_arr(varname[0], symbols))
+		// TODO: add help info
+		throw lib::syntax_error{ "first letter of variable {c{11}[" + varname + "]} cannot be a number or symbol (see \"help\" for more information)" };
+
+	else if (varname.size() == 1 && lib::char_in_arr(varname[0], constants))
+		// TODO: add help info
+		throw lib::store_error{ "variable name {c{11}[" + varname + "]} cannot be a predifined constant (see \"help\" for more information)" };
+
+	else if (lib::char_in_arr(varname[0], alphabet) ||
+		lib::char_in_arr(varname[0], alphabetUpper))
+	{
+		if (Expression::var_defined(varname))
+		{
+			delete Expression::variables[varname];
+			Expression::variables[varname] = exp;
+		}
+		else
+			Expression::variables.insert(std::pair<string, Expression*>{ varname, exp });
+
+		if (varname != "ans")
+			console.log("c{11}[" + varname + "] = c{9}[" + exp->expression + ']');
+	}
+}
+
+Expression* Expression::get_var(string varname)
+{
+	return Expression::variables[varname];
+}
+
+std::map<string, Expression*> Expression::get_vars()
+{
+	// make sure to call delete on each new ptr (heap allocated) after done with vars!
+	std::map<string, Expression*> map;
+	for (std::pair<string, Expression*> pair : Expression::variables)
+		if (pair.second != nullptr)
+			map.insert(std::pair<string, Expression*>{
+				pair.first, new Expression{ *(pair.second) }
+			});
+		else
+			map.insert(std::pair<string, Expression*>{
+				pair.first, new Expression{}
+			});
+	return map;
 }
 
 /// --- --- --- ---

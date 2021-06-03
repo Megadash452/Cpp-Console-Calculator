@@ -3,11 +3,12 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)
 {
     std::vector<string> vect;
     string::iterator left_over = str.begin();
+    string::iterator charP = str.begin();
     string push_backStr;
     bool in_quotes = false;
 
-    while (left_over < str.end())
-        for (string::iterator charP = left_over;
+    while (left_over < str.end() && charP < str.end())
+        for (charP = left_over;
             charP != str.end(); charP++)
     {
         // determine the start of first argument
@@ -29,7 +30,7 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)
                 charP++;
         }
         // when reached the end of an argument on str
-        else if ((*charP == split || charP == str.end() - 1) && !in_quotes && *left_over != '"')
+        else if ((*charP == split || charP == str.end() - 1) &&!in_quotes && *left_over != '"' && left_over != str.begin())
         {
             if (charP == str.end() - 1)
                 vect.push_back(string{ left_over, charP + 1 });
@@ -46,6 +47,9 @@ std::vector<string> lib::get_arguments(string str, int num_of_args, char split)
             else
                 in_quotes = true;
     }
+    // 0 wanted args returns all args
+    if (!num_of_args)
+        return vect;
 
     // if the num of args in the vector is GREATER than the desired num of args
     if ((unsigned int)vect.size() > (unsigned int)num_of_args)

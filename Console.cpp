@@ -47,12 +47,15 @@ void Console::log(string msg, int color, bool new_line)
 		charP != msg.end();
 		charP++)
 	{
-		if (*charP == '\n' ||
-			this->chars_printed >= this->text_area_width)
-		{
+		if (*charP == '\n') {
 			this->new_line();
 			this->chars_printed = 0;
 			continue;
+		}
+		else if (this->chars_printed >= this->text_area_width)
+		{
+			this->new_line();
+			this->chars_printed = 0;
 		}
 			
 
@@ -133,7 +136,7 @@ void Console::input(string& var)
 	std::cout << "--> ";
 	this->hprint(4);
 
-	this->set_color(8);
+	this->set_color(DARK_GREY);
 	auto pos = this->get_cursor_pos();
 	getline(std::cin, var);
 	int length = var.size();
@@ -148,7 +151,7 @@ void Console::input(int& var)
 	std::cout << "--> ";
 	this->hprint(4);
 
-	this->set_color(8);
+	this->set_color(DARK_GREY);
 	auto pos = this->get_cursor_pos();
 	std::cin >> var;
 	int length = lib::digits(var);
@@ -161,6 +164,7 @@ void Console::input(int& var)
 
 
 void Console::error(string error) {
+	// TODO: Indentation
 	this->log("c{4}[-- Error --] " + error);
 }
 void Console::error(lib::calc_exception& e)
@@ -186,7 +190,7 @@ void Console::log_node(lib::Node* node, bool prnt_chldrn)
 		
 
 	this->log_ptr(node);
-	this->set_color(11);
+	this->set_color(CYAN);
 	if (node != nullptr) {
 		std::cout << "<" << node->id << ">";
 		this->hprint(lib::digits(node->id)+2);
@@ -491,7 +495,7 @@ void Console::initializer_print()
 	this->set_cursor_pos(cpos);
 
 	this->log("\nWhat do you want to do? (type \"help\" or \"h\" to see your options)");
-	this->log("---------------------------------------------------------------------------");
+	this->log("--------------------------------------------------------------------------\n");
 }
 
 Console& Console::operator<<(string msg)
@@ -557,6 +561,12 @@ Console& Console::operator<<(lib::Tree tree)
 Console& Console::operator<<(lib::Node* node)
 {
 	this->log_node(node);
+	return *this;
+}
+
+Console& Console::operator<<(lib::calc_exception& e)
+{
+	this->error(e);
 	return *this;
 }
 

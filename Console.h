@@ -117,6 +117,8 @@ struct Console
 	Console& operator <<(lib::Tree);
 	Console& operator <<(lib::Node*);
 
+	Console& operator <<(lib::calc_exception&);
+
 private:
 	void color_by_delim(const string&, string::iterator& charP, int color, bool keep_delims=false); // Before using, make sure that the string::iterator is in this->closeDelims map;
 	void iterate_for_keywords(string::iterator& charP);

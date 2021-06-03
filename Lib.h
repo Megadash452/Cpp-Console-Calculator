@@ -14,7 +14,7 @@
 
 
 namespace lib {
-    std::vector<string> get_arguments(string str, int num_of_args, char split = ' ');
+    std::vector<string> get_arguments(string str, int num_of_args=0, char split = ' ');
 }
 
 //std::map<char, char> closeDelims()

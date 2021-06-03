@@ -8,6 +8,7 @@
 
 struct Exp_Tree : public lib::Tree
 {
+	struct Exp_Node;
 	struct Nest_Node; // Nester Node (parenthesis, set, abs-val, etc.)
 	struct Op_Node;   // Operation Node
 		struct Pow_Node;  // Exponent Node
@@ -24,6 +25,14 @@ struct Exp_Tree : public lib::Tree
 	Exp_Tree(Exp_Tree&);
 	~Exp_Tree();
 
+	void create_nodes_from_exp(string exp);
+	void reset_nodes(string exp);
+	void simplify();
+	string to_str();
+
+	Exp_Tree::Exp_Node* first_node;
+	Exp_Tree::Exp_Node*& entry_node;
+
 
 	// Overall parent Node
 	struct Exp_Node : public lib::Node
@@ -35,10 +44,13 @@ struct Exp_Tree : public lib::Tree
 		~Exp_Node();
 
 		std::vector<Exp_Node*> children;
+		bool collapsed; // TODO: protect
+		int num_val;
 
 		virtual string type() { return this->node_type; }
 		Exp_Node* append_child(Exp_Node* _child);
 		Exp_Node* create_nodes_from_exp(string exp);
+		virtual void attempt_collapse();
 
 	protected:
 		string node_type = "null";
@@ -79,6 +91,8 @@ struct Exp_Tree : public lib::Tree
 			Exp_Tree::Exp_Node* exp; // number dividing
 
 			string type() override { return this->node_type; }
+			void attempt_collapse() override;
+
 		protected:
 			string node_type = "Division Node";
 		};
@@ -95,6 +109,8 @@ struct Exp_Tree : public lib::Tree
 			//       (dividend)   (divisor)
 
 			string type() override { return this->node_type; }
+			void attempt_collapse() override;
+
 		protected:
 			string node_type = "Division Node";
 		};
@@ -109,6 +125,8 @@ struct Exp_Tree : public lib::Tree
 			Exp_Tree::Exp_Node* mul2;
 
 			string type() override { return this->node_type; }
+			void attempt_collapse() override;
+
 		protected:
 			string node_type = "Multipliaction Node";
 		};
@@ -125,6 +143,8 @@ struct Exp_Tree : public lib::Tree
 			//       (minuend)   (subtrahend)
 
 			string type() override { return this->node_type; }
+			void attempt_collapse() override;
+
 		protected:
 			string node_type = "Subtraction Node";
 		};
@@ -139,6 +159,8 @@ struct Exp_Tree : public lib::Tree
 			Exp_Tree::Exp_Node* add2;
 
 			string type() override { return this->node_type; }
+			void attempt_collapse() override;
+
 		protected:
 			string node_type = "Addition Node";
 		};
@@ -151,6 +173,8 @@ struct Exp_Tree : public lib::Tree
 		double num;
 
 		string type() override { return this->node_type; }
+		void attempt_collapse() override;
+
 	protected:
 		string node_type = "Number Node";
 	};
@@ -162,24 +186,22 @@ struct Exp_Tree : public lib::Tree
 		string var;
 
 		string type() override { return this->node_type; }
+		void attempt_collapse() override;
+
 	protected:
 		string node_type = "Variable Node";
 	};
-
-
-	void create_nodes_from_exp(string exp);
-	void reset_nodes(string exp);
-
-	Exp_Tree::Exp_Node* first_node;
-	Exp_Tree::Exp_Node*& entry_node;
 };
+
 
 class Expression
 {
 private:
 	string readExp;
+	static std::map<string, Expression*> variables;
 	static string::iterator wrap_in_nester_forward(string& str, string::iterator begin, char nester = '(');
 	static string::iterator wrap_in_nester_back(string& str, string::iterator begin  , char nester = ')');
+
 public:
 	Expression();
 	Expression(Expression&);
@@ -189,9 +211,15 @@ public:
 	static string parseForPrint(string);
 
 	Expression& simplify();
-
+	
 	string expression;
 	Exp_Tree exp_tree;
+
+	static bool var_defined(string var);
+	static void set_var(string varname, string exp);
+	static void set_var(string varname, Expression* e);
+	static Expression* get_var(string varname);
+	static std::map<string, Expression*> get_vars();
 
 	static const std::array<uint32_t, 11> operators;
 	static const std::array<uint32_t, 10> numbers;
