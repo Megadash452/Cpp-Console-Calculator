@@ -44,7 +44,6 @@ void Exp_Tree::reset_nodes(string exp)
 void Exp_Tree::simplify()
 {
 	auto a = this->first_node->attempt_collapse();
-	if (a != nullptr) console << a->type();
 	this->first_node->append_to_buf();
 }
 
@@ -125,34 +124,38 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	Exp_Node* rtrn_node = nullptr;
 
 	// (pemd)AS
-	for (auto charP = exp.begin();
-        charP != exp.end(); charP++)
-    {
-        // skip enclosed scope
-        if (lib::char_in_arr(*charP, Expression::nestersOpen))
-            charP = lib::find_closing(charP, exp);
+	for (auto charP = exp.end() - 1;;)
+	{
+		// skip enclosed scope
+		if (lib::char_in_arr(*charP, Expression::nestersClose))
+			charP = lib::find_opening(charP, exp);
 
-        // Addition
-        else if (*charP == '+' && charP > exp.begin())
-        {
-            string add1{ exp.begin(), charP };
-            string add2{ charP + 1, exp.end() };
+		// Addition
+		else if (*charP == '+' && charP > exp.begin())
+		{
+			string add1{ exp.begin(), charP };
+			string add2{ charP + 1, exp.end() };
 
-            /*rtrn_node =*/return this->append_child(new Add_Node{ add1, add2 });
-            is_num_or_var = false;
-            break;
-        }
-        // Subtraction
-        else if (*charP == '-' && charP > exp.begin())
-        {
-            string minuend{ exp.begin(), charP };
-            string subtrahend{ charP + 1, exp.end() };
+			/*rtrn_node =*/return this->append_child(new Add_Node{ add1, add2 });
+			is_num_or_var = false;
+			break;
+		}
+		// Subtraction
+		else if (*charP == '-' && charP > exp.begin())
+		{
+			string minuend{ exp.begin(), charP };
+			string subtrahend{ charP + 1, exp.end() };
 
-            /*rtrn_node =*/return this->append_child(new Sub_Node{ minuend, subtrahend });
-            is_num_or_var = false;
-            break;
-        }
-    }
+			/*rtrn_node =*/return this->append_child(new Sub_Node{ minuend, subtrahend });
+			is_num_or_var = false;
+			break;
+		}
+
+		if (charP > exp.begin())
+			charP--;
+		else
+			break;
+	}
 
 	// PEMD(as)
 	for (auto charP = exp.begin();
@@ -280,7 +283,12 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 
 Exp_Tree::Num_Node* Exp_Tree::Exp_Node::attempt_collapse()
 {
-	return this->children[0]->attempt_collapse();
+	Exp_Tree::Num_Node* a = this->children[0]->attempt_collapse();
+	if (a != nullptr && a != this->children[0]) {
+		delete this->children[0];
+		this->children[0] = a;
+	}
+	return a;
 }
 
 void Exp_Tree::Exp_Node::append_to_buf()
