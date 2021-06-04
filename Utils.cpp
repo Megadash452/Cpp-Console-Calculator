@@ -76,15 +76,16 @@ int lib::to_int(char c, int base)
     // or    if c is an ASCII letter
     else if (base > 10)
         if (c > 47 && c <= 57)
-            ;
+            return ((int)c) - 48;
         else if (c > 96 && c <= 96 + base - 10)
             return ((int)c) - 86;
-        else;
+        else
+            throw std::exception{ (string{ "cannot convert " } + c + " to number ").c_str() };
     else
         throw std::exception{ (
             string{ "cannot convert " } + c + " in base "
           + std::to_string(base) + ". Try another base"
-        ).c_str()};
+        ).c_str() };
 }
 int lib::to_int(string str, int base)
 {
