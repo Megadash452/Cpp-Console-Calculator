@@ -68,7 +68,7 @@ int main(int argc, const char** argv)
                        +    "    c{6}[--] Use the calculator.\n"
                        +    "    c{6}[--] You can also type in anything that isn't a command.\n\n"
 
-                       +    "  c{11}[store], c{11}[var] (args: c{11}[variable name], c{10}[Expression]<string>):\n"
+                       +    "  c{11}[store], c{11}[var] (args: c{3}[variable name], c{10}[Expression]<string>):\n"
                        +    "    c{6}[--] Store a variable to use later. Variables can be redifined.\n\n"
 
                        +    "  c{13}[variables], c{13}[vars] (args: c{8}[None]):\n"
@@ -76,13 +76,13 @@ int main(int argc, const char** argv)
 
 
                        +    "c{6}[Correct Syntax:]\n"
-                       +    "  c{3}[Input]:\n"
+                       /*+    "  c{3}[Input]:\n"
                        +    "    c{2}[-commands-]  Commands tell the program to do something\n"
                        +    "                (e.g. c{12}[exit] will close the program).\n\n"
 
                        +    "    c{2}[-arguments-] Some Commands may have arguments, which are information\n"
                        +    "                the command uses as input to show an output\n"
-                       +    "                (e.g. calc c{12}[2+2], the output is 4).\n\n"
+                       +    "                (e.g. calc c{12}[2+2], the output is 4).\n\n"*/
 
                        +    "  c{3}[Numbers]:\n"
                        +    "    c{2}[-type-]      Numbers can be integers (e.g. c{12}[24]) or floating point\n"
@@ -170,11 +170,20 @@ int main(int argc, const char** argv)
                 for (string arg : arguments)
                     command += arg;
 
-                Expression* e = new Expression{ command };
-                e->simplify();
+                if (lib::char_in_arr('=', command))
+                {
+                    string varname{ command.begin(), command.begin() + command.find('=') };
+                    string exp{ command.begin() + command.find('=') + 1, command.end() };
+                    Expression::set_var(varname, exp);
+                }
+                else
+                {
+                    Expression* e = new Expression{ command };
+                    e->simplify();
 
-                Expression::set_var("ans", e);
-                console.log("\nresult: c{9}[" + e->expression + "]");
+                    Expression::set_var("ans", e);
+                    console.log("\nresult: c{9}[" + e->expression + "]");
+                }
             }
         }
         catch (lib::argument_error e) {
