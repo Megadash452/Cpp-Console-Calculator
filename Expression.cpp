@@ -629,7 +629,11 @@ void Exp_Tree::Var_Node::append_to_buf()
 
 /// --- Expression ---
 std::map<string, Expression*> Expression::variables{
-	{"ans", nullptr}
+	{ "ans", nullptr },
+	{ "e", new Expression{ "2.718281828" } },
+	{ "π", new Expression{ "3.141592654" } },
+	{ "φ", new Expression{ "1.61803398875" } }//,
+	//{ "∞", new Expression{ "99999999999" } }
 };
 
 std::ostringstream Expression::buf{};
