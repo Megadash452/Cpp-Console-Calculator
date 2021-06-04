@@ -241,7 +241,7 @@ public:
 	static const std::array<uint32_t, 6> constants;
 	static const std::array<uint32_t, 26> alphabet;
 	static const std::array<uint32_t, 26> alphabetUpper;
-	static const std::array<uint32_t, 6> symbols;
+	static const std::array<uint32_t, 5> symbols;
 	static const std::array<uint32_t, 7> nesters;
 	static const std::array<uint32_t, 4> nestersOpen;
 	static const std::array<uint32_t, 4> nestersClose;
