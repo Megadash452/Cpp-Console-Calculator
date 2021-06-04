@@ -116,10 +116,6 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::append_child(Exp_Node* _child)
 
 Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 {
-	// TODO: COMPLETE THIS
-
-	//console << "building Node...";
-
 	bool is_num_or_var = true;
 	Exp_Node* rtrn_node = nullptr;
 
@@ -158,8 +154,8 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	}
 
 	// PEMD(as)
-	for (auto charP = exp.begin();
-		charP != exp.end(); charP++)
+	for (auto charP = exp.begin();            // TODO: URGENT: fix operand only calculates itself, and does not leave room for another
+		charP != exp.end(); charP++)          // TODO: make it reverse so it follows order of operations
 	{
 		// skip () only if there isnt a + or - on both sides
 		if (lib::char_in_arr(*charP, Expression::nestersOpen))
@@ -185,7 +181,6 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 				//charP = lib::find_closing(charP + 1, exp);
 		}
 
-		// TODO: when expression is 2*4/56???? consecutive non-addition
 		// -- Division
 		if (*charP == '/')
 		{
@@ -222,10 +217,15 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 		bool is_num = true;
 		//int num_base = 10;
 
+		// remove pos or neg symbol
+		if (exp[0] == '+' || exp[0] == '-')
+			exp.erase(exp.begin());
+
 		// determine if node will be a num or var
 		if (!lib::char_in_arr(exp[0], Expression::numbers) &&
 			exp[0] != '+' && exp[0] != '-')
 			is_num = false;
+
 		// check base
 		/*if (exp[0] == '0')
 			if (exp[1] == 'x') {
@@ -248,20 +248,21 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 				is_num = false;
 				break;
 			}
-			// TODO: maybe add more conditions?
+			// maybe add more conditions?
 
 		// if determined that the node will be a variable, check if it has a valid name
 		if (lib::lower_case(exp) != "ans" && !is_num)
 			if (exp[0] == '_')
 				throw lib::syntax_error{ "first letter of variable{ c{11}[" + exp + "] } cannot be '_'" };
 
-			else if (exp[1] != '_' && exp.size() > 1)
-				throw lib::syntax_error{ "Variable name can only be one char (may be followed by '_' for subscript)" };
-
 			else if (lib::char_in_arr(exp[0], Expression::numbers) ||
 				lib::char_in_arr(exp[0], Expression::operators) ||
 				lib::char_in_arr(exp[0], Expression::symbols))
 					throw lib::syntax_error{ "first letter of variable{ c{11}[" + exp + "] } cannot be a number or symbol (see \"help\" for more information)" };
+
+			else if (exp[1] != '_' && exp.size() > 1)
+				throw lib::syntax_error{ "Variable name can only be one char (may be followed by '_' for subscript)" };
+
 			else
 				/*rtrn_node =*/return this->append_child(new Var_Node{ exp });
 
@@ -586,7 +587,6 @@ Exp_Tree::Num_Node* Exp_Tree::Num_Node::attempt_collapse()
 
 void Exp_Tree::Num_Node::append_to_buf()
 {
-	// TODO: set precision depending on number of decimal digits
 	Expression::buf << std::fixed
 		<< std::setprecision(lib::fractional_digits(this->num));
 
@@ -607,7 +607,6 @@ Exp_Tree::Var_Node::Var_Node(string _var)
 
 Exp_Tree::Num_Node* Exp_Tree::Var_Node::attempt_collapse()
 {
-	//TODO:
 	Expression* e = Expression::get_var(this->var);
 	if (e != nullptr)
 		if (e->exp_tree.first_node->children[0] != nullptr)
@@ -744,9 +743,6 @@ string Expression::parseForRead(string str)
 				charP = str.erase(charP, charP + 2);
 				charP = str.insert(charP, '+');
 			}*/
-
-			// TODO: convert subtraction to negative addition in Node assignment
-			//       perhaps even do the entire code above in node assignment?*/
 
 			
 
