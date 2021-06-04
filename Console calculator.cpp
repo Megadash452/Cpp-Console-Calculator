@@ -96,7 +96,7 @@ int main(int argc, const char** argv)
 
                        +    "    c{2}[-subscript-] To give a variable a superscript (i.e. a second name after\n"
                        +    "                its letter) add an underscore (c{9}[_]) (e.g. hc{12}[_]var2). Subscript\n"
-                       +    "                may also include numbers.\n\n"
+                       +    "                may also include numbers."
                 );
             }
             else if (command == "stop" || command == "quit" || command == "exit") {
