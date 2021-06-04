@@ -217,6 +217,7 @@ int lib::fractional_digits(double num, int base)
     {
         if (*it == '.' || i >= 11)
             break;
+
         else if (*it != '0' && !counting)
             counting = true;
 
@@ -288,6 +289,59 @@ string::iterator lib::find_opening(string::iterator it, const string& str)
         while (*it != '\n' && it > str.begin())
         {
             it--;
+            if (*it == target)
+            {
+                if (extracount)
+                    extracount--;
+                else
+                    return it;
+            }
+            else if (*it == *closing)
+                extracount++;
+        }
+    }
+    return closing;
+}
+
+string::reverse_iterator lib::find_closing(string::reverse_iterator it, const string& str)
+{
+    // may cause errors if closer doesnt exist
+    // TODO: broken, fix
+    string::reverse_iterator opening = it;
+    if (lib::closeDelims[*it])
+    {
+        int extraCount = 0;
+        char target = lib::closeDelims[*it];
+
+        while (*it != '\n' && it > str.rbegin())
+        {
+            it--;
+            if (*it == target)
+            {
+                if (extraCount)
+                    extraCount--;
+                else
+                    return it;
+            }
+            else if (*it == *opening)
+                extraCount++;
+        }
+    }
+    return opening;
+}
+
+string::reverse_iterator lib::find_opening(string::reverse_iterator it, const string& str)
+{
+    // may cause errors if closer doesnt exist
+    string::reverse_iterator closing = it;
+    if (lib::openDelims[*it])
+    {
+        int extracount = 0;
+        char target = lib::openDelims[*it];
+
+        while (*it != '\n' && it < str.rend())
+        {
+            it++;
             if (*it == target)
             {
                 if (extracount)
