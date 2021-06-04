@@ -494,7 +494,7 @@ void Console::initializer_print()
 
 	this->set_cursor_pos(cpos);
 
-	this->log("\nWhat do you want to do? (type \"help\" or \"h\" to see your options)");
+	this->log("\nReady to calculate! (type \"help\" or \"h\" to see commands)");
 	this->log("--------------------------------------------------------------------------\n");
 }
 
