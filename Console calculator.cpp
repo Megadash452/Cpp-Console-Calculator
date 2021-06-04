@@ -142,13 +142,15 @@ int main(int argc, const char** argv)
                 for (std::pair<string, Expression*> pair : Expression::get_vars())
                 {
                     if (pair.second != nullptr)
+                    {
                         if (pair.second->expression != "")
                             console.log("c{11}[" + pair.first + "] = c{9}[" + pair.second->expression + "]");
                         else
                             console.log("c{11}[" + pair.first + "] = c{1}[Null]");
+                        delete pair.second;
+                    }
                     else
                         console.log("c{11}[" + pair.first + "] = c{1}[Null]");
-                    delete pair.second;
                 }
             }
             else if (command == "amogus") {

@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include <vector>
 #include <map>
 using std::string;
@@ -38,6 +40,8 @@ namespace lib {
     double to_double(char, int base=10);
     double to_double(string, int base=10);
     int digits(int, int base=10);
+    int integer_digits(double, int base=10);
+    int fractional_digits(double, int base=10);
 
     string::const_iterator find_closing(string::const_iterator it, const string& str);
     string::iterator find_closing(string::iterator it, const string& str);

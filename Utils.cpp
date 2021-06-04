@@ -119,7 +119,7 @@ double lib::to_double(string str, int base)
 {
     str = lib::lower_case(str);
     string::iterator point = str.begin();
-    string::iterator trail = str.end() - 1;
+    
 
     // check base
     if (str[0] == '+' || str[0] == '-')
@@ -155,6 +155,7 @@ double lib::to_double(string str, int base)
     double super_dec = lib::to_int(string{ str.begin(), point }, base);
 
     // find where trailing zeroes beign after the point, and ignore them
+    string::iterator trail = str.end() - 1;
     for (; trail != str.begin(); trail--)
         if (*trail != '0')
             break;
@@ -172,13 +173,55 @@ double lib::to_double(string str, int base)
 
 int lib::digits(int num, int base)
 {
-    // return how many digits this number has after the decimal point
+    // return how many digits this number has (e.g. 23 -> 2)
+    // TODO: take base into account
     if (!num)
         return 1;
 
     int i = 0;
     for (; num != 0; i++)
         num /= 10;
+    return i;
+}
+
+int lib::integer_digits(double num, int base)
+{
+    // return how many digits this number has before the decimal (e.g. [73].581 -> 2)
+    // TODO: take base into account
+    if (!num)
+        return 1;
+
+    int i = 0;
+    for (; num > 1; i++)
+        num /= 10;
+    return i;
+}
+
+int lib::fractional_digits(double num, int base)
+{
+    // return how many digits this number has after the decimal (e.g. 73.[581] -> 3)
+    // TODO: take base into account
+    if (!num)
+        return 1;
+
+    std::ostringstream buf;
+    buf << std::fixed
+        << std::setprecision(11);
+    buf << num;
+
+    int i = 0;
+    bool counting = false;
+    string str = buf.str();
+    for (string::reverse_iterator it = str.rbegin(); it != str.rend(); it++)
+    {
+        if (*it == '.' || i >= 11)
+            break;
+        else if (*it != '0' && !counting)
+            counting = true;
+
+        if (counting)
+            i++;
+    }
     return i;
 }
 

@@ -1,5 +1,6 @@
 ﻿#include "Expression.h"
-//#include "Console.h"
+#include "Calc Exceptions.h"
+#include "Console.h"
 
 /// --- Expression Tree ---
 
@@ -42,8 +43,9 @@ void Exp_Tree::reset_nodes(string exp)
 
 void Exp_Tree::simplify()
 {
-	this->first_node->attempt_collapse();
-	// TODO:
+	auto a = this->first_node->attempt_collapse();
+	if (a != nullptr) console << a->type();
+	this->first_node->append_to_buf();
 }
 
 string Exp_Tree::to_str()
@@ -66,18 +68,18 @@ string Exp_Tree::to_str()
 /// --- Expression Tree Node ---
 
 Exp_Tree::Exp_Node::Exp_Node()
-	: lib::Node{  }, collapsed(false)
+	: lib::Node{  }, has_var(false)
 {}
 
 Exp_Tree::Exp_Node::Exp_Node(string exp)
-	: lib::Node{  }, collapsed(false)
+	: lib::Node{  }, has_var(false)
 {
 	if (exp != "")
 		this->create_nodes_from_exp(exp);
 }
 
 Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node& n)
-	: lib::Node{ n }, collapsed(false)
+	: lib::Node{ n }, has_var(false)
 {
 	// make a copy of each child (Node*)
 	for (auto i = n.children.begin(); i != n.children.end(); i++)
@@ -85,7 +87,7 @@ Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node& n)
 }
 
 Exp_Tree::Exp_Node::Exp_Node(Exp_Tree::Exp_Node* n)
-	: lib::Node{ n }, collapsed(false)
+	: lib::Node{ n }, has_var(false)
 {
 	// make a copy of each child (Node*)
 	for (Exp_Tree::Exp_Node* child : n->children)
@@ -276,12 +278,15 @@ Exp_Tree::Exp_Node* Exp_Tree::Exp_Node::create_nodes_from_exp(string exp)
 	return rtrn_node;
 }
 
-void Exp_Tree::Exp_Node::attempt_collapse()
+Exp_Tree::Num_Node* Exp_Tree::Exp_Node::attempt_collapse()
 {
-	console << this->type();
-	//TODO:
+	return this->children[0]->attempt_collapse();
+}
+
+void Exp_Tree::Exp_Node::append_to_buf()
+{
 	for (Exp_Tree::Exp_Node* child : this->children)
-		;
+		child->append_to_buf();
 }
 
 /// -- Other Nodes
@@ -306,8 +311,47 @@ Exp_Tree::Pow_Node::Pow_Node(Exp_Tree::Exp_Node* _base, Exp_Tree::Exp_Node* _exp
 	: Exp_Tree::Op_Node{ '^' }, base(_base), exp(_exp)
 {}
 
-void Exp_Tree::Pow_Node::attempt_collapse()
+Exp_Tree::Pow_Node::~Pow_Node()
 {
+	delete this->base;
+	delete this->exp;
+}
+
+Exp_Tree::Num_Node* Exp_Tree::Pow_Node::attempt_collapse()
+{
+	Exp_Tree::Num_Node* a = this->base->attempt_collapse();
+	Exp_Tree::Num_Node* b = this->exp->attempt_collapse();
+
+	if (a != nullptr && a != this->base) {
+		this->children[0] = a;
+		delete base;
+		this->base = a;
+	}
+	if (b != nullptr && b != this->exp) {
+		this->children[1] = b;
+		delete exp;
+		this->exp = b;
+	}
+
+	if (a != nullptr && b != nullptr)
+	{
+		if (a->has_var || b->has_var)
+			this->has_var = true;
+
+		return new Exp_Tree::Num_Node{ pow(a->num, b->num) };
+	}
+	else
+		return nullptr;
+}
+
+void Exp_Tree::Pow_Node::append_to_buf()
+{
+	Expression::buf << std::fixed
+		<< std::setprecision(11);
+
+	this->base->append_to_buf();
+	Expression::buf << '^';
+	this->exp->append_to_buf();
 }
 
 
@@ -322,8 +366,47 @@ Exp_Tree::Div_Node::Div_Node(Exp_Tree::Exp_Node* _dividend, Exp_Tree::Exp_Node* 
 	: Exp_Tree::Op_Node{ '/' }, dividend(_dividend), divisor(_divisor)
 {}
 
-void Exp_Tree::Div_Node::attempt_collapse()
+Exp_Tree::Div_Node::~Div_Node()
 {
+	delete this->dividend;
+	delete this->divisor;
+}
+
+Exp_Tree::Num_Node* Exp_Tree::Div_Node::attempt_collapse()
+{
+	Exp_Tree::Num_Node* a = this->dividend->attempt_collapse();
+	Exp_Tree::Num_Node* b = this->divisor->attempt_collapse();
+
+	if (a != nullptr && a != this->dividend) {
+		this->children[0] = a;
+		delete dividend;
+		this->dividend = a;
+	}
+	if (b != nullptr && b != this->divisor) {
+		this->children[1] = b;
+		delete divisor;
+		this->divisor = b;
+	}
+
+	if (a != nullptr && b != nullptr)
+	{
+		if (a->has_var || b->has_var)
+			this->has_var = true;
+
+		return new Exp_Tree::Num_Node{ a->num / b->num };
+	}
+	else
+		return nullptr;
+}
+
+void Exp_Tree::Div_Node::append_to_buf()
+{
+	Expression::buf << std::fixed
+		<< std::setprecision(11);
+
+	this->dividend->append_to_buf();
+	Expression::buf << '/';
+	this->divisor->append_to_buf();
 }
 
 
@@ -338,8 +421,44 @@ Exp_Tree::Mul_Node::Mul_Node(Exp_Tree::Exp_Node* _mul1, Exp_Tree::Exp_Node* _mul
 	: Exp_Tree::Op_Node{ '*' }, mul1(_mul1), mul2(_mul2)
 {}
 
-void Exp_Tree::Mul_Node::attempt_collapse()
+Exp_Tree::Mul_Node::~Mul_Node()
 {
+	delete this->mul1;
+	delete this-> mul2;
+}
+
+Exp_Tree::Num_Node* Exp_Tree::Mul_Node::attempt_collapse()
+{
+	Exp_Tree::Num_Node* a = this->mul1->attempt_collapse();
+	Exp_Tree::Num_Node* b = this->mul2->attempt_collapse();
+
+	if (a != nullptr && a != this->mul1) {
+		this->children[0] = a;
+		delete mul1;
+		this->mul1 = a;
+	}
+	if (b != nullptr && b != this->mul2) {
+		this->children[1] = b;
+		delete mul2;
+		this->mul2 = b;
+	}
+
+	if (a != nullptr && b != nullptr)
+	{
+		if (a->has_var || b->has_var)
+			this->has_var = true;
+
+		return new Exp_Tree::Num_Node{ a->num * b->num };
+	}
+	else
+		return nullptr;
+}
+
+void Exp_Tree::Mul_Node::append_to_buf()
+{
+	this->mul1->append_to_buf();
+	Expression::buf << '*';
+	this->mul2->append_to_buf();
 }
 
 
@@ -354,8 +473,44 @@ Exp_Tree::Sub_Node::Sub_Node(Exp_Tree::Exp_Node* _minuend, Exp_Tree::Exp_Node* _
 	: Exp_Tree::Op_Node{ '-' }, minuend(_minuend), subtrahend(_subtrahend)
 {}
 
-void Exp_Tree::Sub_Node::attempt_collapse()
+Exp_Tree::Sub_Node::~Sub_Node()
 {
+	delete this->minuend;
+	delete this->subtrahend;
+}
+
+Exp_Tree::Num_Node* Exp_Tree::Sub_Node::attempt_collapse()
+{
+	Exp_Tree::Num_Node* a = this->minuend->attempt_collapse();
+	Exp_Tree::Num_Node* b = this->subtrahend->attempt_collapse();
+
+	if (a != nullptr && a != this->minuend) {
+		this->children[0] = a;
+		delete minuend;
+		this->minuend = a;
+	}
+	if (b != nullptr && b != this->subtrahend) {
+		this->children[1] = b;
+		delete subtrahend;
+		this->subtrahend = b;
+	}
+
+	if (a != nullptr && b != nullptr)
+	{
+		if (a->has_var || b->has_var)
+			this->has_var = true;
+
+		return new Exp_Tree::Num_Node{ a->num - b->num };
+	}
+	else
+		return nullptr;
+}
+
+void Exp_Tree::Sub_Node::append_to_buf()
+{
+	this->minuend->append_to_buf();
+	Expression::buf << '-';
+	this->subtrahend->append_to_buf();
 }
 
 
@@ -370,24 +525,71 @@ Exp_Tree::Add_Node::Add_Node(Exp_Tree::Exp_Node* _add1, Exp_Tree::Exp_Node* _add
 	: Exp_Tree::Op_Node{ '+' }, add1(_add1), add2(_add2)
 {}
 
-void Exp_Tree::Add_Node::attempt_collapse()
+Exp_Tree::Add_Node::~Add_Node()
 {
+	delete this->add1;
+	delete this->add2;
+}
+
+Exp_Tree::Num_Node* Exp_Tree::Add_Node::attempt_collapse()
+{
+	Exp_Tree::Num_Node* a = this->add1->attempt_collapse();
+	Exp_Tree::Num_Node* b = this->add2->attempt_collapse();
+
+	if (a != nullptr && a != this->add1) {
+		this->children[0] = a;
+		delete add1;
+		this->add1 = a;
+	}
+	if (b != nullptr && b != this->add2) {
+		this->children[1] = b;
+		delete add2;
+		this->add2 = b;
+	}
+
+	if (a != nullptr && b != nullptr)
+	{
+		if (a->has_var || b->has_var)
+			this->has_var = true;
+
+		return new Exp_Tree::Num_Node{ a->num + b->num };
+	}
+	else
+		return nullptr;
+}
+
+void Exp_Tree::Add_Node::append_to_buf()
+{
+	this->add1->append_to_buf();
+	Expression::buf << '+';
+	this->add2->append_to_buf();
 }
 
 
 // Num and var nodes
 Exp_Tree::Num_Node::Num_Node(double _num)
-	: Exp_Node{  }, num(_num)
+	: Exp_Node{  }, num(_num), base(10)
 {}
 
-void Exp_Tree::Num_Node::attempt_collapse()
+Exp_Tree::Num_Node* Exp_Tree::Num_Node::attempt_collapse()
 {
+	return this;
+}
+
+void Exp_Tree::Num_Node::append_to_buf()
+{
+	// TODO: set precision depending on number of decimal digits
+	Expression::buf << std::fixed
+		<< std::setprecision(lib::fractional_digits(this->num));
+
+	Expression::buf << this->num;
 }
 
 
 Exp_Tree::Var_Node::Var_Node(string _var)
 	: Exp_Node{  }, var(_var)
 {
+	this->has_var = true;
 	Expression* e = Expression::get_var(var);
 	if (e == nullptr)
 		console.warn("Variable c{11}[" + var + "] is not defined.");
@@ -395,8 +597,23 @@ Exp_Tree::Var_Node::Var_Node(string _var)
 		console.warn("Variable c{11}[" + var + "] is not defined.");;
 }
 
-void Exp_Tree::Var_Node::attempt_collapse()
+Exp_Tree::Num_Node* Exp_Tree::Var_Node::attempt_collapse()
 {
+	//TODO:
+	Expression* e = Expression::get_var(this->var);
+	if (e != nullptr)
+		if (e->exp_tree.first_node->children[0] != nullptr)
+			return e->exp_tree.first_node->children[0]->attempt_collapse();
+		else
+			return nullptr;
+	else
+		return nullptr;
+	
+}
+
+void Exp_Tree::Var_Node::append_to_buf()
+{
+	Expression::buf << this->var;
 }
 
 /// --- --- --- ---
@@ -407,6 +624,8 @@ void Exp_Tree::Var_Node::attempt_collapse()
 std::map<string, Expression*> Expression::variables{
 	{"ans", nullptr}
 };
+
+std::ostringstream Expression::buf{};
 
 Expression::Expression()
 	: readExp(""), exp_tree(""), expression("")
@@ -591,8 +810,19 @@ string Expression::parseForPrint(string str)
 
 Expression& Expression::simplify()
 {
-	// TODO: insert return statement here
+	// empty the buffer
+	Expression::buf.str("");
+	Expression::buf.clear();
+
 	this->exp_tree.simplify();
+	this->expression = Expression::buf.str();
+
+	// empty the buffer
+	Expression::buf.str("");
+	Expression::buf.clear();
+
+	this->readExp = Expression::parseForRead(expression);
+
 	return *this;
 }
 
@@ -606,7 +836,9 @@ bool Expression::var_defined(string var)
 
 void Expression::set_var(string varname, string exp)
 {
-	Expression::set_var(varname, new Expression{ exp });
+	Expression* e = new Expression{ exp };
+	e->simplify();
+	Expression::set_var(varname, e);
 }
 
 void Expression::set_var(string varname, Expression* exp)
