@@ -118,7 +118,6 @@ double lib::to_double(char c, int base)
 double lib::to_double(string str, int base)
 {
     str = lib::lower_case(str);
-    string::iterator point = str.begin();
     
 
     // check base
@@ -147,6 +146,8 @@ double lib::to_double(string str, int base)
 
     // find decimal point
     // if no decimal, will behave like lib::to_int()
+    string::iterator point = str.begin();
+    string::iterator trail = str.end() - 1;
     for (; point != str.end(); point++)
         if (*point == '.')
             break;
@@ -155,7 +156,7 @@ double lib::to_double(string str, int base)
     double super_dec = lib::to_int(string{ str.begin(), point }, base);
 
     // find where trailing zeroes beign after the point, and ignore them
-    string::iterator trail = str.end() - 1;
+    
     for (; trail != str.begin(); trail--)
         if (*trail != '0')
             break;
