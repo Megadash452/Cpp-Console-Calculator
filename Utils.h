@@ -46,6 +46,8 @@ namespace lib {
     string::const_iterator find_closing(string::const_iterator it, const string& str);
     string::iterator find_closing(string::iterator it, const string& str);
     string::iterator find_opening(string::iterator it, const string& str);
+    string::reverse_iterator find_closing(string::reverse_iterator it, const string& str);
+    string::reverse_iterator find_opening(string::reverse_iterator it, const string& str);
 
     void split(string str, string delimeters, std::vector<string>& save_to, bool keep_delimeters = false);
 
