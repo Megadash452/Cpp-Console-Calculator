@@ -175,7 +175,7 @@ double lib::to_double(string str, int base)
 
 int lib::digits(int num, int base)
 {
-    // return how many digits this number has (e.g. 23 -> 2)
+    // return how many digits in an int (e.g. 23 -> 2)
     // TODO: take base into account
     if (!num)
         return 1;
@@ -185,47 +185,47 @@ int lib::digits(int num, int base)
         num /= 10;
     return i;
 }
-
-int lib::integer_digits(double num, int base)
+int lib::digits(double num)
 {
-    // return how many digits this number has before the decimal (e.g. [73].581 -> 2)
-    // TODO: take base into account
-    if (!num)
-        return 1;
-
-    int i = 0;
-    for (; num > 1; i++)
-        num /= 10;
-    return i;
+    // return how many digits in a double (e.g. 2.3 -> 2)
+    return lib::integer_digits(num) + lib::decimal_digits(num);
 }
 
-int lib::fractional_digits(double num, int base)
+int lib::integer_digits(double num)
 {
-    // return how many digits this number has after the decimal (e.g. 73.[581] -> 3)
-    // TODO: take base into account
-    if (!num)
-        return 1;
+    // return how many digits in a double before the decimal (e.g. [73].581 -> 2)
+    return lib::digits(int(num));
+}
 
-    std::ostringstream buf;
-    buf << std::fixed
-        << std::setprecision(11);
-    buf << num;
+int lib::decimal_digits(double num)
+{
+    // return how many digits in a double after the decimal (e.g. 73.[581] -> 3)
 
-    int i = 0;
-    bool counting = false;
-    string str = buf.str();
-    for (string::reverse_iterator it = str.rbegin(); it != str.rend(); it++)
+    int precision = 11; // refers to haw many decimal digits we care about
+                        // (e.g. precision=5, 0.00000 (5 digits after the decimal))
+    if (!int(num * pow(10, precision)))
+        // number has 1 digit if all integer and decimal places have 0
+        // this is determined by putting the decimals we care about (11) in the integer places, and see if that = 0
+        return 0;
+
+    int digits = 0;
+
+    int d0_buf = 0; // stores how many 0 digits have been found. Will empty when a non-0 ddigit is found
+    double dec = num - int(num); // decimal digits in num
+
+    for (int i = 0; i < precision; i++)
     {
-        if (*it == '.' || i >= 11)
-            break;
+        int digit = dec * pow(10, i+1) - (long long)(dec * pow(10, i)) * 10; // shift decimal point i times to the right, and get 1s place
 
-        else if (*it != '0' && !counting)
-            counting = true;
-
-        if (counting)
-            i++;
+        if (!digit)
+            d0_buf++;
+        else {
+            digits += d0_buf + 1; // push number of zero digits buffered + this digit
+            d0_buf = 0;
+        }
     }
-    return i;
+
+    return digits;
 }
 
 
